@@ -58,15 +58,22 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin with battery/charging checks and code-based diagnosis immediately when the vehicle data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — ACTIVE FORGE ASSIGNMENT
-- **Required result:** Production-ready website deployed through connected GitHub and Vercel accounts, tested live, with lead capture and tracked revenue links.
-- **Next action:** Inspect repository contents and current deployment state; finish the highest-impact missing production items.
+- **Status:** IN PROGRESS — REPOSITORY AUDITED; LEAD CAPTURE AND TRUST PAGES ADDED
+- **Verified progress:**
+  - Existing static storefront and eBay campaign `5339172120` verified.
+  - Added `contact.html` with call/text, email and structured inquiry capture.
+  - Added `contact.js` to generate a prefilled customer email without storing form data.
+  - Added `privacy.html` covering form handling, external links and affiliate tracking.
+  - Added `vercel.json` with clean URLs and basic security headers.
+  - Added audit record: `forge-deliverables/2026-08-05-website-audit-and-lead-capture-progress.md`.
+- **Deployment blocker:** Connected Vercel team currently contains zero projects, so there is no linked project or production deployment to test.
+- **Next action:** Import/link `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test every route and document the live URL.
 
 ### 6. Automated money funnel
 - **Status:** PARTIAL
 - **Required result:** Working traffic-to-lead-to-sale workflow tied to the deployed site, affiliate links, email capture, follow-up, social content, and analytics.
-- **Next action:** Implement directly against the finished website.
+- **Next action:** Implement directly against the finished website after the Vercel project is linked and the production URL is known.
 
 ## Resume Instruction
 
-Task 4 is blocked by missing vehicle information. Resume task 5 now and keep the car diagnosis ready to restart at the recorded point. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
+Task 4 is blocked by missing vehicle information. Continue task 5 from the Vercel import/deployment point. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
