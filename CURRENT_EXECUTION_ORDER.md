@@ -43,19 +43,24 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Remaining Jason-only action:** Confirm field measurements/material thickness and approve the option before delivery to Connie.
 
 ### 3. Two job application packages
-- **Status:** IN PROGRESS — ACTIVE FORGE ASSIGNMENT
-- **Required result:** Two tailored resumes and two tailored cover letters, one complete package per job.
-- **Next action:** Locate both job postings/descriptions and the latest resume source, then produce review-ready files.
+- **Status:** COMPLETE — TWO TAILORED PACKAGES VERIFIED IN FILE LIBRARY
+- **Package 1:** Ravelin Defense, Welding Engineer (GB)
+  - Complete packet, tailored resume, tailored cover letter, and recommendation letter verified.
+- **Package 2:** Kewaunee Fabrications / Oshkosh, Plant Manager, Manufacturing Operations - R47782
+  - Complete packet, tailored manufacturing-operations resume, and tailored cover letter verified.
+- **GitHub completion record:** `forge-deliverables/2026-08-05-job-application-packages-verification.md`
+- **Remaining Jason-only action:** Submit or review submission status for each application.
 
 ### 4. Car limp-mode diagnosis
 - **Status:** WAITING FOR VEHICLE DATA
 - **Required result:** Safe diagnostic sequence and prioritized likely causes based on exact vehicle, warning messages, scan codes, symptoms, battery/charging readings, and recent repairs.
-- **Next action:** Resume immediately when vehicle details and scan-code information are available.
+- **Blocker:** Exact vehicle details, dash messages, diagnostic trouble codes, symptoms, and recent repair history are not yet available in the queue.
+- **Resume point:** Begin with battery/charging checks and code-based diagnosis immediately when the vehicle data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS
+- **Status:** IN PROGRESS — ACTIVE FORGE ASSIGNMENT
 - **Required result:** Production-ready website deployed through connected GitHub and Vercel accounts, tested live, with lead capture and tracked revenue links.
-- **Next action:** Inspect repository and deployment after the estimate/application deliverables.
+- **Next action:** Inspect repository contents and current deployment state; finish the highest-impact missing production items.
 
 ### 6. Automated money funnel
 - **Status:** PARTIAL
@@ -64,4 +69,4 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 
 ## Resume Instruction
 
-Resume task 3 now. Move to later tasks only after the preceding task has a finished deliverable or a real blocker is documented. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
+Task 4 is blocked by missing vehicle information. Resume task 5 now and keep the car diagnosis ready to restart at the recorded point. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
