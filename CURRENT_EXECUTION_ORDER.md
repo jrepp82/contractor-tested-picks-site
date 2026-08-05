@@ -30,12 +30,20 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Remaining Jason-only action:** Review the five customer PDFs and send the selected package to Jeff. Do not send the internal comparison sheet.
 
 ### 2. Connie Hendries foundation estimate — Two Rivers
-- **Status:** IN PROGRESS
-- **Required result:** Customer-ready estimate for approximately 40 linear feet of damaged foundation insulation board, including replacement and concrete-look finish options; determine whether a factory-finished/protective panel system can avoid a separate skim coat, and price a skim-coat alternative where appropriate.
-- **Next action:** Build the material/labor model and draft the customer estimate using the known 40-LF scope, with exposed height/field measurements clearly subject to verification.
+- **Status:** COMPLETE — CUSTOMER-READY DOCX AND PDF GENERATED AND VISUALLY VERIFIED
+- **Verified deliverables:**
+  - `Connie_Hendries_Foundation_Estimate.docx`
+  - `Connie_Hendries_Foundation_Estimate.pdf`
+  - GitHub completion record: `forge-deliverables/2026-08-05-connie-hendries-foundation-estimate.md`
+- **Customer options:**
+  - Recommended factory-finished gray foundation panel: $4,250; 50% deposit $2,125.
+  - New rigid foam plus reinforced gray foundation coating: $4,450; 50% deposit $2,225.
+  - Conditional repair/re-skim of serviceable existing insulation: $2,950; 50% deposit $1,475.
+- **Technical conclusion:** A factory-finished foundation panel can provide the insulation and concrete/stucco-style appearance without a separate skim coat.
+- **Remaining Jason-only action:** Confirm field measurements/material thickness and approve the option before delivery to Connie.
 
 ### 3. Two job application packages
-- **Status:** IN PROGRESS
+- **Status:** IN PROGRESS — ACTIVE FORGE ASSIGNMENT
 - **Required result:** Two tailored resumes and two tailored cover letters, one complete package per job.
 - **Next action:** Locate both job postings/descriptions and the latest resume source, then produce review-ready files.
 
@@ -56,4 +64,4 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 
 ## Resume Instruction
 
-Resume task 2 now. Move to later tasks only after the preceding task has a finished deliverable or a real blocker is documented. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
+Resume task 3 now. Move to later tasks only after the preceding task has a finished deliverable or a real blocker is documented. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
