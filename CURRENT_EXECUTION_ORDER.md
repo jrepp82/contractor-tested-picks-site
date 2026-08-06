@@ -41,7 +41,7 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin battery/charging checks and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — STOREFRONT, LEAD CAPTURE, TRUST PAGES, BLOG, CONTENT HUB, EXPANDED CATALOG AND SEO FILES NOW IN REPOSITORY
+- **Status:** IN PROGRESS — STOREFRONT, LEAD CAPTURE, TRUST PAGES, BLOG, CONTENT HUB, EXPANDED CATALOG, SEO FILES AND AFFILIATE CLICK TRACKING NOW IN REPOSITORY
 - **Verified progress:**
   - Existing storefront and eBay campaign `5339172120` verified.
   - `contact.html`, `contact.js`, `privacy.html`, and `vercel.json` added.
@@ -50,17 +50,18 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
   - First publish-ready seven-day Facebook/Instagram and YouTube Shorts content bank committed at `forge-deliverables/2026-08-05-seven-day-content-bank.md`.
   - `products.js` expanded from 12 to 26 tracked product groups across tools, welding, garage/Harley, diagnostics, cards and deals.
   - Added `robots.txt` and `sitemap.xml` for production search indexing.
-  - Added progress record at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md`.
-- **Latest verified commits:** `3f16760b1b1476a6d7e820d696c76f03de2a8539`, `a30a7f5348884c78cc9480d7920c9cd9d9afec12`, `8356a5d3c6b246b421a8bf6ae81a3a677063daac`, `905fd83bcdf5f5d290950f5544c41aa029c5090c`.
+  - Added outbound affiliate-click measurement in `app.js`; eBay clicks now push `affiliate_outbound_click` events to `window.dataLayer`, dispatch `ctp:affiliate-click`, and retain the last 100 browser-side events for verification.
+  - Added progress records at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md` and `forge-deliverables/2026-08-06-affiliate-click-tracking-progress.md`.
+- **Latest verified commits:** `f68564411661ba03c64e94eb9ef10c9d8f3ae195`, `70227ebe7e153e561f3951aead5c04b6a86e0324`.
 - **Deployment blocker:** Connected Vercel team contains zero projects; no linked production deployment exists to test.
 - **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise this during Vercel custom-domain setup.
-- **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes and 26 product groups, document the production URL, then wire analytics and scheduling to that URL.
+- **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes and 26 product groups, verify outbound-click events, document the production URL, then connect the event stream to analytics and scheduling.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — FIRST CONTENT BATCH AND 26-GROUP TRACKED AFFILIATE CATALOG COMPLETE
-- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub and tied to site categories and blog content. Product-group outbound links contain campaign and category-specific tracking values.
+- **Status:** PARTIAL — FIRST CONTENT BATCH, 26-GROUP TRACKED AFFILIATE CATALOG AND BROWSER-SIDE OUTBOUND CLICK EVENTS COMPLETE
+- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub and tied to site categories and blog content. Product-group outbound links contain campaign and category-specific tracking values. Browser-side events now capture eBay outbound clicks for future analytics integration.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
-- **Next action:** After deployment, add analytics/outbound-click events, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
+- **Next action:** After deployment, connect analytics, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
 
 ## Resume Instruction
 
