@@ -51,17 +51,18 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
   - `products.js` expanded from 12 to 26 tracked product groups across tools, welding, garage/Harley, diagnostics, cards and deals.
   - Added `robots.txt` and `sitemap.xml` for production search indexing.
   - Added outbound affiliate-click measurement in `app.js`; eBay clicks now push `affiliate_outbound_click` events to `window.dataLayer`, dispatch `ctp:affiliate-click`, and retain the last 100 browser-side events for verification.
-  - Added progress records at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md` and `forge-deliverables/2026-08-06-affiliate-click-tracking-progress.md`.
-- **Latest verified commits:** `f68564411661ba03c64e94eb9ef10c9d8f3ae195`, `70227ebe7e153e561f3951aead5c04b6a86e0324`.
-- **Deployment blocker:** Connected Vercel team contains zero projects; no linked production deployment exists to test.
+  - Added a 30-day publish-ready Facebook/Instagram and YouTube Shorts calendar at `forge-deliverables/2026-08-06-30-day-content-calendar.csv`, with finished hooks, copy/scripts, CTAs, landing paths, and revenue goals.
+  - Added progress records at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md`, `forge-deliverables/2026-08-06-affiliate-click-tracking-progress.md`, and `forge-deliverables/2026-08-06-content-calendar-progress.md`.
+- **Latest verified commits:** `10428acd2d7f41184dce99f3c70f9320d015aea7`, `6bd747f0b6d536b44cedb3f843def4a67be9be92`.
+- **Deployment blocker:** Connected Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` contains zero projects; no linked production deployment exists to test.
 - **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise this during Vercel custom-domain setup.
 - **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes and 26 product groups, verify outbound-click events, document the production URL, then connect the event stream to analytics and scheduling.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — FIRST CONTENT BATCH, 26-GROUP TRACKED AFFILIATE CATALOG AND BROWSER-SIDE OUTBOUND CLICK EVENTS COMPLETE
-- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub and tied to site categories and blog content. Product-group outbound links contain campaign and category-specific tracking values. Browser-side events now capture eBay outbound clicks for future analytics integration.
+- **Status:** PARTIAL — SEVEN-DAY BATCH, 30-DAY CONTENT CALENDAR, 26-GROUP TRACKED AFFILIATE CATALOG AND BROWSER-SIDE OUTBOUND CLICK EVENTS COMPLETE
+- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub. A second 30-day calendar now provides 30 additional publish-ready entries tied to existing shop categories and blog content. Product-group outbound links contain campaign and category-specific tracking values. Browser-side events capture eBay outbound clicks for future analytics integration.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
-- **Next action:** After deployment, connect analytics, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
+- **Next action:** After deployment, connect analytics, replace relative calendar paths with verified production URLs, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
 
 ## Resume Instruction
 
