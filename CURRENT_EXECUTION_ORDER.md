@@ -1,7 +1,7 @@
 # Current Execution Order
 
 **Owner:** Forge / ChatGPT  
-**Last updated:** 2026-08-05  
+**Last updated:** 2026-08-06  
 **Source of truth:** `FORGE_PRODUCTION_QUEUE.md`
 
 ## Mandatory Startup Rule
@@ -41,22 +41,26 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin battery/charging checks and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — STOREFRONT, LEAD CAPTURE, TRUST PAGES, BLOG AND CONTENT HUB NOW IN REPOSITORY
+- **Status:** IN PROGRESS — STOREFRONT, LEAD CAPTURE, TRUST PAGES, BLOG, CONTENT HUB, EXPANDED CATALOG AND SEO FILES NOW IN REPOSITORY
 - **Verified progress:**
   - Existing storefront and eBay campaign `5339172120` verified.
   - `contact.html`, `contact.js`, `privacy.html`, and `vercel.json` added.
   - `blog.html` added with three complete revenue-linked articles: drill vs. impact driver, welding helmet buying checklist, and card-storage system.
   - `styles.css` expanded for responsive article pages.
   - First publish-ready seven-day Facebook/Instagram and YouTube Shorts content bank committed at `forge-deliverables/2026-08-05-seven-day-content-bank.md`.
-- **Verified commits:** `f49489b1635dbbf32fd326385712d946386f8524`, `d6742c6c1d7a4aeff51fe56ede99727a2995bfd6`, `532d1923710b04e6ef5a01ebee03b5231e9c88a6`.
+  - `products.js` expanded from 12 to 26 tracked product groups across tools, welding, garage/Harley, diagnostics, cards and deals.
+  - Added `robots.txt` and `sitemap.xml` for production search indexing.
+  - Added progress record at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md`.
+- **Latest verified commits:** `3f16760b1b1476a6d7e820d696c76f03de2a8539`, `a30a7f5348884c78cc9480d7920c9cd9d9afec12`, `8356a5d3c6b246b421a8bf6ae81a3a677063daac`, `905fd83bcdf5f5d290950f5544c41aa029c5090c`.
 - **Deployment blocker:** Connected Vercel team contains zero projects; no linked production deployment exists to test.
-- **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes, document the production URL, then wire scheduling and analytics to that URL.
+- **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise this during Vercel custom-domain setup.
+- **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes and 26 product groups, document the production URL, then wire analytics and scheduling to that URL.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — FIRST CONTENT BATCH COMPLETE
-- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub and tied to site categories and blog content.
+- **Status:** PARTIAL — FIRST CONTENT BATCH AND 26-GROUP TRACKED AFFILIATE CATALOG COMPLETE
+- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub and tied to site categories and blog content. Product-group outbound links contain campaign and category-specific tracking values.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
-- **Next action:** After deployment, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and add analytics/tracked calls to action.
+- **Next action:** After deployment, add analytics/outbound-click events, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
 
 ## Resume Instruction
 
