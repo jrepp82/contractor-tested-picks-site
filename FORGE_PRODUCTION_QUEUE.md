@@ -46,9 +46,9 @@
 ### 5. Prestige Select / Contractor Tested Picks website deployment
 - **Status:** DEPLOYED TO VERCEL — LIVE URL/ROUTE VERIFICATION IN PROGRESS
 - **Verified repository assets:** storefront, 26 tracked product groups, contact/privacy/blog/diagnostics pages, robots/sitemap, click tracking, GA4 loader hook, deployment guide, 7-day + 30-day content assets, digital product sales page.
-- **Deployment evidence:** Vercel browser screen confirms successful project deployment under `jreppen82-5979's projects`.
-- **GitHub confirmation:** latest commit `eafcffe6f119a2ed16879e54dd4288552d26dfb6` has combined status `Vercel: success` with a Vercel deployment target.
-- **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 when listing deployments, so exact project/deployment metadata is not currently readable through the connector.
+- **Latest verified deploy:** commit `e6b6aa376a3838b189d8ed6d4bc1e3479b8bb81a` is current on `main`; GitHub combined status reports `Vercel: success` with a Vercel deployment target for that exact commit.
+- **Deploy safety:** `.vercelignore` was added in that commit and excludes `CURRENT_EXECUTION_ORDER.md`, `FORGE_PRODUCTION_QUEUE.md`, `DEPLOYMENT_AND_CLICK_VERIFICATION.md`, `README.md`, `forge-deliverables/`, `digital-products/`, `secure-download/`, `.github/`, `Dockerfile`, `.dockerignore`, and `amplify.yml` from Vercel deploys.
+- **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 when listing deployments even though GitHub confirms successful Vercel deployment. Treat as connector visibility/permission mismatch, not deployment failure.
 - **Resume point:** confirm exact public Vercel URL; test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html`; verify all 26 product groups and one controlled eBay outbound click with campaign tracking.
 
 ### 6. Contractor Business Operating System — Starter V1
@@ -58,7 +58,7 @@
 - **Price:** one-time $19.00 USD, quantity 1, live mode.
 - **Payment URL:** `https://buy.stripe.com/fZu9AUcXz3NLga37zddZ600`.
 - **Website:** `digital-products.html` is wired to that verified Stripe URL.
-- **Product payload:** encrypted parts 1–3 committed under `secure-download/`.
+- **Product payload:** encrypted parts 1–3 are committed under `secure-download/` and excluded from Vercel deployment by `.vercelignore`.
 - **Critical remaining check:** Stripe hosted confirmation says the download will be delivered to the checkout email, but no actual automated file-delivery mechanism has yet been independently verified.
 - **Resume point:** verify end-to-end post-payment fulfillment before public promotion; do not claim automatic delivery without a successful controlled test.
 
