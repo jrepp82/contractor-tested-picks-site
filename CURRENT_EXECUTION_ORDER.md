@@ -1,7 +1,7 @@
 # Current Execution Order
 
 **Owner:** Forge / ChatGPT  
-**Last updated:** 2026-08-06  
+**Last updated:** 2026-08-07  
 **Source of truth:** `FORGE_PRODUCTION_QUEUE.md`
 
 ## Mandatory Startup Rule
@@ -41,7 +41,7 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin battery/charging checks and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — DEPLOYABLE SITE, CONTENT SYSTEM, CLICK TRACKING, AND OPERATOR GUIDE ARE IN REPOSITORY
+- **Status:** IN PROGRESS — DEPLOYABLE SITE, CONTENT SYSTEM, CLICK TRACKING, OPERATOR DIAGNOSTICS, AND DEPLOYMENT GUIDE ARE IN REPOSITORY
 - **Verified progress:**
   - Existing storefront and eBay campaign `5339172120` verified.
   - `contact.html`, `contact.js`, `privacy.html`, and `vercel.json` added.
@@ -53,16 +53,18 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
   - Added browser-side outbound affiliate-click measurement in `app.js` using `window.dataLayer`, `ctp:affiliate-click`, and retained recent click records.
   - Added a 30-day publish-ready content calendar.
   - Added `DEPLOYMENT_AND_CLICK_VERIFICATION.md` with exact Vercel import, live-URL testing, custom-domain, browser event, GA4, Meta scheduling, and YouTube scheduling instructions.
+  - Added `diagnostics.html` and `diagnostics.js` so Jason can verify stored affiliate-click events from a simple browser page without using DevTools. The diagnostics page is `noindex,nofollow` and excluded from the sitemap.
+  - Updated deployment guide with the no-console diagnostics workflow.
   - Updated `README.md` to reflect the active eBay campaign, current assets, verification standard, and setup-guide link.
-- **Latest verified commits:** `7155b54399eff3ca63193db84fc6612aa69a4cc6`, `e0ab955269531c42c081369f6e94df2342b37b65`.
-- **Deployment blocker:** Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` was checked again on 2026-08-06 and still contains zero projects. No production URL exists yet.
+- **Latest verified commits:** `4457b0993db5722ac1a3da69a0a0ff24ac05b79f`, `887370ec67d56c803d64902f494961d80f704641`, `d49b4233011f630722fb46198dc8dd60663d3e22`.
+- **Deployment blocker:** Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` was checked again on 2026-08-07 and still contains zero projects. No production URL exists yet.
 - **Exact Jason account action required:** In Vercel choose **Add New → Project**, import `jrepp82/contractor-tested-picks-site`, keep the root directory at `./`, use the `main` branch, and deploy. The repository guide records every following step.
 - **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise during custom-domain setup.
-- **Resume point:** Immediately after the Vercel import, retrieve the production URL, test all core routes and 26 product groups, run the documented browser affiliate-click test, verify analytics if installed, then replace relative calendar paths with full verified URLs.
+- **Resume point:** Immediately after the Vercel import, retrieve the production URL, test all core routes and 26 product groups, open `/diagnostics.html`, run one real outbound eBay click test, verify analytics if installed, then replace relative calendar paths with full verified URLs.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — CONTENT BANKS, TRACKED CATALOG, CLICK EVENTS, AND IMPLEMENTATION INSTRUCTIONS COMPLETE
-- **Verified progress:** Seven-day and 30-day content assets are stored in GitHub. Product-group links use campaign and category-specific tracking. Browser-side events capture outbound clicks. The repository now contains exact instructions for producing live URLs, verifying click events, and scheduling Meta and YouTube content.
+- **Status:** PARTIAL — CONTENT BANKS, TRACKED CATALOG, CLICK EVENTS, OPERATOR VERIFICATION, AND IMPLEMENTATION INSTRUCTIONS COMPLETE
+- **Verified progress:** Seven-day and 30-day content assets are stored in GitHub. Product-group links use campaign and category-specific tracking. Browser-side events capture outbound clicks. The diagnostics page now gives Jason a simple visual verification path. The repository contains exact instructions for producing live URLs, verifying click events, and scheduling Meta and YouTube content.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
 - **Next action:** After deployment, replace relative paths with verified production URLs, create remaining platform-ready visual/video assets, schedule the batch through available account access, and confirm first live link performance.
 
