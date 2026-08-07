@@ -46,28 +46,29 @@
 ### 5. Prestige Select / Contractor Tested Picks website deployment
 - **Status:** DEPLOYED TO VERCEL — LIVE URL/ROUTE VERIFICATION IN PROGRESS
 - **Verified repository assets:** storefront, 26 tracked product groups, contact/privacy/blog/diagnostics pages, robots/sitemap, click tracking, GA4 loader hook, deployment guide, 7-day + 30-day content assets, digital product sales page.
-- **Latest verified deploy:** commit `e6b6aa376a3838b189d8ed6d4bc1e3479b8bb81a` is current on `main`; GitHub combined status reports `Vercel: success` with a Vercel deployment target for that exact commit.
-- **Deploy safety:** `.vercelignore` was added in that commit and excludes `CURRENT_EXECUTION_ORDER.md`, `FORGE_PRODUCTION_QUEUE.md`, `DEPLOYMENT_AND_CLICK_VERIFICATION.md`, `README.md`, `forge-deliverables/`, `digital-products/`, `secure-download/`, `.github/`, `Dockerfile`, `.dockerignore`, and `amplify.yml` from Vercel deploys.
-- **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 when listing deployments even though GitHub confirms successful Vercel deployment. Treat as connector visibility/permission mismatch, not deployment failure.
-- **Resume point:** confirm exact public Vercel URL; test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html`; verify all 26 product groups and one controlled eBay outbound click with campaign tracking.
+- **Code-level verification this run:** `index.html`, `shop.html`, `blog.html`, `guides.html`, `products.js`, `app.js`, `analytics.js`, and `digital-products.html` were opened and reviewed. `products.js` contains 26 product groups and uses eBay campaign `5339172120`; `app.js` records outbound eBay events as `affiliate_outbound_click`.
+- **Revenue-safety change:** `digital-products.html` was corrected so it does not imply independently verified automatic delivery. It now states that Stripe checkout is live while automated file delivery is still being finalized. Both checkout CTAs now emit `buy_now_click` events.
+- **Verified deploy:** commit `f106f7682fcd91802753dc6511b4e0b114af787b` received GitHub status `Vercel: success`.
+- **Deploy safety:** `.vercelignore` excludes internal operations files, deployment notes, deliverables, digital-product payload, secure-download payload, GitHub metadata, and non-Vercel build files from Vercel deploys.
+- **Connector limitation:** direct Vercel `get_project` still returns 404 and project/deployment listing remains unavailable through the connector even though GitHub confirms successful Vercel deployment. This blocks retrieval of the exact public alias through Forge.
+- **Jason input needed:** exact public `.vercel.app` URL from Vercel Overview/Domains. The `vercel.com/.../contractor-tested-picks-site` dashboard URL is not the public site URL.
+- **Resume point:** with that public URL, test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html`; verify one eBay outbound click and campaign tracking.
 
 ### 6. Contractor Business Operating System — Starter V1
 - **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS
 - **Offer:** launch $19; regular $29.
-- **Stripe verification:** connected live Stripe account has active Payment Link `plink_1U1tzUJkrg28KsFADemfO0bk` for `Contractor Business Operating System — Starter V1`.
-- **Price:** one-time $19.00 USD, quantity 1, live mode.
-- **Payment URL:** `https://buy.stripe.com/fZu9AUcXz3NLga37zddZ600`.
-- **Website:** `digital-products.html` is wired to that verified Stripe URL.
+- **Stripe verification:** connected live Stripe account has active Payment Link `plink_1U1tzUJkrg28KsFADemfO0bk` for `Contractor Business Operating System — Starter V1` at $19.00 one-time.
+- **Website:** sales page is wired to the verified live Stripe URL and now truthfully discloses the current fulfillment state.
 - **Product payload:** encrypted parts 1–3 are committed under `secure-download/` and excluded from Vercel deployment by `.vercelignore`.
-- **Critical remaining check:** Stripe hosted confirmation says the download will be delivered to the checkout email, but no actual automated file-delivery mechanism has yet been independently verified.
+- **Critical remaining check:** no actual automated post-payment file-delivery mechanism has yet been independently verified.
 - **Resume point:** verify end-to-end post-payment fulfillment before public promotion; do not claim automatic delivery without a successful controlled test.
 
 ### 7. Analytics / affiliate event verification
 - **Status:** PARTIAL
-- **Verified code:** Browser affiliate-click event + local diagnostics storage + optional GA4 bridge exist.
-- **GA4 state:** No verified Measurement ID is stored in the repository configuration.
-- **Blocker:** Exact public URL and real GA4 Measurement ID required for complete production verification.
-- **Resume point:** add verified `G-...` ID to `analytics-config.js`, redeploy, perform controlled affiliate click, confirm `affiliate_outbound_click` in GA4 Realtime/DebugView.
+- **Verified code:** browser affiliate-click event + local diagnostics storage + optional GA4 bridge exist; both Starter V1 purchase CTAs now emit `buy_now_click` events.
+- **GA4 state:** no verified Measurement ID is stored in the repository configuration.
+- **Blocker:** exact public URL and real GA4 Measurement ID are required for complete production verification.
+- **Resume point:** add verified `G-...` ID to `analytics-config.js`, redeploy, perform controlled affiliate and checkout clicks, confirm events in GA4 Realtime/DebugView.
 
 ### 8. Domain launch decision
 - **Status:** WAITING FOR JASON DECISION
@@ -76,8 +77,8 @@
 - **Safety rule:** Do not alter DNS without Jason approval and without preserving existing MX/email records.
 
 ### 9. Automated money funnel
-- **Status:** PARTIAL — DEPLOYMENT + CHECKOUT NOW ACTIVE
-- **Completed:** Vercel deployment succeeded; live Stripe $19 checkout exists; 26 tracked product groups; affiliate event hooks; 7-day content bank; 30-day content calendar; three blog articles; CTAs and shop paths.
+- **Status:** PARTIAL — DEPLOYMENT + CHECKOUT ACTIVE
+- **Completed:** Vercel deployment succeeds from GitHub; live Stripe $19 checkout exists; 26 tracked product groups; affiliate event hooks; checkout event hooks; 7-day content bank; 30-day content calendar; three blog articles; CTAs and shop paths.
 - **Remaining:** confirm exact public URL, verify live routes/affiliate clicks, verify digital-product fulfillment, connect GA4 if available, then schedule first promotional batch after Jason approval.
 
 ---
@@ -104,4 +105,4 @@
 
 ## Resume Rule
 
-Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. Vercel deployment is no longer blocked. Continue by confirming the exact public URL and performing live route/revenue-link verification, then verify digital-product fulfillment before promotion.
+Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. Deployment itself is working; the current blocker is obtaining the exact public `.vercel.app` alias so live route and revenue-link verification can be completed. After that, verify digital-product fulfillment before promotion.
