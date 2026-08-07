@@ -34,25 +34,25 @@ Then resume the highest-priority unfinished Forge task unless Jason explicitly c
 ### 5. Prestige Select / Contractor Tested Picks website
 - **Status:** DEPLOYED TO VERCEL — PUBLIC URL/ROUTE VERIFICATION IN PROGRESS.
 - **Verified repository state:** storefront, 26 eBay product groups, contact/privacy/blog/diagnostics pages, affiliate click tracking, GA4 loader hook, robots/sitemap, deployment guide, 7-day content bank, 30-day calendar, digital product sales path.
-- **Latest verified deploy:** commit `e6b6aa376a3838b189d8ed6d4bc1e3479b8bb81a` is current on `main` and GitHub reports `Vercel: success` for that exact commit.
-- **Latest deploy-safety change:** `.vercelignore` now excludes internal operations files, deployment notes, deliverables, digital-product payload, secure-download payload, GitHub metadata, and non-Vercel build files from Vercel deploys.
+- **Latest verified deploy:** commit `f106f7682fcd91802753dc6511b4e0b114af787b` deployed successfully; GitHub reports `Vercel: success` for that exact commit.
+- **Latest revenue-safety change:** `digital-products.html` no longer implies independently verified automatic delivery; it now truthfully states that checkout is live while automated file delivery is still being finalized. Both Stripe checkout CTAs now emit `buy_now_click` analytics events.
+- **Deploy safety:** `.vercelignore` excludes internal operations files, deployment notes, deliverables, digital-product payload, secure-download payload, GitHub metadata, and non-Vercel build files from Vercel deploys.
 - **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 on deployment listing even though GitHub's Vercel status proves the deployment exists. Treat this as a connector visibility/permission mismatch, not a failed deployment.
-- **Resume point:** retrieve/confirm exact public URL, then test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, and `/digital-products.html`; perform one controlled eBay click test and confirm campaign tracking.
+- **Resume point:** retrieve/confirm exact public `.vercel.app` URL, then test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, and `/digital-products.html`; perform one controlled eBay click test and confirm campaign tracking.
 
 ### 6. Contractor Business Operating System — Starter V1
 - **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS.
 - **Offer:** launch $19; regular $29.
 - **Stripe:** connected live Stripe account verified. Active live-mode Payment Link exists for `Contractor Business Operating System — Starter V1`, one-time price $19.00.
-- **Website:** `digital-products.html` links to the verified live Stripe Payment Link.
+- **Website:** `digital-products.html` links to the verified live Stripe Payment Link and now accurately discloses that automated file delivery is still being finalized.
 - **Payload:** encrypted product payload parts 1–3 are committed under `secure-download/` and excluded from Vercel deployment by `.vercelignore`.
-- **Important:** Stripe hosted confirmation says delivery will be sent to the checkout email, but an actual automated file-delivery mechanism has not yet been independently verified.
 - **Resume point:** verify post-payment fulfillment path before promotion; do not claim automatic delivery until a successful controlled fulfillment test exists.
 
 ### 7. Analytics / affiliate event verification
 - **Status:** PARTIAL.
-- **Verified code:** local affiliate-click tracking + diagnostics + optional GA4 bridge exist.
+- **Verified code:** local affiliate-click tracking + diagnostics + optional GA4 bridge exist. Both Starter V1 checkout CTAs now emit `buy_now_click` events.
 - **GA4 state:** no verified `G-...` Measurement ID is currently recorded in the repository config.
-- **Resume point:** after public URL verification, add verified Measurement ID, redeploy, confirm one `affiliate_outbound_click` event in GA4 Realtime/DebugView.
+- **Resume point:** after public URL verification, add verified Measurement ID, redeploy, confirm one `affiliate_outbound_click` and one `buy_now_click` event in GA4 Realtime/DebugView.
 
 ### 8. Domain decision
 - **Status:** POST-LAUNCH / WAITING FOR JASON DECISION.
