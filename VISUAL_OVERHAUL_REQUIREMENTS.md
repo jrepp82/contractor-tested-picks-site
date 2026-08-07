@@ -22,6 +22,15 @@ Use a Prestige-focused palette built around:
 
 The finished site should not feel like a generic black contractor template. It should read immediately as a polished Prestige-branded storefront using blue, navy, gray, light blue, and white throughout the page hierarchy.
 
+## Locked Prestige identity / personal-brand direction
+
+- Add Prestige logos in strategic locations so the storefront is visibly connected to the wider Prestige brand family. Preferred placements: navigation/header, hero or trust area, and footer. Do not wallpaper the site with logos.
+- Incorporate Jason's approved profile portrait as a trust/identity asset. The preferred existing source is the portrait already embedded in the approved Prestige site file `Prestige_Approved_Full_Site_v29_READY.html` inside the `.about-photo` section.
+- The existing approved secondary visual `Built Right: Contractor’s Workshop Hero.png` can be used selectively as a supporting brand image where a caricature/illustration works better than a portrait.
+- Use personal imagery primarily in the hero/About/trust areas rather than on every product card. The purpose is to make the site feel credible, personal, and connected to the contractor behind the recommendations.
+- Work Prestige catchphrases into the design where they add trust rather than clutter. Preserve `Built Strong. Built Right. Built to Last.` and the current `Built by a working contractor` positioning where appropriate.
+- Keep the overall visual language consistent across Prestige logos, portrait/illustration use, colors, typography, buttons, cards, and section backgrounds.
+
 ## Verified current problem
 
 - `products.js` currently represents each of the 26 product groups with emoji icons such as 🧰, 🔩, 🪚, 🥽, 🏍️, etc.
@@ -39,9 +48,10 @@ The finished site should not feel like a generic black contractor template. It s
 6. Improve product cards with real imagery, stronger calls to action, clearer category/retailer signals, and more premium spacing/layout.
 7. Add appropriate real-world contractor/welding/garage/cards imagery across sections instead of an all-black-and-white text-heavy appearance.
 8. Add stronger Prestige visual identity through branded accents, better typography, stronger section hierarchy, and more visual depth.
-9. Keep mobile performance, accessibility, and affiliate disclosure intact during redesign.
-10. Preserve existing working affiliate tracking (`5339172120`) and analytics hooks during the visual rewrite.
-11. Perform final desktop/mobile visual QA before any large promotional push.
+9. Add the Prestige logo system, approved Jason portrait, selected approved brand illustration, and catchphrases without making the site feel cluttered or self-promotional.
+10. Keep mobile performance, accessibility, and affiliate disclosure intact during redesign.
+11. Preserve existing working affiliate tracking (`5339172120`) and analytics hooks during the visual rewrite.
+12. Perform final desktop/mobile visual QA before any large promotional push.
 
 ## Preferred implementation direction
 
@@ -50,3 +60,4 @@ The finished site should not feel like a generic black contractor template. It s
 - Avoid cosmetic work that breaks tracking or checkout.
 - Do not treat the current emoji visuals as launch-quality assets.
 - Use the Prestige palette consistently across navigation, hero, content sections, product cards, buttons, forms, footer, hover states, and mobile layouts.
+- During implementation, materialize/export the approved portrait from the existing Prestige v29 source into a normal optimized web image asset before wiring it into the live storefront.
