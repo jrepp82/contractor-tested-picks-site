@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="theme-color" content="#0a0d11" />
+  <title>Affiliate Click Diagnostics | Contractor Tested Picks</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html"><span class="brand-mark">CT</span><span>Contractor Tested Picks<small>Operator diagnostics</small></span></a>
+      <nav><a href="index.html">Home</a><a href="shop.html">Shop</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow">Operator verification</span>
+        <h1>Affiliate Click Diagnostics</h1>
+        <p>This page verifies the browser-side affiliate click tracking already built into the storefront. It does not send or expose private customer information.</p>
+
+        <div class="callout" style="margin-top:1.5rem">
+          <div>
+            <h2>How to run the test</h2>
+            <p>1. Open <a href="shop.html" target="_blank" rel="noopener">Shop</a> in another tab. 2. Click any eBay product link. 3. Return here and choose <strong>Refresh events</strong>. The click should appear below.</p>
+          </div>
+          <button class="btn btn-primary" id="refresh-events" type="button">Refresh events</button>
+        </div>
+
+        <section class="section alt" style="margin-top:1.5rem">
+          <div class="container">
+            <h2>Tracking status</h2>
+            <div class="cred-grid">
+              <div class="cred"><strong id="stored-count">0</strong><span>recent stored clicks</span></div>
+              <div class="cred"><strong id="datalayer-count">0</strong><span>events in dataLayer</span></div>
+              <div class="cred"><strong id="listener-status">Ready</strong><span>live event listener</span></div>
+              <div class="cred"><strong id="storage-status">Checking</strong><span>browser storage</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Recent affiliate clicks</h2>
+          <p id="empty-state">No stored affiliate click events found in this browser yet.</p>
+          <div style="overflow-x:auto">
+            <table id="event-table" style="width:100%;border-collapse:collapse;display:none">
+              <thead>
+                <tr>
+                  <th style="text-align:left;padding:.75rem">Time</th>
+                  <th style="text-align:left;padding:.75rem">Product</th>
+                  <th style="text-align:left;padding:.75rem">Category / Tracking ID</th>
+                  <th style="text-align:left;padding:.75rem">Page</th>
+                  <th style="text-align:left;padding:.75rem">Destination</th>
+                </tr>
+              </thead>
+              <tbody id="event-rows"></tbody>
+            </table>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+            <button class="btn btn-secondary" id="clear-events" type="button">Clear local test history</button>
+            <a class="btn btn-secondary" href="DEPLOYMENT_AND_CLICK_VERIFICATION.md">Open deployment guide</a>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid"><div><strong>Contractor Tested Picks</strong><br><span>Diagnostics are local to this browser.</span></div></div>
+  </footer>
+
+  <script src="diagnostics.js"></script>
+</body>
+</html>
