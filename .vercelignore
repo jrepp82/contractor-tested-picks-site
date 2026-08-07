@@ -1,0 +1,12 @@
+# Internal operations / deployment notes — never publish as site assets
+CURRENT_EXECUTION_ORDER.md
+FORGE_PRODUCTION_QUEUE.md
+DEPLOYMENT_AND_CLICK_VERIFICATION.md
+README.md
+forge-deliverables/
+digital-products/
+secure-download/
+.github/
+Dockerfile
+.dockerignore
+amplify.yml
