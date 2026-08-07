@@ -44,15 +44,18 @@
 - **Resume point:** Begin battery/charging and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website deployment
-- **Status:** DEPLOYED TO VERCEL — LIVE URL/ROUTE VERIFICATION IN PROGRESS
+- **Status:** DEPLOYED TO VERCEL — PUBLIC ALIAS CONFIRMED; ROUTE/REVENUE VERIFICATION IN PROGRESS
+- **Confirmed public alias from Vercel deployment screen:** `https://contractor-tested-picks-site.vercel.app/`.
 - **Verified repository assets:** storefront, 26 tracked product groups, contact/privacy/blog/diagnostics pages, robots/sitemap, click tracking, GA4 loader hook, deployment guide, 7-day + 30-day content assets, digital product sales page.
 - **Code-level verification this run:** `index.html`, `shop.html`, `blog.html`, `guides.html`, `products.js`, `app.js`, `analytics.js`, and `digital-products.html` were opened and reviewed. `products.js` contains 26 product groups and uses eBay campaign `5339172120`; `app.js` records outbound eBay events as `affiliate_outbound_click`.
 - **Revenue-safety change:** `digital-products.html` was corrected so it does not imply independently verified automatic delivery. It now states that Stripe checkout is live while automated file delivery is still being finalized. Both checkout CTAs now emit `buy_now_click` events.
 - **Verified deploy:** commit `f106f7682fcd91802753dc6511b4e0b114af787b` received GitHub status `Vercel: success`.
 - **Deploy safety:** `.vercelignore` excludes internal operations files, deployment notes, deliverables, digital-product payload, secure-download payload, GitHub metadata, and non-Vercel build files from Vercel deploys.
-- **Connector limitation:** direct Vercel `get_project` still returns 404 and project/deployment listing remains unavailable through the connector even though GitHub confirms successful Vercel deployment. This blocks retrieval of the exact public alias through Forge.
-- **Jason input needed:** exact public `.vercel.app` URL from Vercel Overview/Domains. The `vercel.com/.../contractor-tested-picks-site` dashboard URL is not the public site URL.
-- **Resume point:** with that public URL, test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html`; verify one eBay outbound click and campaign tracking.
+- **Connector limitation:** Vercel `list_projects` still returns zero and `get_project` returns 404 for the connected team even though the project is visibly deployed and GitHub reports Vercel success. Treat this as connector visibility mismatch, not failed deployment.
+- **Current verification limitation:** Forge's present external fetch environment cannot resolve the public alias, so HTTP route checks are not yet independently completed from this session.
+- **Visual overhaul staged:** `VISUAL_OVERHAUL_REQUIREMENTS.md` now locks the Prestige navy/blue/light-blue/gray/white palette, real product imagery, Prestige logos, approved Jason portrait source, approved secondary caricature, and catchphrase integration. Latest visual requirement commit: `2338fce1c0ba1035a068a97940b248f45d946ccf`.
+- **Preferred portrait source located:** the approved profile portrait embedded in `Prestige_Approved_Full_Site_v29_READY.html` under `.about-photo` is the primary personal image for the later hero/About/trust redesign.
+- **Resume point:** verify `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html` from a reachable production-check path; verify one eBay outbound click and campaign tracking; then continue fulfillment verification. Visual redesign remains second, before major promotion.
 
 ### 6. Contractor Business Operating System — Starter V1
 - **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS
@@ -67,7 +70,7 @@
 - **Status:** PARTIAL
 - **Verified code:** browser affiliate-click event + local diagnostics storage + optional GA4 bridge exist; both Starter V1 purchase CTAs now emit `buy_now_click` events.
 - **GA4 state:** no verified Measurement ID is stored in the repository configuration.
-- **Blocker:** exact public URL and real GA4 Measurement ID are required for complete production verification.
+- **Blocker:** real GA4 Measurement ID is required for complete GA4 production verification.
 - **Resume point:** add verified `G-...` ID to `analytics-config.js`, redeploy, perform controlled affiliate and checkout clicks, confirm events in GA4 Realtime/DebugView.
 
 ### 8. Domain launch decision
@@ -78,8 +81,8 @@
 
 ### 9. Automated money funnel
 - **Status:** PARTIAL — DEPLOYMENT + CHECKOUT ACTIVE
-- **Completed:** Vercel deployment succeeds from GitHub; live Stripe $19 checkout exists; 26 tracked product groups; affiliate event hooks; checkout event hooks; 7-day content bank; 30-day content calendar; three blog articles; CTAs and shop paths.
-- **Remaining:** confirm exact public URL, verify live routes/affiliate clicks, verify digital-product fulfillment, connect GA4 if available, then schedule first promotional batch after Jason approval.
+- **Completed:** Vercel deployment succeeds from GitHub; public alias is known; live Stripe $19 checkout exists; 26 tracked product groups; affiliate event hooks; checkout event hooks; 7-day content bank; 30-day content calendar; three blog articles; CTAs and shop paths.
+- **Remaining:** independently verify live routes/affiliate clicks, verify digital-product fulfillment, connect GA4 if available, complete the planned visual overhaul, then schedule first promotional batch after Jason approval.
 
 ---
 
@@ -105,4 +108,4 @@
 
 ## Resume Rule
 
-Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. Deployment itself is working; the current blocker is obtaining the exact public `.vercel.app` alias so live route and revenue-link verification can be completed. After that, verify digital-product fulfillment before promotion.
+Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. Deployment and the public Vercel alias are confirmed. The immediate Forge work is route/revenue-link verification, followed by digital-product fulfillment verification. The full Prestige visual overhaul — including real product imagery, Prestige colors/logos, approved portrait, catchphrases, and stronger hero/card design — is locked for implementation after functionality is stable and before major promotion.
