@@ -32,37 +32,35 @@ Then resume the highest-priority unfinished Forge task unless Jason explicitly c
 - **Resume point:** Battery/charging + code-based diagnosis immediately when supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — deployable site now includes paid digital-product sales path and GitHub Pages fallback workflow.
-- **Verified repository state:** storefront, 26 eBay product groups, contact/privacy/blog/diagnostics pages, affiliate click tracking, GA4 loader hook, robots/sitemap, deployment guide, 7-day content bank, 30-day calendar.
-- **New verified progress:** GitHub Pages fallback workflow added at commit `a9902739bf630816155993f805d49acbdd8afd97`.
-- **Digital product sales page:** `digital-products.html` updated to Contractor Business Operating System — Starter V1, launch price $19, regular price $29, 12-template contents, scope disclosures, buy-now analytics hook. Commit `7cc7ea8737c6aaeabb3d0173f59dd4d56709087b`.
-- **Homepage revenue path:** homepage now links to Digital Products, the $19 Starter V1 offer, and Request an Estimate. Commit `20009ba40dade4daf3d012512bfe658c5a336af7`.
-- **Vercel state:** connected team still has zero projects. Direct connector deployment is currently limited by connector schema/runtime mismatch.
-- **GitHub Pages state:** workflow exists but public Pages deployment is not yet independently verified. If repo Pages source is not enabled, owner action is Settings → Pages → Source: GitHub Actions, then run `Deploy static site to GitHub Pages` on `main`.
-- **Resume point:** verify Pages deployment first; if live, test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, plus `digital-products.html`; then perform one controlled eBay click test.
+- **Status:** DEPLOYED TO VERCEL — PUBLIC URL/ROUTE VERIFICATION IN PROGRESS.
+- **Verified repository state:** storefront, 26 eBay product groups, contact/privacy/blog/diagnostics pages, affiliate click tracking, GA4 loader hook, robots/sitemap, deployment guide, 7-day content bank, 30-day calendar, digital product sales path.
+- **Vercel deployment evidence:** browser deployment screen confirms successful project deployment under `jreppen82-5979's projects`; GitHub combined status for latest commit `eafcffe6f119a2ed16879e54dd4288552d26dfb6` reports `Vercel: success`.
+- **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 on deployment listing, so the exact public alias and deployment metadata cannot yet be read through that connector.
+- **Resume point:** retrieve/confirm exact public URL, then test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, and `/digital-products.html`; perform one controlled eBay click test and confirm campaign tracking.
 
 ### 6. Contractor Business Operating System — Starter V1
-- **Status:** PRODUCT PACKAGE CREATED — CHECKOUT NOT ACTIVE.
-- **Verified Forge copy:** `/mnt/data/Contractor_Business_OS_Starter_V1.zip` created 2026-08-07 with 12 editable XLSX templates plus START-HERE and LICENSE text files.
-- **Templates:** estimate, job costing, project tracker, lead tracker, material tracker, scheduling, profit tracker, payment tracker, follow-up system, customer intake, change-order workflow, business operating checklist.
+- **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS.
 - **Offer:** launch $19; regular $29.
-- **Checkout:** Stripe implementation path selected as hosted one-time Payment Link; real payment URL not yet available.
-- **Resume point:** create/authorize real Stripe product + Payment Link, replace sales-page checkout placeholder, then establish customer delivery path for the ZIP.
+- **Stripe:** connected live Stripe account verified. Active live-mode Payment Link exists for `Contractor Business Operating System — Starter V1`, one-time price $19.00.
+- **Website:** `digital-products.html` links to the verified live Stripe Payment Link.
+- **Payload:** encrypted product payload parts 1–3 are committed under `secure-download/`.
+- **Important:** Stripe hosted confirmation says delivery will be sent to the checkout email, but an actual automated file-delivery mechanism has not yet been independently verified.
+- **Resume point:** verify post-payment fulfillment path before promotion; do not claim automatic delivery until a successful controlled fulfillment test exists.
 
 ### 7. Analytics / affiliate event verification
 - **Status:** PARTIAL.
 - **Verified code:** local affiliate-click tracking + diagnostics + optional GA4 bridge exist.
 - **GA4 state:** no verified `G-...` Measurement ID is currently recorded in the repository config.
-- **Resume point:** after production deployment, add verified Measurement ID, redeploy, confirm one `affiliate_outbound_click` event in GA4 Realtime/DebugView.
+- **Resume point:** after public URL verification, add verified Measurement ID, redeploy, confirm one `affiliate_outbound_click` event in GA4 Realtime/DebugView.
 
 ### 8. Domain decision
 - **Status:** POST-LAUNCH / WAITING FOR JASON DECISION.
-- **Choices:** use temporary GitHub Pages/Vercel URL; reclaim `prestigeremodelingwi.com`; use another domain.
+- **Choices:** use temporary Vercel URL; reclaim `prestigeremodelingwi.com`; use another domain.
 - **Safety:** Never change DNS without Jason approval. Preserve existing MX/email records.
 
 ### 9. Automated money funnel / social launch
-- **Status:** PARTIAL — first-week GenSpark assets and Forge content calendar exist; public site and checkout URL are the critical remaining rails.
-- **Remaining:** replace landing placeholders with verified live URLs, connect real Buy Now URL, schedule Meta/YouTube pilot batch after Jason approval, then confirm live click performance.
+- **Status:** PARTIAL — checkout is active and Vercel deployment succeeded; URL verification, fulfillment verification, analytics, and promotion remain.
+- **Remaining:** confirm exact public URL, verify all revenue routes/clicks, verify digital-product fulfillment, add GA4 if available, then schedule Meta/YouTube pilot batch after Jason approval.
 
 ## Resume Instruction
-The active revenue sequence is: (1) get any public static deployment live, preferably GitHub Pages fallback if Vercel remains blocked; (2) create/authorize Stripe one-time Payment Link for the $19 Starter V1; (3) replace checkout placeholder; (4) verify affiliate + checkout links; (5) schedule promotional content. Task 4 remains paused until vehicle data arrives.
+The active revenue sequence is: (1) confirm the exact Vercel public URL and verify all critical routes; (2) verify eBay tracking on production; (3) verify the $19 Stripe checkout and actual customer fulfillment path end-to-end; (4) connect GA4 with a real Measurement ID if available; (5) schedule promotional content after Jason approval. Task 4 remains paused until vehicle data arrives.
