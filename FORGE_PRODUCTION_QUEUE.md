@@ -44,60 +44,64 @@
 - **Resume point:** Begin battery/charging and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website deployment
-- **Status:** IN PROGRESS — CODE READY, PRODUCTION DEPLOYMENT BLOCKED
-- **Verified repository assets:** storefront, 26 tracked product groups, contact/privacy/blog/diagnostics pages, robots/sitemap, click tracking, GA4 loader hook, deployment guide, 7-day + 30-day content assets.
-- **Vercel verification:** Connected Vercel team currently returns zero projects.
-- **Current blocker:** `jrepp82/contractor-tested-picks-site` has not been imported as a Vercel project, so no production deployment can be verified through the connector.
-- **Jason-only account action:** Vercel → Add New → Project → import `jrepp82/contractor-tested-picks-site` → root `./` → branch `main` → deploy.
-- **Resume point after import:** Retrieve production URL, verify deployment SHA, test core routes, test all 26 product groups, verify `/diagnostics.html`, and record results.
+- **Status:** DEPLOYED TO VERCEL — LIVE URL/ROUTE VERIFICATION IN PROGRESS
+- **Verified repository assets:** storefront, 26 tracked product groups, contact/privacy/blog/diagnostics pages, robots/sitemap, click tracking, GA4 loader hook, deployment guide, 7-day + 30-day content assets, digital product sales page.
+- **Deployment evidence:** Vercel browser screen confirms successful project deployment under `jreppen82-5979's projects`.
+- **GitHub confirmation:** latest commit `eafcffe6f119a2ed16879e54dd4288552d26dfb6` has combined status `Vercel: success` with a Vercel deployment target.
+- **Connector limitation:** Vercel connector still returns zero projects on list/get and 403 when listing deployments, so exact project/deployment metadata is not currently readable through the connector.
+- **Resume point:** confirm exact public Vercel URL; test `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, `/digital-products.html`; verify all 26 product groups and one controlled eBay outbound click with campaign tracking.
 
-### 6. Analytics / affiliate event verification
+### 6. Contractor Business Operating System — Starter V1
+- **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS
+- **Offer:** launch $19; regular $29.
+- **Stripe verification:** connected live Stripe account has active Payment Link `plink_1U1tzUJkrg28KsFADemfO0bk` for `Contractor Business Operating System — Starter V1`.
+- **Price:** one-time $19.00 USD, quantity 1, live mode.
+- **Payment URL:** `https://buy.stripe.com/fZu9AUcXz3NLga37zddZ600`.
+- **Website:** `digital-products.html` is wired to that verified Stripe URL.
+- **Product payload:** encrypted parts 1–3 committed under `secure-download/`.
+- **Critical remaining check:** Stripe hosted confirmation says the download will be delivered to the checkout email, but no actual automated file-delivery mechanism has yet been independently verified.
+- **Resume point:** verify end-to-end post-payment fulfillment before public promotion; do not claim automatic delivery without a successful controlled test.
+
+### 7. Analytics / affiliate event verification
 - **Status:** PARTIAL
 - **Verified code:** Browser affiliate-click event + local diagnostics storage + optional GA4 bridge exist.
 - **GA4 state:** No verified Measurement ID is stored in the repository configuration.
-- **Blocker:** Production URL and real GA4 Measurement ID required.
-- **Resume point:** Add verified `G-...` ID to `analytics-config.js`, redeploy, perform controlled affiliate click, confirm `affiliate_outbound_click` in GA4 Realtime/DebugView.
+- **Blocker:** Exact public URL and real GA4 Measurement ID required for complete production verification.
+- **Resume point:** add verified `G-...` ID to `analytics-config.js`, redeploy, perform controlled affiliate click, confirm `affiliate_outbound_click` in GA4 Realtime/DebugView.
 
-### 7. Domain launch decision
+### 8. Domain launch decision
 - **Status:** WAITING FOR JASON DECISION
-- **Current repository canonical references:** `prestigeremodelingwi.com` appears in robots/sitemap and must be confirmed before final SEO launch.
-- **External handoff note:** GenSpark reported the domain currently serves a GoDaddy Airo placeholder; Forge has not independently verified DNS state in this queue update.
-- **Jason decision required:** Reclaim current domain / use Vercel default temporarily / use a different domain.
+- **Current repository canonical references:** `prestigeremodelingwi.com` appears in robots/sitemap and must be reconciled with the live Vercel deployment before final SEO launch.
+- **Jason decision required:** use temporary Vercel URL / reclaim current domain / use a different domain.
 - **Safety rule:** Do not alter DNS without Jason approval and without preserving existing MX/email records.
 
-### 8. Automated money funnel
-- **Status:** PARTIAL — CONTENT + TRACKING ASSETS BUILT
-- **Completed:** 26 tracked product groups, affiliate event hooks, 7-day content bank, 30-day content calendar, three blog articles, CTAs and shop paths.
-- **Remaining:** Replace relative paths with verified production URLs, finish platform-specific creative assets, connect scheduling workflow, verify first live traffic/clicks.
-- **Blockers:** Production URL; direct Meta/YouTube management access is not currently verified through Forge connectors.
+### 9. Automated money funnel
+- **Status:** PARTIAL — DEPLOYMENT + CHECKOUT NOW ACTIVE
+- **Completed:** Vercel deployment succeeded; live Stripe $19 checkout exists; 26 tracked product groups; affiliate event hooks; 7-day content bank; 30-day content calendar; three blog articles; CTAs and shop paths.
+- **Remaining:** confirm exact public URL, verify live routes/affiliate clicks, verify digital-product fulfillment, connect GA4 if available, then schedule first promotional batch after Jason approval.
 
 ---
 
 ## P1 — Business Operating System / Automation
 
-### 9. Forge production tracking system
+### 10. Forge production tracking system
 - **Status:** COMPLETE / MAINTENANCE
 - **Deliverable:** `FORGE_PRODUCTION_QUEUE.md` + `CURRENT_EXECUTION_ORDER.md` as persistent source of truth.
 - **Next action:** Maintain after each substantive work session.
 
-### 10. Prestige operating dashboard / active lead protection
+### 11. Prestige operating dashboard / active lead protection
 - **Status:** PARTIAL
 - **Deliverable:** Persistent current dashboard covering leads, estimates, jobs, revenue, follow-ups, online sales, legal deadlines, vehicles, and property issues.
 - **Next action:** Reconcile the latest operations dashboard against Gmail/calendar and remove stale client rows.
 
-### 11. AI lead intake / follow-up automation
+### 12. AI lead intake / follow-up automation
 - **Status:** PARTIAL
 - **Completed:** Contact page exists.
 - **Remaining:** Implement reliable lead capture destination, acknowledgement flow, lead logging, and follow-up automation.
-- **Dependency:** Production deployment first.
-
-### 12. Construction Business Operating System digital product
-- **Status:** PARTIAL
-- **Remaining:** Inventory existing assets, complete minimum sellable package, product page, checkout, delivery workflow.
-- **Dependency:** Revenue website/money funnel first.
+- **Dependency:** Verify live production contact flow first.
 
 ---
 
 ## Resume Rule
 
-Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. If Vercel remains unlinked, continue launch-prep work that does not require a production URL, but do not claim deployment, analytics completion, DNS completion, or social publishing without verification.
+Task 4 is blocked by missing vehicle data. Task 5 is the highest-priority unblocked Forge task. Vercel deployment is no longer blocked. Continue by confirming the exact public URL and performing live route/revenue-link verification, then verify digital-product fulfillment before promotion.
