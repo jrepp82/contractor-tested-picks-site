@@ -30,6 +30,7 @@ Starting with the Vercel base URL, test these pages in a browser:
 - `/contact.html`
 - `/disclosure.html`
 - `/privacy.html`
+- `/diagnostics.html` (operator-only verification page; intentionally excluded from search indexing)
 
 Example:
 
@@ -52,7 +53,24 @@ In Vercel:
 
 If a different storefront domain is chosen, update `robots.txt`, `sitemap.xml`, the content calendar, and all social calls to action before publishing.
 
-## 4. Verify browser-side affiliate click events immediately
+## 4. Easiest affiliate-click verification — no developer console required
+
+The repository now contains an operator page at `/diagnostics.html`.
+
+After deployment:
+
+1. Open the live `/shop.html` page in one tab.
+2. Open the live `/diagnostics.html` page in a second tab.
+3. On the shop page, click any eBay product button.
+4. Return to the diagnostics tab.
+5. Select **Refresh events**.
+6. Confirm that the recent-click table shows the product/listing name, category or tracking ID, page path, destination host, and time.
+
+A successful row proves that the storefront's browser-side affiliate click handler fired and stored the event in that browser. The diagnostics page is marked `noindex,nofollow` and is not included in the public sitemap.
+
+Use **Clear local test history** when you want a clean test before another verification run.
+
+## 5. Advanced browser verification
 
 The current site records outbound affiliate clicks in three places:
 
@@ -60,19 +78,13 @@ The current site records outbound affiliate clicks in three places:
 - a browser event named `ctp:affiliate-click`
 - local browser storage containing the latest click records
 
-To test without Google Analytics:
+To inspect the data layer directly in Chrome:
 
-1. Open the deployed shop page in Chrome.
+1. Open the deployed shop page.
 2. Press **F12** or right-click and choose **Inspect**.
 3. Open the **Console** tab.
-4. Enter:
-
-```js
-window.dataLayer
-```
-
-5. In another tab or after returning to the page, click one eBay product button.
-6. Return to the Console and enter:
+4. Click one eBay product button.
+5. Return to the Console and enter:
 
 ```js
 window.dataLayer.filter((item) => item.event === 'affiliate_outbound_click')
@@ -80,9 +92,9 @@ window.dataLayer.filter((item) => item.event === 'affiliate_outbound_click')
 
 A successful result should show an object containing the clicked product/listing name, destination URL, category or tracking identifier, page path, and timestamp.
 
-To inspect the stored recent events, open **DevTools → Application → Local Storage**, select the deployed domain, and look for the affiliate click-history entry. The site retains up to 100 recent browser-side events for testing.
+To inspect the stored recent events manually, open **DevTools → Application → Local Storage**, select the deployed domain, and look for `ctp_affiliate_clicks`. The site retains up to 100 recent browser-side events for testing.
 
-## 5. Verify the custom browser event
+## 6. Verify the custom browser event
 
 Before clicking a product, paste this into the Console:
 
@@ -94,7 +106,7 @@ window.addEventListener('ctp:affiliate-click', (event) => {
 
 Then click a product. A successful event prints `Verified affiliate event:` followed by the click details.
 
-## 6. Connect Google Analytics 4 after the site is live
+## 7. Connect Google Analytics 4 after the site is live
 
 1. Open Google Analytics and create or select a GA4 property.
 2. Create a **Web** data stream for the verified production domain.
@@ -106,7 +118,7 @@ Then click a product. A successful event prints `Verified affiliate event:` foll
 
 Do not mark analytics complete solely because the tag is installed. Completion requires one observed test click in GA4 Realtime or DebugView.
 
-## 7. Turn relative content-calendar paths into live URLs
+## 8. Turn relative content-calendar paths into live URLs
 
 The 30-day calendar contains landing paths such as `/shop.html` or `/blog.html`. Combine each path with the verified production base URL.
 
@@ -118,7 +130,7 @@ Example:
 
 After a custom domain is verified, replace the Vercel address with that domain in future scheduled content.
 
-## 8. Schedule Meta content
+## 9. Schedule Meta content
 
 In Meta Business Suite:
 
@@ -133,12 +145,12 @@ In Meta Business Suite:
 
 Before scheduling the full batch, publish or schedule one test post and open its link from a phone.
 
-## 9. Schedule YouTube Shorts
+## 10. Schedule YouTube Shorts
 
 In YouTube Studio:
 
 1. Choose **Create → Upload videos**.
-2. Upload a vertical video, preferably 9:16 and under 60 seconds unless the current Shorts limits permit otherwise.
+2. Upload a vertical video that meets YouTube's current Shorts requirements.
 3. Add the finished title and description.
 4. Put the verified full landing URL near the beginning of the description.
 5. Complete audience and disclosure settings.
@@ -156,6 +168,6 @@ The website/deployment stage is complete only when all of the following are true
 - A production base URL is recorded.
 - All core routes load.
 - At least one eBay outbound link opens correctly.
-- One `affiliate_outbound_click` event is observed in browser tools.
+- One `affiliate_outbound_click` event is observed on `/diagnostics.html` or in browser tools.
 - If GA4 is installed, one event is observed in Realtime or DebugView.
 - The content calendar contains full verified URLs rather than unverified placeholders.
