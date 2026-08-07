@@ -41,7 +41,7 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin battery/charging checks and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — DEPLOYABLE SITE, CONTENT SYSTEM, CLICK TRACKING, OPERATOR DIAGNOSTICS, AND DEPLOYMENT GUIDE ARE IN REPOSITORY
+- **Status:** IN PROGRESS — DEPLOYABLE SITE, CONTENT SYSTEM, CLICK TRACKING, OPERATOR DIAGNOSTICS, DEPLOYMENT GUIDE, AND GA4 HOOK ARE IN REPOSITORY
 - **Verified progress:**
   - Existing storefront and eBay campaign `5339172120` verified.
   - `contact.html`, `contact.js`, `privacy.html`, and `vercel.json` added.
@@ -53,20 +53,22 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
   - Added browser-side outbound affiliate-click measurement in `app.js` using `window.dataLayer`, `ctp:affiliate-click`, and retained recent click records.
   - Added a 30-day publish-ready content calendar.
   - Added `DEPLOYMENT_AND_CLICK_VERIFICATION.md` with exact Vercel import, live-URL testing, custom-domain, browser event, GA4, Meta scheduling, and YouTube scheduling instructions.
-  - Added `diagnostics.html` and `diagnostics.js` so Jason can verify stored affiliate-click events from a simple browser page without using DevTools. The diagnostics page is `noindex,nofollow` and excluded from the sitemap.
-  - Updated deployment guide with the no-console diagnostics workflow.
-  - Updated `README.md` to reflect the active eBay campaign, current assets, verification standard, and setup-guide link.
-- **Latest verified commits:** `4457b0993db5722ac1a3da69a0a0ff24ac05b79f`, `887370ec67d56c803d64902f494961d80f704641`, `d49b4233011f630722fb46198dc8dd60663d3e22`.
+  - Added `diagnostics.html` and `diagnostics.js` so stored affiliate-click events can be verified visually without DevTools.
+  - Added `analytics-config.js` and `analytics.js` as an optional GA4 loader. Once a valid `G-...` Measurement ID is entered, the homepage and shop automatically initialize GA4.
+  - Updated `app.js` so every tracked eBay click also sends a GA4 `affiliate_outbound_click` event when GA4 is configured, including URL, product name, category, and page path.
+  - Wired the GA4 loader into `index.html` and `shop.html`.
+- **Latest verified commits:** `62971b41f4d4b4d506c21d585c162dd3cc3d960b`, `908a8d1049fb3d3bc94522af5eec0dbc3ad9f12a`, `ddaac16246ad5ab253b3981f801fecb9e65f1c31`, `5bbb5156e5de00863355495f5340ee631f3e5716`, `01c57a59b08820c9b85dd18e205bd2168239a07b`.
 - **Deployment blocker:** Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` was checked again on 2026-08-07 and still contains zero projects. No production URL exists yet.
-- **Exact Jason account action required:** In Vercel choose **Add New → Project**, import `jrepp82/contractor-tested-picks-site`, keep the root directory at `./`, use the `main` branch, and deploy. The repository guide records every following step.
+- **Exact Jason account action required:** In Vercel choose **Add New → Project**, import `jrepp82/contractor-tested-picks-site`, keep the root directory at `./`, use the `main` branch, and deploy.
+- **Analytics follow-up:** After deployment, create or identify the GA4 web data stream, enter its `G-...` Measurement ID in `analytics-config.js`, deploy, then verify `affiliate_outbound_click` in GA4 Realtime/DebugView using one controlled product click.
 - **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise during custom-domain setup.
-- **Resume point:** Immediately after the Vercel import, retrieve the production URL, test all core routes and 26 product groups, open `/diagnostics.html`, run one real outbound eBay click test, verify analytics if installed, then replace relative calendar paths with full verified URLs.
+- **Resume point:** Immediately after the Vercel import, retrieve the production URL, test all core routes and 26 product groups, open `/diagnostics.html`, run one real outbound eBay click test, configure/verify GA4 if a Measurement ID is available, then replace relative calendar paths with full verified URLs.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — CONTENT BANKS, TRACKED CATALOG, CLICK EVENTS, OPERATOR VERIFICATION, AND IMPLEMENTATION INSTRUCTIONS COMPLETE
-- **Verified progress:** Seven-day and 30-day content assets are stored in GitHub. Product-group links use campaign and category-specific tracking. Browser-side events capture outbound clicks. The diagnostics page now gives Jason a simple visual verification path. The repository contains exact instructions for producing live URLs, verifying click events, and scheduling Meta and YouTube content.
+- **Status:** PARTIAL — CONTENT BANKS, TRACKED CATALOG, CLICK EVENTS, OPERATOR VERIFICATION, GA4 EVENT HOOK, AND IMPLEMENTATION INSTRUCTIONS COMPLETE
+- **Verified progress:** Seven-day and 30-day content assets are stored in GitHub. Product-group links use campaign and category-specific tracking. Browser-side events capture outbound clicks. A GA4 loader and event bridge are now present and only require a Measurement ID to activate. The diagnostics page gives a simple visual verification path.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
-- **Next action:** After deployment, replace relative paths with verified production URLs, create remaining platform-ready visual/video assets, schedule the batch through available account access, and confirm first live link performance.
+- **Next action:** After deployment, replace relative paths with verified production URLs, configure GA4, create remaining platform-ready visual/video assets, schedule the batch through available account access, and confirm first live link performance.
 
 ## Resume Instruction
 
