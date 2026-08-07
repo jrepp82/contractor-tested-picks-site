@@ -41,29 +41,31 @@ Do not create a new Jason checklist in place of doing the work. Jason-only actio
 - **Resume point:** Begin battery/charging checks and code-based diagnosis immediately when data is supplied.
 
 ### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** IN PROGRESS — STOREFRONT, LEAD CAPTURE, TRUST PAGES, BLOG, CONTENT HUB, EXPANDED CATALOG, SEO FILES AND AFFILIATE CLICK TRACKING NOW IN REPOSITORY
+- **Status:** IN PROGRESS — DEPLOYABLE SITE, CONTENT SYSTEM, CLICK TRACKING, AND OPERATOR GUIDE ARE IN REPOSITORY
 - **Verified progress:**
   - Existing storefront and eBay campaign `5339172120` verified.
   - `contact.html`, `contact.js`, `privacy.html`, and `vercel.json` added.
-  - `blog.html` added with three complete revenue-linked articles: drill vs. impact driver, welding helmet buying checklist, and card-storage system.
+  - `blog.html` added with three complete revenue-linked articles.
   - `styles.css` expanded for responsive article pages.
-  - First publish-ready seven-day Facebook/Instagram and YouTube Shorts content bank committed at `forge-deliverables/2026-08-05-seven-day-content-bank.md`.
-  - `products.js` expanded from 12 to 26 tracked product groups across tools, welding, garage/Harley, diagnostics, cards and deals.
-  - Added `robots.txt` and `sitemap.xml` for production search indexing.
-  - Added outbound affiliate-click measurement in `app.js`; eBay clicks now push `affiliate_outbound_click` events to `window.dataLayer`, dispatch `ctp:affiliate-click`, and retain the last 100 browser-side events for verification.
-  - Added a 30-day publish-ready Facebook/Instagram and YouTube Shorts calendar at `forge-deliverables/2026-08-06-30-day-content-calendar.csv`, with finished hooks, copy/scripts, CTAs, landing paths, and revenue goals.
-  - Added progress records at `forge-deliverables/2026-08-06-catalog-and-seo-progress.md`, `forge-deliverables/2026-08-06-affiliate-click-tracking-progress.md`, and `forge-deliverables/2026-08-06-content-calendar-progress.md`.
-- **Latest verified commits:** `10428acd2d7f41184dce99f3c70f9320d015aea7`, `6bd747f0b6d536b44cedb3f843def4a67be9be92`.
-- **Deployment blocker:** Connected Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` contains zero projects; no linked production deployment exists to test.
-- **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise this during Vercel custom-domain setup.
-- **Next action:** Link/import `jrepp82/contractor-tested-picks-site` into Vercel, deploy `main`, test all routes and 26 product groups, verify outbound-click events, document the production URL, then connect the event stream to analytics and scheduling.
+  - Seven-day Facebook/Instagram and YouTube Shorts content bank committed.
+  - `products.js` expanded from 12 to 26 tracked product groups.
+  - Added `robots.txt` and `sitemap.xml`.
+  - Added browser-side outbound affiliate-click measurement in `app.js` using `window.dataLayer`, `ctp:affiliate-click`, and retained recent click records.
+  - Added a 30-day publish-ready content calendar.
+  - Added `DEPLOYMENT_AND_CLICK_VERIFICATION.md` with exact Vercel import, live-URL testing, custom-domain, browser event, GA4, Meta scheduling, and YouTube scheduling instructions.
+  - Updated `README.md` to reflect the active eBay campaign, current assets, verification standard, and setup-guide link.
+- **Latest verified commits:** `7155b54399eff3ca63193db84fc6612aa69a4cc6`, `e0ab955269531c42c081369f6e94df2342b37b65`.
+- **Deployment blocker:** Vercel team `team_0vu8BzrfPHTeUjdq7Z0Si0NF` was checked again on 2026-08-06 and still contains zero projects. No production URL exists yet.
+- **Exact Jason account action required:** In Vercel choose **Add New → Project**, import `jrepp82/contractor-tested-picks-site`, keep the root directory at `./`, use the `main` branch, and deploy. The repository guide records every following step.
+- **Domain verification note:** `robots.txt` and `sitemap.xml` currently use `https://prestigeremodelingwi.com/`; confirm or revise during custom-domain setup.
+- **Resume point:** Immediately after the Vercel import, retrieve the production URL, test all core routes and 26 product groups, run the documented browser affiliate-click test, verify analytics if installed, then replace relative calendar paths with full verified URLs.
 
 ### 6. Automated money funnel
-- **Status:** PARTIAL — SEVEN-DAY BATCH, 30-DAY CONTENT CALENDAR, 26-GROUP TRACKED AFFILIATE CATALOG AND BROWSER-SIDE OUTBOUND CLICK EVENTS COMPLETE
-- **Verified progress:** Seven days of Facebook/Instagram source posts and seven YouTube Shorts scripts are stored in GitHub. A second 30-day calendar now provides 30 additional publish-ready entries tied to existing shop categories and blog content. Product-group outbound links contain campaign and category-specific tracking values. Browser-side events capture eBay outbound clicks for future analytics integration.
+- **Status:** PARTIAL — CONTENT BANKS, TRACKED CATALOG, CLICK EVENTS, AND IMPLEMENTATION INSTRUCTIONS COMPLETE
+- **Verified progress:** Seven-day and 30-day content assets are stored in GitHub. Product-group links use campaign and category-specific tracking. Browser-side events capture outbound clicks. The repository now contains exact instructions for producing live URLs, verifying click events, and scheduling Meta and YouTube content.
 - **Current blocker:** Direct Meta/YouTube publishing access and a production website URL are not connected.
-- **Next action:** After deployment, connect analytics, replace relative calendar paths with verified production URLs, create platform-ready visual/video assets, schedule the batch in Meta Business Suite and YouTube Studio through available account access, and use verified production calls to action.
+- **Next action:** After deployment, replace relative paths with verified production URLs, create remaining platform-ready visual/video assets, schedule the batch through available account access, and confirm first live link performance.
 
 ## Resume Instruction
 
-Task 4 remains blocked by missing vehicle information. Continue task 5 from the Vercel import/deployment point; if the account remains unlinked, continue improving deployable site assets and money-funnel content without claiming production deployment. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
+Task 4 remains blocked by missing vehicle information. Continue task 5 from the Vercel import/deployment point. If Vercel remains unlinked, continue improving deployable assets without claiming production deployment. Remind Jason that Forge must continue from this recorded resume point after the account action. Dianne and Rusty Walesh and Patty are not active jobs unless Jason explicitly reopens them.
