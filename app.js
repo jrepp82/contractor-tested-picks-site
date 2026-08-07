@@ -17,6 +17,15 @@
     window.dataLayer.push(eventDetail);
     window.dispatchEvent(new CustomEvent('ctp:affiliate-click', {detail: eventDetail}));
 
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'affiliate_outbound_click', {
+        link_url: eventDetail.destination,
+        item_name: eventDetail.product_name,
+        item_category: eventDetail.category,
+        page_path: eventDetail.page_path
+      });
+    }
+
     try {
       const stored = JSON.parse(localStorage.getItem('ctp_affiliate_clicks') || '[]');
       stored.push(eventDetail);
