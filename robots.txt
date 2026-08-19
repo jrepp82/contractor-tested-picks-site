@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://prestigeremodelingwi.com/sitemap.xml
+Sitemap: https://contractor-tested-picks-site.vercel.app/sitemap.xml
