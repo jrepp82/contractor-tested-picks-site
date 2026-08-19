@@ -10,77 +10,82 @@
 2. Interruptions do not cancel in-progress work.
 3. Completion requires verified deliverables/external actions.
 4. Audit Forge/Grok/Gemini claims against live systems.
-5. Fix defects while working; do not park them as vague future tasks.
+5. Fix verified defects while working; do not park them as vague future items.
 6. Protect working revenue systems.
 
 ## P0 — LIVE REVENUE
-- Public funnel live at `https://contractor-tested-picks-site.vercel.app`.
+- Production funnel live at `https://contractor-tested-picks-site.vercel.app`.
 - Core one-time ladder live.
 - Ten standalone products live and fulfillment-mapped.
 - Four monthly memberships live.
 - Hourly fulfillment automation `6a7660320e308191aec8cab859c03046` active.
+- M01-M06 are fully built, QA'd, stored, mapped and dynamically resolvable from Stripe product metadata.
 
-## Membership package status
-Canonical dedupe = PAID `invoice.id`; membership identity = `subscription.id`; subscriber month = paid-invoice sequence.
+## Membership runway — M01-M06 COMPLETE
+Canonical rules:
+- paid Stripe `invoice.id` = unique monthly delivery key;
+- `subscription.id` = membership identity;
+- subscriber month = successful paid subscription-invoice sequence;
+- Stripe metadata `mNN_drive_id` + `mNN_file` = canonical package lookup;
+- all four membership products have `max_mapped_month=6`.
 
-**M01 COMPLETE/MAPPED**
-- Essentials `11ESOS7CLlZ4vKDU3RH654q1v9tfmc56M`
-- Choice `1s0Zz85lLgYfYUK9eBjqXNTJXOqzvoCf6`
-- Pro `1GsY358Ci6Z_ZVViyux5mZNgava9amELG`
-- Premium `1lCEURc_MQsn6IyRJJ6EriUeCzbSvfpvf`
+See `MEMBERSHIP_RELEASE_MAP_M01_M06.md` for exact Drive IDs and filenames.
 
-**M02 COMPLETE/MAPPED**
-- Essentials `15QWA3H152GowyIdWMGTqQByQyyMQdaBC`
-- Choice `1UfhHJYhHPBxD8j7QiT5yMr63OwOdUsMW`
-- Pro `1n_tV3XJRXBzbKnx8x3WmT9GVJIM3p1CB`
-- Premium `1nMNck6a5Gh9TKN5nRxVBfYLqSlF4Yz7B`
+M03-M06 passed complete release lifecycles including visual QA, workbook formula checks/smoke tests, ZIP integrity, Drive upload, Library persistence, Stripe mapping and fulfillment mapping.
 
-**M03 COMPLETE/MAPPED**
-- Essentials `1Zd2Zub4L48w5E7RAMBv80FQhEZv1YGsl`
-- Choice `159ccUNCakLeQlmEL7zlUfyyq6fh-PxCy`
-- Pro `1uDerxtR50VjB6s8eldWY9UBhdaE9y7TH`
-- Premium `1ifdXLG6R6V0X3O2NKA6bkd5AiKOimAyD`
+M06 specifically passed:
+- one GREEN active job at 40.9% projected margin;
+- one RED job at 10% projected margin;
+- correct portfolio contract/cost/profit/margin/payment/unpaid values;
+- correct GREEN/WATCH/RED counts;
+- closeout example at 33.3% gross margin;
+- zero spreadsheet formula errors.
 
-**M04 COMPLETE/MAPPED**
-- Essentials `1nqMDkHoIGBIA-FAuudoGk_aNXbRoVr45`
-- Choice `15M_8oAhgeHILaM7CXlnPlyX8HDsqAKWY`
-- Pro `1a_EAuchCZH5vILp2nK4iZavim5DFHtQ2`
-- Premium `1Rm7RLT6WlMHczIj-UAE83GOthILaxfdB`
-M04 passed workbook formula/error checks, live-number smoke testing, PDF visual QA, ZIP integrity, Drive/Library persistence, Stripe metadata mapping and automation mapping.
+## P1 — NEXT REVENUE WORK
+### 1. First paid fulfillment proof — MONITOR / HIGHEST DIGITAL VALIDATION
+Latest live Stripe subscription audit returned zero subscriptions. Do not manufacture proof.
+On the first legitimate one-time purchase or paid membership invoice:
+- verify actual Gmail delivery;
+- verify exact attachment;
+- verify Checkout Session or paid Invoice dedupe marker;
+- verify delivery timing;
+- fix any defect immediately.
 
-## P1 — NEXT UNFINISHED PRODUCTION
-### 1. M05 membership content — NEXT
-Build real customer files, QA all PDFs/workbooks, create four tier ZIPs, upload to Drive, persist Library copies, add Stripe product metadata, map automation, update source-of-truth.
+### 2. Organic traffic / distribution — CASH-NOW
+The build runway is no longer the bottleneck.
+- Cold contractor traffic → free Profit Leak Checklist.
+- Specific contractor problem → `/standalone-tools.html`.
+- AI-interest contractor traffic → `/ai-prompt-pack.html`.
+- Warm buyers → one-time ladder or monthly memberships.
+- eBay intent → tracked EPN paths.
+No paid ad spend without Jason approval.
 
-### 2. M06 membership content — immediately after M05
-Same complete lifecycle. Do not stop at outlines.
+### 3. Public membership wording — SURGICAL FIX
+`digital-products.html` still contains some obsolete wording from the old separate onboarding + monthly-drop model. Correct the copy to one complete M01 welcome package followed by one package per successful paid subscriber cycle. Preserve all working prices and Stripe URLs.
 
-### 3. First paid fulfillment proof — monitor
-No subscriptions were present in the latest live Stripe audit. The first legitimate order/invoice is the proof event. Audit actual email, attachment, invoice/session dedupe marker and timing. Do not manufacture proof.
+### 4. Stripe Customer Portal — VERIFIED GAP
+No active Billing Portal configuration was returned. Desired settings: update payment method ON, invoice history ON, cancellation ON. Do not claim it is live until independently verified. Connected Stripe write surface has not exposed portal-configuration creation.
 
-### 4. Traffic / distribution — cash-now
-- Cold contractors → free Profit Leak Checklist.
-- Specific problem → `/standalone-tools.html`.
-- AI interest → `/ai-prompt-pack.html`.
-- Warm buyers → core ladder/monthly memberships.
-- eBay intent → tracked EPN links.
-No paid ads without approval.
+### 5. Klaviyo nurture — VERIFIED GAP
+Free-checklist capture is live; triggered welcome/upsell nurture is not independently verified.
 
-### 5. Verified gaps
-- Customer Portal: no active Stripe Billing Portal configuration verified.
-- Klaviyo: capture live, nurture not verified.
-- GA4: no verified Measurement ID.
-- Shopify/Wisconsin tax: draft/tax-blocked; do not publish from guess.
-- Monthly page copy: some stale onboarding wording; fix surgically without changing live links/prices.
+### 6. GA4 — VERIFIED GAP
+Event hooks exist but no verified Measurement ID is available. Never invent a `G-...` ID.
+
+### 7. Shopify / Wisconsin tax — BLOCKED BY CONSEQUENTIAL TAX STATUS
+Shopify tier products remain draft. Do not publish or enable Stripe Tax from an assumed Wisconsin classification. Existing DOR inquiry requires Jason approval before sending.
+
+### 8. M07 — BUILD WHEN IT SERVES THE RUNWAY
+M07 is not yet built. Build it before a seventh paid renewal can occur, using the same build → QA → Drive → Library → Stripe metadata lifecycle. Do not spend all production time building endless future months while traffic and first-sale proof are still missing.
 
 ## P2 — BROADER BUSINESS CASH / LEGAL
-When immediately actionable, active remodeling estimates, receivables, foreclosure/bankruptcy deadlines and hot leads outrank long-horizon polish.
+When immediately actionable, foreclosure/bankruptcy deadlines, active remodeling estimates, receivables and hot contracting leads outrank long-horizon digital polish.
 
 ## Resume Rule
 1. Protect legal/contracting cash emergencies.
-2. Monitor live sales/fulfillment.
-3. Build/map M05, then M06.
-4. Drive traffic to live revenue surfaces.
-5. Fix remaining platform gaps when verified access is available.
+2. Monitor first real paid fulfillment proof.
+3. Drive organic traffic to already-live revenue surfaces.
+4. Fix stale membership copy and platform conversion gaps.
+5. Build M07 before it becomes operationally necessary.
 
-Never regress completed assets or live links back to PLANNED without evidence.
+Never regress completed assets or live links back to PLANNED without verified evidence.
