@@ -43,7 +43,7 @@
 - **Prestige Pro v1.0:** $49.99 — Payment Link `plink_1U67a2Jkrg28KsFAdqZmMunI` — `https://buy.stripe.com/6oUcN6g9L5VTbTN3iXdZ60b`.
 - **Prestige Premium v1.1:** $99.99 — Payment Link `plink_1U67aAJkrg28KsFAP7bQOxll` — `https://buy.stripe.com/5kQ6oI8Hj3NLe1Vg5JdZ60c`.
 - **Product-position rule:** Essentials = 3 basics; Choice = 5 core templates; $19 Starter V1 = 12 separate-template library; Pro = integrated job-management workbook; Premium = full integrated contractor business OS.
-- **Legacy Stripe cleanup warning:** older active Payment Links from prior pricing iterations still exist in Stripe, including an older $6.99 Essentials link `plink_1U67DLJkrg28KsFADOCDwudQ` with a Supabase redirect. The public storefront and distribution sheet do not use that old Essentials link. Do not treat legacy links as current offers.
+- **Legacy Stripe cleanup 2026-08-19:** verified unused legacy Payment Links from prior pricing iterations were deactivated. Current live Stripe audit now shows exactly five active live Payment Links: the four canonical Prestige one-time tiers plus the separate $19 Starter V1 bundle.
 
 ### 4. Product QA / private files
 - **Status:** VERIFIED PACKAGES EXIST.
@@ -57,7 +57,7 @@
 ### 5. Automated digital fulfillment
 - **Status:** ACTIVE / MAPPED FOR CURRENT ONE-TIME OFFERS; REAL PAID ORDER PROOF STILL NEEDED.
 - **Current canonical Essentials:** hourly ChatGPT automation watches `plink_1U68DsJkrg28KsFAG970HNU3` and maps it to Drive file ID `13hop6iBTkkOymvIFgO3kMK5vf1gMjZPV` (`Prestige_Essentials_v1_0_Digital_Download.zip`, 11,872 bytes).
-- **Choice / $19 Starter / Pro / Premium:** hourly ChatGPT automation `Digital Product Fulfillment` (jawbone `6a7660320e308191aec8cab859c03046`).
+- **Choice / $19 Starter / Pro / Premium:** same hourly ChatGPT automation `Digital Product Fulfillment` (jawbone `6a7660320e308191aec8cab859c03046`).
 - **Logic:** completed Stripe Checkout Sessions only; Checkout Session ID dedupe via Gmail Sent; fetch mapped private Drive ZIP; verify filename/size; send to buyer; notify Jason only after new fulfillment.
 - **Drive mappings:** Starter `1B_yMpUx29mD9TKhglKXzgTZ764_knIYs`; Choice `1zUaaiIzErAKtQf2MwJ5-MUcZgzDVQZSn`; Pro `1WFe1opkdXHsDjNxadWatusyzNuYOkCgT`; Premium `1WzZgUeoaek5fPnT2H7ozR2vCnFzRSmzh`.
 - **Evidence standard:** do not claim full end-to-end customer fulfillment proof until a controlled successful paid order has completed.
@@ -67,15 +67,21 @@
 - **Current form:** FormSubmit AJAX to business email; validation; honeypot; sending/success/failure states; `lead_submit` and `generate_lead` event hooks; mailto fallback only on direct-submit failure.
 - **Supabase lead project:** `lmgsavonulfbmpaipqcx` is ACTIVE_HEALTHY, but connector SQL credentials rejected schema write attempts; do not claim a Supabase lead table exists.
 
-### 7. Monthly memberships — Grok handoff audit
+### 7. Monthly memberships — independently audited design
 - **Status:** NOT LIVE / DO NOT PUBLISH YET.
-- **Claimed sandbox tiers:** Essentials Monthly $19/mo; Choice Monthly $39/mo; Pro Monthly $79/mo; Premium Monthly $149/mo.
+- **Proposed monthly prices from Grok sandbox handoff:** Essentials Monthly $19/mo; Choice Monthly $39/mo; Pro Monthly $79/mo; Premium Monthly $149/mo. These proposed recurring prices are not approved as live offers merely because they existed in another agent's sandbox.
 - **Independent live Stripe audit:** connected account `acct_1TwJUgJkrg28KsFA` / Prestigeremodelingwi has **zero active recurring prices** as of the 2026-08-19 audit. Therefore none of the four monthly tiers is live in the connected Stripe account.
-- **GitHub production audit:** `digital-products.html` on `main` contains no monthly section and still states one-time purchase / no subscription. Production fetch confirms the same.
-- **Staged-file audit:** Grok reports staged files named `digital-products-UPDATED-2026-08-19.html`, `CURRENT_EXECUTION_ORDER-UPDATED-2026-08-19.md`, `FORGE_PRODUCTION_QUEUE-UPDATED-2026-08-19.md`, `GROK-READY-FILES-README.md`, and `AI-Estimating-Marketing-Prompt-Pack-DRAFT.md`; those exact files were not found in the ChatGPT conversation or persistent Library, so their contents are not independently approved.
-- **Fulfillment gap:** current automation fulfills mapped one-time purchases. It does not yet implement subscription-created handling, recurring invoice-paid handling, failed-payment/dunning state, cancellation state, or recurring monthly content-drop delivery.
-- **Offer-definition gap:** before launch, define exactly what each subscriber receives every month, delivery cadence/date, initial purchase benefit, upgrade/downgrade behavior, cancellation/self-service, failed-payment handling, and fallback when a monthly asset is delayed.
-- **GitHub permission correction:** Forge/ChatGPT GitHub connector has write access and successfully committed `GROK_HANDOFF_AUDIT_2026-08-19.md` at commit `c7a0ad03fd3f814bda346c264a585490f1a4ab64`; Grok's 403 is not a repo-wide write block.
+- **GitHub production audit:** `digital-products.html` on `main` contains no monthly section and still states one-time purchase / no subscription. Production remains one-time only.
+- **Staged-file audit:** Grok reported files named `digital-products-UPDATED-2026-08-19.html`, `CURRENT_EXECUTION_ORDER-UPDATED-2026-08-19.md`, `FORGE_PRODUCTION_QUEUE-UPDATED-2026-08-19.md`, `GROK-READY-FILES-README.md`, and `AI-Estimating-Marketing-Prompt-Pack-DRAFT.md`; those exact files were not found in the ChatGPT conversation or persistent Library, so their contents are not independently approved.
+- **Stripe architecture audit:** use Stripe Payment Links / hosted Checkout, flat-rate monthly billing, charge at signup, Customer Portal for self-service, and Stripe Smart Retries + failed-payment emails for revenue recovery.
+- **CRITICAL event correction:** do **not** fulfill merely because `customer.subscription.created` exists. Subscription creation is not sufficient proof that first payment succeeded.
+- **Initial paid signup trigger:** provision/deliver only after a paid subscription Checkout is confirmed, using `checkout.session.completed` with payment/subscription state verified or the corresponding successful first `invoice.paid` event. Deduplicate on stable Stripe IDs.
+- **Renewal trigger:** `invoice.paid` is the canonical successful renewal event for monthly content/access continuation.
+- **Failed-payment trigger:** `invoice.payment_failed`; do not deliver the new monthly asset while the renewal remains unpaid. Let Stripe Smart Retries/customer emails handle default dunning unless a custom recovery workflow is later justified.
+- **Cancellation lifecycle:** track cancellation / cancel-at-period-end state and stop future monthly deliveries after the paid entitlement period ends. Customer Portal is the preferred self-service path.
+- **Offer-definition gap:** no verified source currently defines exactly what Essentials / Choice / Pro / Premium members receive every month. Before launch define monthly deliverables, cadence/date, initial signup benefit, tier differences, upgrade/downgrade behavior, cancellation access, and the fallback if a promised monthly asset is delayed.
+- **Do not mirror the recurring products into live Stripe until the monthly benefits and first-month assets are defined and independently QA'd.**
+- **GitHub permission correction:** Forge/ChatGPT GitHub connector has write access. Grok's 403 is specific to Grok's integration, not a repo-wide write block.
 
 ---
 
@@ -96,7 +102,7 @@
 
 ### 10. Wisconsin digital-product sales tax / Stripe Tax
 - **Status:** HOLD / VERIFY BEFORE ACTION.
-- **Stripe state:** no tax registrations recorded; automatic tax remains off on newly created links.
+- **Stripe state:** no tax registrations recorded; automatic tax remains off on current links.
 - **Connected-record search:** no Wisconsin seller permit/sales-tax registration recovered from Gmail/Drive.
 - **Next action:** verify registration/classification, then configure Stripe Tax only if appropriate.
 
@@ -124,4 +130,4 @@
 ---
 
 ## Resume Rule
-The highest-priority unblocked Forge work is now **(1) distribute the verified free-checklist / one-time product funnel for cash-now revenue; (2) independently finish the monthly-membership offer definition and recurring fulfillment design before creating live recurring links; (3) monitor for and prove the first real automated paid-order delivery; (4) resolve tax/registration and GA4 blockers when verified information is available.** Do not rebuild completed storefront, lead magnet, one-time products, affiliate tracking, lead form, Shopify drafts, or one-time fulfillment mappings.
+The highest-priority unblocked Forge work is now **(1) distribute the verified free-checklist / one-time product funnel for cash-now revenue; (2) independently define and QA the monthly-membership benefits + recurring fulfillment lifecycle before creating live recurring links; (3) monitor for and prove the first real automated paid-order delivery; (4) resolve tax/registration and GA4 blockers when verified information is available.** Do not rebuild completed storefront, lead magnet, one-time products, affiliate tracking, lead form, Shopify drafts, or one-time fulfillment mappings.
