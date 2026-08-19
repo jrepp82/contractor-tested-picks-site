@@ -3,6 +3,17 @@
   const KLAVIYO_LIST_ID = 'SJ8FBv';
   const ENDPOINT = `https://a.klaviyo.com/client/subscriptions?company_id=${encodeURIComponent(KLAVIYO_COMPANY_ID)}`;
 
+  function campaignAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    const values = {
+      source: params.get('utm_source') || '',
+      medium: params.get('utm_medium') || '',
+      campaign: params.get('utm_campaign') || '',
+      content: params.get('utm_content') || ''
+    };
+    return values;
+  }
+
   function showSuccess(form, status) {
     if (!status) return;
     status.textContent = 'Check your inbox to confirm your subscription.';
@@ -33,11 +44,19 @@
 
     const source = form.dataset.source || 'Contractor Tested Picks website';
     const leadMagnet = form.dataset.downloadUrl || '';
+    const attribution = campaignAttribution();
+    const attributionProperties = {
+      ...(attribution.source ? { 'CTP UTM Source': attribution.source } : {}),
+      ...(attribution.medium ? { 'CTP UTM Medium': attribution.medium } : {}),
+      ...(attribution.campaign ? { 'CTP UTM Campaign': attribution.campaign } : {}),
+      ...(attribution.content ? { 'CTP UTM Content': attribution.content } : {})
+    };
+
     const payload = {
       data: {
         type: 'subscription',
         attributes: {
-          custom_source: source,
+          custom_source: attribution.source || source,
           profile: {
             data: {
               type: 'profile',
@@ -48,7 +67,8 @@
                 properties: {
                   'CTP Signup Source': source,
                   'CTP Signup Page': window.location.pathname,
-                  ...(leadMagnet ? { 'CTP Lead Magnet': leadMagnet } : {})
+                  ...(leadMagnet ? { 'CTP Lead Magnet': leadMagnet } : {}),
+                  ...attributionProperties
                 },
                 subscriptions: {
                   email: {
@@ -82,11 +102,23 @@
       form.reset();
       showSuccess(form, status);
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({ event: 'email_signup_submitted', source, lead_magnet: leadMagnet || undefined });
+      window.dataLayer.push({
+        event: 'email_signup_submitted',
+        source,
+        lead_magnet: leadMagnet || undefined,
+        utm_source: attribution.source || undefined,
+        utm_medium: attribution.medium || undefined,
+        utm_campaign: attribution.campaign || undefined,
+        utm_content: attribution.content || undefined
+      });
       if (typeof window.gtag === 'function') {
         window.gtag('event', 'email_signup_submitted', {
           signup_source: source,
           lead_magnet: leadMagnet || undefined,
+          utm_source: attribution.source || undefined,
+          utm_medium: attribution.medium || undefined,
+          utm_campaign: attribution.campaign || undefined,
+          utm_content: attribution.content || undefined,
           page_path: location.pathname
         });
       }
