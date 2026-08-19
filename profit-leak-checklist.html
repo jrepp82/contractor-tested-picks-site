@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex,follow" />
   <title>Free Contractor Profit Leak Checklist | Prestige</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="analytics-config.js"></script><script src="analytics.js"></script>
 </head>
 <body>
 <header class="site-header"><div class="container nav"><a class="brand" href="index.html"><span class="brand-mark">CT</span><span>Contractor Tested Picks<small>Real-world gear. No fluff.</small></span></a><nav><a href="index.html">Home</a><a href="digital-products.html">Digital Products</a><a href="contact.html">Contact</a></nav></div></header>
@@ -30,10 +31,21 @@
 <article class="card"><h3>12. Every completed job gets a post-job review</h3><p>The fastest way to improve future pricing is to compare estimated cost and hours with what actually happened.</p><p><strong>Check:</strong> estimated cost, actual cost, gross profit and gross margin.</p></article>
 </div></div></section>
 
-<section class="section"><div class="container callout"><div><span class="eyebrow">Turn the checklist into a system</span><h2>Use the smallest tool that fixes the leak.</h2><p>Prestige contractor tools start at $6.99 for Estimate + Change Order + Job Cost and scale up to the full Premium business operating system.</p></div><a class="btn btn-primary" href="digital-products.html?utm_source=profit_checklist&utm_medium=lead_magnet&utm_campaign=contractor_profit_leaks">Compare the contractor tools</a></div></section>
+<section class="section"><div class="container callout"><div><span class="eyebrow">Turn the checklist into a system</span><h2>Use the smallest tool that fixes the leak.</h2><p>Prestige contractor tools start at $6.99 for Estimate + Change Order + Job Cost and scale up to the full Premium business operating system.</p></div><div class="hero-actions"><a class="btn btn-primary buy-prestige-essentials" href="https://buy.stripe.com/4gM7sM0aN4RP7Dxf1FdZ60d" target="_blank" rel="noopener">Fix the basics — $6.99</a><a class="btn btn-secondary" href="digital-products.html?utm_source=profit_checklist&utm_medium=lead_magnet&utm_campaign=contractor_profit_leaks">Compare all contractor tools</a></div></div></section>
 
 <section class="section alt"><div class="container"><p class="small"><strong>Important:</strong> This checklist is general business-operations information, not legal, tax, accounting, engineering, safety, insurance, financial or code-compliance advice. Verify your own costs, contract requirements, tax treatment and local rules.</p><p class="small">Contractor Tested Picks / Prestige · Questions: <a href="mailto:Jason@prestigeremodelingwi.com">Jason@prestigeremodelingwi.com</a></p></div></section>
 </main>
 <footer class="site-footer"><div class="container footer-grid"><div><strong>Contractor Tested Picks</strong></div><div class="footer-links"><a href="digital-products.html">Digital Products</a><a href="privacy.html">Privacy</a><a href="disclosure.html">Disclosure</a></div></div></footer>
+<script>
+document.querySelectorAll('.buy-prestige-essentials').forEach(function(link){
+  link.addEventListener('click', function(){
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push({event:'buy_now_click',product_name:'Prestige Essentials v1.0',price:6.99,page_path:location.pathname,placement:'profit_leak_checklist'});
+    if(typeof window.gtag==='function'){
+      window.gtag('event','buy_now_click',{item_name:'Prestige Essentials v1.0',value:6.99,currency:'USD',page_path:location.pathname,placement:'profit_leak_checklist'});
+    }
+  });
+});
+</script>
 </body>
 </html>
