@@ -1,154 +1,132 @@
 # Prestige Monthly Memberships — Production Automation & Launch Specification
 
-**Status:** LIVE COMPONENTS VERIFIED / FIRST PAID CUSTOMER-JOURNEY PROOF PENDING  
+**Status:** LIVE COMPONENTS VERIFIED / M01-M03 MAPPED / FIRST PAID CUSTOMER-JOURNEY PROOF PENDING  
 **Updated:** 2026-08-19  
 **Owner:** Forge / ChatGPT
 
 ## 1. Purpose
-This file is the production source of truth for Prestige monthly memberships. Preserve the existing one-time Prestige ladder and Shopify mappings while operating the recurring membership system.
+This file is the production source of truth for Prestige monthly memberships. Preserve the live one-time ladder, standalone products and Shopify mappings while operating the recurring system.
 
-Do not rebuild or duplicate live Stripe products, prices, Payment Links, Drive member drops, or the live monthly website section unless a verified defect requires a change.
+Do not rebuild or duplicate live Stripe products, prices, Payment Links or mapped Drive packages unless a verified defect requires a controlled version change.
 
-## 2. Current Verified Production State
-The connected live Stripe account `acct_1TwJUgJkrg28KsFA` has four active recurring monthly products/prices and four active subscription Payment Links:
+## 2. Live Stripe Memberships
+Connected live Stripe account: `acct_1TwJUgJkrg28KsFA`.
 
 | Tier | Monthly price | Product | Price | Payment Link |
 |---|---:|---|---|---|
-| Essentials Monthly | $19 | `prod_V6M9GJCytR9Cu7` | `price_1U69RSJkrg28KsFAXc7xCGlG` | `plink_1U69SgJkrg28KsFASlFzmDxw` |
-| Choice Monthly | $39 | `prod_V6MA1rXYKcIIOc` | `price_1U69RiJkrg28KsFAiSeSJfRz` | `plink_1U69SwJkrg28KsFAJp40W2lt` |
-| Pro Monthly | $79 | `prod_V6MAWHYuBrlZ71` | `price_1U69RxJkrg28KsFAe02oEpSy` | `plink_1U69TCJkrg28KsFAVLZMFhTC` |
-| Premium Monthly | $149 | `prod_V6MAZiJKdPsdMv` | `price_1U69SCJkrg28KsFATJW4QjtN` | `plink_1U69TQJkrg28KsFAArCHlhdT` |
+| Essentials | $19 | `prod_V6M9GJCytR9Cu7` | `price_1U69RSJkrg28KsFAXc7xCGlG` | `plink_1U69SgJkrg28KsFASlFzmDxw` |
+| Choice | $39 | `prod_V6MA1rXYKcIIOc` | `price_1U69RiJkrg28KsFAiSeSJfRz` | `plink_1U69SwJkrg28KsFAJp40W2lt` |
+| Pro | $79 | `prod_V6MAWHYuBrlZ71` | `price_1U69RxJkrg28KsFAe02oEpSy` | `plink_1U69TCJkrg28KsFAVLZMFhTC` |
+| Premium | $149 | `prod_V6MAZiJKdPsdMv` | `price_1U69SCJkrg28KsFATJW4QjtN` | `plink_1U69TQJkrg28KsFAArCHlhdT` |
 
-All four are live, active, USD, flat-rate monthly recurring prices with no trial.
+All four are active `livemode:true`, flat-rate USD monthly recurring prices with no trial.
 
-The production `digital-products.html` contains the live `#monthly-memberships` section with those four live Stripe subscription links and recurring-billing language.
-
-The existing one-time ladder remains live and unchanged.
-
-## 3. Fulfillment Architecture
-The membership MVP uses the enabled hourly ChatGPT condition-watch automation:
-
+## 3. Fulfillment Engine
+Enabled hourly condition-watch automation:
 - Title: `Digital Product + Membership Fulfillment`
-- Jawbone ID: `6a7660320e308191aec8cab859c03046`
+- ID: `6a7660320e308191aec8cab859c03046`
 - Cadence: hourly
-- One-time Stripe and mapped Shopify fulfillment logic remains preserved.
-- Monthly membership fulfillment is added to that same watcher.
 
-There is no requirement to add a site-side webhook before the MVP can operate. A future webhook implementation may replace or supplement polling, but it must preserve the same payment-state and idempotency rules below.
+This same watcher preserves one-time Stripe and mapped Shopify fulfillment while handling monthly memberships.
 
-## 4. Canonical Membership Payment Rule
-### Paid Invoice ID is the unique membership delivery key
-For the first paid membership cycle and every renewal cycle:
+## 4. Canonical Idempotency / Subscriber-Month Rule
+**Membership identity:** Stripe `subscription.id`.
 
-**Canonical successful signal:** a Stripe invoice that is confirmed `paid` for a known membership subscription.
+**Unique paid-cycle delivery key:** Stripe PAID `invoice.id`.
 
-**Canonical fulfillment/idempotency key:** `invoice.id` (`in_...`).
+**Subscriber month index:** chronological count of successful PAID subscription invoices for that subscription:
+- first paid subscription invoice = M01
+- second = M02
+- third = M03
+- fourth = M04
+- etc.
 
-Never use only `subscription.id` as a membership delivery key. A subscription keeps the same ID across months and would suppress later legitimate deliveries.
+Failed, unpaid and void invoices do not advance the subscriber month.
 
-Do not use `subscription.id + month` as the canonical idempotency key either. Month may be useful for asset selection, but the actual paid Stripe Invoice ID is the unique delivery key and must be recorded in the delivery email.
+Never:
+- dedupe monthly delivery on subscription ID alone;
+- dedupe on subscription ID + calendar month;
+- use calendar month as a substitute for paid-cycle sequence;
+- deliver paid content merely because a subscription or Checkout Session exists without confirming the paid invoice.
 
-Do not provision membership content merely because `customer.subscription.created` or `checkout.session.completed` exists. First confirm the paid invoice.
+Every successful membership delivery email must include these literal searchable lines:
+- `Invoice fulfillment: <INVOICE_ID>`
+- `Membership subscription: <SUBSCRIPTION_ID>`
+- `Subscriber month: M<NN>`
 
-## 5. Initial Paid Signup
-For a completed membership Checkout Session:
-1. Resolve the subscription and first invoice.
-2. Require a paid invoice, purchaser email, known membership product/price, and subscription ID.
-3. Determine tier from current Stripe product/price/metadata.
-4. Determine the member-drop month from the paid invoice billing period / paid timestamp in `America/Chicago`.
-5. Search Gmail Sent for exact literal `Invoice reference: <PAID_INVOICE_ID>`.
-6. If found in a prior membership fulfillment email, skip.
-7. Verify the tier onboarding ZIP and correct month/tier member-drop ZIP.
-8. Send both onboarding + current monthly drop once.
-9. Include machine-searchable lines:
-   - `Membership subscription: <SUBSCRIPTION_ID>`
-   - `Invoice reference: <PAID_INVOICE_ID>`
-   - `Member drop: <YYYY-MM>`
+## 5. Canonical Package Map
+### M01 — first successful paid subscription invoice
+M01 is one complete welcome package. It already includes the tier core product plus Month 1 content and applicable tier bonuses. **Do not send a separate onboarding ZIP plus a second M01 ZIP.**
 
-If the month is unmapped, never substitute an older drop. Notify Jason with the customer, tier, invoice ID, subscription ID, and missing month.
+- Essentials: Drive `11ESOS7CLlZ4vKDU3RH654q1v9tfmc56M` — `Prestige_Essentials_M01_2026-08_v1.0.zip`
+- Choice: Drive `1s0Zz85lLgYfYUK9eBjqXNTJXOqzvoCf6` — `Prestige_Choice_M01_2026-08_v1.0.zip`
+- Pro: Drive `1GsY358Ci6Z_ZVViyux5mZNgava9amELG` — `Prestige_Pro_M01_2026-08_v1.0.zip`
+- Premium: Drive `1lCEURc_MQsn6IyRJJ6EriUeCzbSvfpvf` — `Prestige_Premium_M01_2026-08_v1.0.zip`
 
-## 6. Paid Monthly Renewal
-For each paid subscription invoice:
-1. Require membership metadata / a known membership product and tier.
-2. Use that invoice's `invoice.id` as the only renewal delivery key.
-3. Search Gmail Sent for exact literal `Invoice reference: <PAID_INVOICE_ID>`.
-4. If already found, skip.
-5. Determine the correct member-drop month.
-6. Verify the mapped tier/month ZIP.
-7. Send only the new monthly drop; do not resend onboarding.
-8. Include subscription ID, paid invoice ID, and member-drop month in the email.
+### M02 — second successful paid subscription invoice
+- Essentials: Drive `15QWA3H152GowyIdWMGTqQByQyyMQdaBC` — `Prestige_Essentials_M02_2026-09_v1.0.zip`
+- Choice: Drive `1UfhHJYhHPBxD8j7QiT5yMr63OwOdUsMW` — `Prestige_Choice_M02_2026-09_v1.0.zip`
+- Pro: Drive `1n_tV3XJRXBzbKnx8x3WmT9GVJIM3p1CB` — `Prestige_Pro_M02_2026-09_v1.0.zip`
+- Premium: Drive `1nMNck6a5Gh9TKN5nRxVBfYLqSlF4Yz7B` — `Prestige_Premium_M02_2026-09_v1.0.zip`
+
+### M03 — third successful paid subscription invoice
+Built, formula/visual QA'd where applicable, ZIP-integrity tested, uploaded to Drive, persisted in the ChatGPT Library and mapped into Stripe product metadata + hourly fulfillment.
+
+- Essentials: Drive `1Zd2Zub4L48w5E7RAMBv80FQhEZv1YGsl` — `Prestige_Essentials_M03_2026-10_v1.0.zip`
+- Choice: Drive `159ccUNCakLeQlmEL7zlUfyyq6fh-PxCy` — `Prestige_Choice_M03_2026-10_v1.0.zip`
+- Pro: Drive `1uDerxtR50VjB6s8eldWY9UBhdaE9y7TH` — `Prestige_Pro_M03_2026-10_v1.0.zip`
+- Premium: Drive `1ifdXLG6R6V0X3O2NKA6bkd5AiKOimAyD` — `Prestige_Premium_M03_2026-10_v1.0.zip`
+
+M03 includes, by tier inheritance:
+- Essentials: Break-Even Labor Rate in Plain English + Fall/Cold-Weather Contractor Checklist.
+- Choice: Essentials material + One Good Job to Three Referrals training.
+- Pro: Choice material + Pro AI Local Marketing Expansion #2 + functional 90-Day Profit Review workbook.
+- Premium: Pro material + white-label-ready Estimate/Proposal workbook + Premium Pricing/Lead-Conversion Coaching worksheet.
+
+Premium white-label rights are limited to the member's own internal/customer-facing rebranding. They do **not** grant resale, redistribution, sublicensing or competing-product rights.
+
+## 6. Paid-Invoice Fulfillment Procedure
+For each paid invoice tied to a verified Prestige membership price/product:
+1. Resolve subscription, tier and purchaser email.
+2. Search Gmail Sent for `Invoice fulfillment: <INVOICE_ID>`. If found, skip.
+3. Count successful PAID invoices for that subscription chronologically to determine M01/M02/M03/etc.
+4. Look up tier + subscriber month in the canonical map.
+5. If the month is not mapped, do not substitute an older package. Notify Jason with customer email, tier, invoice ID, subscription ID and missing subscriber month.
+6. Fetch the exact mapped Drive ZIP and verify its expected filename.
+7. Send exactly one package for that paid cycle.
+8. Include the searchable invoice/subscription/subscriber-month lines above.
 
 ## 7. Failed Payment
-**Signal/state:** an invoice is verified `past_due`, `unpaid`, or otherwise failed/unpaid.
-
-Rules:
-- Do not deliver a new paid monthly drop while that invoice remains unpaid.
-- Payment-attention notices dedupe on the failing Invoice ID.
-- If that same invoice later becomes paid, the normal paid-invoice path can fulfill it exactly once using that Invoice ID.
-- Stripe Smart Retries / Stripe customer recovery should remain the default recovery layer when enabled.
+For `past_due`, unpaid or otherwise failed membership billing:
+- deliver no new paid package;
+- send at most one concise payment-attention notice per subscription + failing invoice;
+- if that same invoice later becomes paid, it may fulfill exactly once using that invoice ID.
 
 ## 8. Cancellation
-Track verified canceled / `cancel_at_period_end` subscription states.
+For verified canceled or `cancel_at_period_end` state:
+- future drops stop after paid access ends;
+- previously delivered files remain usable under their license;
+- do not cancel subscriptions automatically unless Jason explicitly requests it.
 
-Rules:
-- Paid access continues through the already-paid entitlement period unless Stripe state says otherwise.
-- Future monthly drops stop after paid access ends.
-- Previously delivered files remain usable under the membership license.
-- Do not cancel subscriptions automatically unless Jason explicitly directs it.
+## 9. Website State
+Production `digital-products.html` contains the four live membership links. Some explanatory wording may still describe the older separate onboarding+drop model. That wording is stale; the fulfillment engine and this spec are canonical. Any copy cleanup must be surgical and must preserve working links/prices.
 
-## 9. Monthly Drop Map
-### 2026-08
-- Essentials: Drive `1G7wcTpHMOa2WHK4Epe2GaxiMF28iI8iX` — `Prestige_Essentials_Monthly_August_2026_Member_Drop.zip` — 103,693 bytes
-- Choice: Drive `1tOXhwLTIDeTmrzgW7IuKXGPKkHDxZoWH` — `Prestige_Choice_Monthly_August_2026_Member_Drop.zip` — 113,070 bytes
-- Pro: Drive `13sTBjPwSbbHMXX92ro-zl7ZkVqBbHEXv` — `Prestige_Pro_Monthly_August_2026_Member_Drop.zip` — 125,606 bytes
-- Premium: Drive `1lutq0UmcpxLGjbK2cNEuWo4A5B0lsrjt` — `Prestige_Premium_Monthly_August_2026_Member_Drop.zip` — 143,771 bytes
+## 10. Customer Portal Gap
+As of 2026-08-19 Stripe returned zero active Billing Portal configurations. Do not claim Customer Portal is live.
 
-### 2026-09
-- Essentials: Drive `12Khi-zib0kguU3KXYgUous47HLJLKi3P` — `Prestige_Essentials_Monthly_September_2026_Member_Drop.zip` — 90,979 bytes
-- Choice: Drive `1qzIuCowxWOKa4gARh5ezwoAJtCa2QZvK` — `Prestige_Choice_Monthly_September_2026_Member_Drop.zip` — 95,943 bytes
-- Pro: Drive `17VyV2Q3_zj5z-JZU-xtdw4YnEsSRlSQ4` — `Prestige_Pro_Monthly_September_2026_Member_Drop.zip` — 105,785 bytes
-- Premium: Drive `1RT8l4hP5HBIfuuqxJekP1A6mzSIbM7Iw` — `Prestige_Premium_Monthly_September_2026_Member_Drop.zip` — 116,001 bytes
+Desired live settings when configuration becomes writable/available:
+- update payment method ON
+- invoice history ON
+- cancel subscription ON
 
-Do not replace these live mapped packages with supplemental/rebuilt files unless a QA failure is documented and the fulfillment mapping is intentionally changed.
+## 11. Evidence Boundary
+Latest live subscription audit on 2026-08-19 returned zero subscriptions. Therefore products, prices, Payment Links, M01-M03 Drive packages, Stripe metadata and hourly fulfillment logic are verified present, but a real paid membership delivery has not yet exercised the path.
 
-## 10. Onboarding ZIP Map
-- Essentials: Drive `13hop6iBTkkOymvIFgO3kMK5vf1gMjZPV` — `Prestige_Essentials_v1_0_Digital_Download.zip` — 11,872 bytes
-- Choice: Drive `1zUaaiIzErAKtQf2MwJ5-MUcZgzDVQZSn` — `Prestige_Choice_v1_0_Digital_Download.zip` — 14,032 bytes
-- Pro: Drive `1WFe1opkdXHsDjNxadWatusyzNuYOkCgT` — `Prestige_Pro_v1_0_Digital_Download.zip` — 21,298 bytes
-- Premium: Drive `1WzZgUeoaek5fPnT2H7ozR2vCnFzRSmzh` — `Prestige_Premium_v1_1_Digital_Download.zip` — 45,505 bytes
+Do not manufacture proof. The first legitimate paid membership invoice is the production proof event.
 
-## 11. Website / Checkout State
-Production `digital-products.html` contains:
-- one-time Prestige products;
-- four Prestige Monthly memberships;
-- live Stripe subscription links;
-- monthly renewal/cancellation disclosure;
-- explanation that first paid cycle receives onboarding + current drop and later paid cycles receive the monthly drop.
-
-Do not create duplicate recurring products or duplicate Payment Links.
-
-## 12. Evidence Standard
-As of the latest 2026-08-19 Stripe read, there are **zero completed Checkout Sessions** in the connected live Stripe account.
-
-Therefore:
-- the subscription products/prices/Payment Links, website wiring, Drive asset mappings, and hourly fulfillment logic are verified present;
-- the corrected paid-Invoice-ID rule is active in the fulfillment automation;
-- **a real end-to-end paid membership delivery is not yet proven**, because no live paid membership transaction exists to exercise the path.
-
-Do not manufacture or claim that proof. The next paid membership invoice should be treated as the production proof event and monitored for one-time delivery with no duplicate send.
-
-## 13. Current Next Actions
-1. Drive qualified traffic to the live one-time and membership funnel.
-2. Monitor for the first completed paid membership invoice.
-3. Verify the automation sends the correct onboarding + current drop exactly once using the paid Invoice ID.
-4. Verify the first real renewal later sends only the new monthly drop exactly once using that renewal Invoice ID.
-5. Keep future monthly drop maps built ahead of billing periods.
-
-## 14. Safety
-Never:
-- fulfill an unpaid/open/void/refunded membership invoice;
-- use subscription ID alone as the membership dedupe key;
-- substitute an old monthly drop when a month is missing;
-- resend onboarding on renewal;
-- duplicate live products/Payment Links merely because an older repo document says they do not exist;
-- expose private Drive assets publicly to bypass paid fulfillment.
+## 12. Next Production Work
+1. Build, QA, upload and map M04 for all four tiers.
+2. Continue M05 and M06 immediately afterward so the content engine remains ahead of billing cycles.
+3. Monitor for the first real paid invoice and audit actual delivery/dedupe behavior.
+4. Configure/verify Stripe Customer Portal when a writable surface becomes available.
+5. Preserve all existing one-time/standalone/Shopify fulfillment mappings while doing the above.
