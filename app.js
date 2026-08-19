@@ -57,3 +57,46 @@
     render(active);
   }
 })();
+
+(function enhancePrestigeHomepageProducts(){
+  const artwork = {
+    '.buy-prestige-essentials': {
+      src: 'https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-essentials-product.png?v=1787142829',
+      alt: 'Prestige Essentials contractor Quick Start Mini Pack with Estimate, Change Order and Job Cost templates'
+    },
+    '.buy-prestige-choice': {
+      src: 'https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-choice-product.png?v=1787142842',
+      alt: 'Prestige Choice five core contractor Excel templates'
+    },
+    '.buy-prestige-pro': {
+      src: 'https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-pro-product.png?v=1787142855',
+      alt: 'Prestige Pro contractor job management and profit Excel system'
+    },
+    '.buy-prestige-premium': {
+      src: 'https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-premium-product.png?v=1787142870',
+      alt: 'Prestige Premium complete contractor business operating system'
+    }
+  };
+
+  Object.entries(artwork).forEach(([selector, image]) => {
+    document.querySelectorAll(selector).forEach(link => {
+      const visual = link.closest('.product-card')?.querySelector('.product-visual');
+      if (!visual || visual.querySelector('img')) return;
+      visual.innerHTML = '';
+      visual.style.padding = '0';
+      visual.style.minHeight = '280px';
+      visual.style.overflow = 'hidden';
+      const img = document.createElement('img');
+      img.src = image.src;
+      img.alt = image.alt;
+      img.loading = selector === '.buy-prestige-essentials' ? 'eager' : 'lazy';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.minHeight = '280px';
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'center top';
+      img.style.display = 'block';
+      visual.appendChild(img);
+    });
+  });
+})();
