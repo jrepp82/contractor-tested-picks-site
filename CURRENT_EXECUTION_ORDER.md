@@ -1,7 +1,7 @@
 # Current Execution Order
 
 **Owner:** Forge / ChatGPT  
-**Last updated:** 2026-08-07  
+**Last updated:** 2026-08-19  
 **Source of truth:** `FORGE_PRODUCTION_QUEUE.md`
 
 ## Mandatory Startup Rule
@@ -12,56 +12,56 @@ Then resume the highest-priority unfinished Forge task unless Jason explicitly c
 
 ## Active Order
 
-### 1. Jeff Hastreiter estimate package
-- **Status:** COMPLETE — customer-ready files verified.
-- **Totals:** Asphalt $62,850; Pro-Rib $71,350; standing seam $79,350.
-- **Jason-only action:** Review/send selected customer package. Internal comparison sheet is not customer-facing.
+### 1. Contractor Tested Picks / Prestige digital revenue funnel
+- **Status:** LIVE — MULTI-PRODUCT CHECKOUT + FULFILLMENT + LEAD CAPTURE ACTIVE; OPTIMIZATION CONTINUES.
+- **Public site:** `https://contractor-tested-picks-site.vercel.app`.
+- **Hosting/deploy:** GitHub `main` auto-deploys to Vercel project `prj_xUofNzAF7d2ZO58EgH7VucYsdd1u`.
+- **Live product ladder:** Prestige Essentials $6.99; Prestige Choice $16.99; Contractor Business OS Starter V1 $19 launch price; Prestige Pro $49.99; Prestige Premium v1.1 $99.99.
+- **Checkout:** all five offers have live Stripe Payment Links published on `digital-products.html`.
+- **Fulfillment:** Essentials redirects successful Stripe checkout to a protected Supabase delivery function. Choice, $19 Starter V1, Pro and Premium are mapped to private Google Drive ZIPs and handled by the active hourly `Digital Product Fulfillment` automation using completed Stripe Checkout Session IDs plus Gmail Sent deduplication.
+- **Homepage:** now promotes the digital ladder starting at $6.99 while preserving eBay affiliate and remodeling-lead paths.
+- **Lead capture:** `/contact.html` no longer depends on mailto; it directly submits the inquiry through FormSubmit AJAX with validation, spam honeypot, status feedback and mailto fallback.
+- **Email capture:** `digital-products.html` feeds confirmed opt-ins into Klaviyo list `SJ8FBv` (`Contractor Tested Picks Subscribers`, double opt-in).
+- **Klaviyo content:** three sequence assets exist: `CTP Welcome — Contractor Tested Picks`, `CTP Follow-Up 1 — Estimate Change Order Job Cost`, and `CTP Follow-Up 2 — When to Upgrade to Pro or Premium`.
+- **Klaviyo blocker:** the connected Klaviyo API can read flows and create templates but does not expose flow creation; the sequence is staged but not attached to an automated Klaviyo flow yet.
+- **Privacy:** public privacy notice updated August 19, 2026 for live contact forms, Klaviyo signup, Stripe checkout, automated fulfillment, Drive/Gmail, Supabase and affiliate tracking.
+- **Resume point:** continue conversion/QA work, then promotion. Do not rebuild already-live systems.
 
-### 2. Connie Hendries foundation estimate — Two Rivers
-- **Status:** COMPLETE — customer-ready DOCX/PDF generated.
-- **Options:** $4,250 finished gray panel; $4,450 rigid foam + reinforced gray coating; $2,950 conditional repair/re-skim.
-- **Jason-only action:** Confirm field dimensions/material choice and approve delivery.
+### 2. Analytics / conversion measurement
+- **Status:** PARTIAL — EVENT CODE EXISTS; GA4 DESTINATION BLOCKED.
+- **Verified event hooks:** affiliate outbound clicks, digital-product buy clicks, lead submissions and email signup events exist in code.
+- **Blocker:** `analytics-config.js` has no verified `G-...` Measurement ID. Searches of repo, Gmail and Drive did not recover one.
+- **Resume point:** add only a verified GA4 Measurement ID, then confirm events in Realtime/DebugView. Never invent the ID.
 
-### 3. Two job application packages
-- **Status:** COMPLETE — tailored Ravelin Defense Welding Engineer and Kewaunee Fabrications/Oshkosh Plant Manager R47782 packages verified.
-- **Jason-only action:** Submit/review application status.
+### 3. Digital-product tax configuration
+- **Status:** HOLD — DO NOT ENABLE STRIPE TAX YET.
+- **Verified Stripe state:** Stripe Tax capability/settings are present, but the account has zero tax registrations recorded.
+- **Search result:** no existing Wisconsin seller-permit / sales-tax registration record was recovered from connected Gmail or Drive.
+- **Risk:** Wisconsin tax treatment of formula-driven Excel digital products should be confirmed and any required registration completed before enabling automatic collection.
+- **Resume point:** verify Wisconsin registration/classification first; then configure Stripe Tax only if appropriate.
 
-### 4. Car limp-mode diagnosis
-- **Status:** WAITING FOR VEHICLE DATA.
-- **Blocker:** Exact vehicle, dash messages, DTCs, symptoms, battery/charging readings, recent repair history.
-- **Resume point:** Battery/charging + code-based diagnosis immediately when supplied.
+### 4. Product QA / fulfillment proof
+- **Status:** BUILT AND WIRED; REAL PAID TRANSACTION PROOF REMAINS.
+- **Verified private packages:** Choice, Starter V1, Pro and Premium ZIPs pass archive integrity and content checks; spreadsheet scans found no obvious formula-error strings.
+- **Essentials package:** built and stored; protected delivery function deployed.
+- **Evidence standard:** do not claim a fully completed customer journey test until at least one controlled successful paid transaction has been observed from checkout through delivery.
 
-### 5. Prestige Select / Contractor Tested Picks website
-- **Status:** DEPLOYED TO VERCEL — PUBLIC ALIAS CONFIRMED; ROUTE VERIFICATION IN PROGRESS.
-- **Confirmed public alias from Jason's Vercel deployment screenshot (2026-08-07):** `https://contractor-tested-picks-site.vercel.app`.
-- **Verified repository state:** storefront, 26 eBay product groups, contact/privacy/blog/diagnostics pages, affiliate click tracking, GA4 loader hook, robots/sitemap, deployment guide, 7-day content bank, 30-day calendar, digital product sales path.
-- **Latest verified deploy:** commit `f106f7682fcd91802753dc6511b4e0b114af787b` deployed successfully; GitHub reports `Vercel: success` for that exact commit.
-- **Jason screenshot also verifies:** deployment source is `main` and the Vercel deployment page exposes the public alias plus Git-generated aliases.
-- **Connector limitation persists:** connected Vercel API currently lists zero projects and cannot resolve this alias, despite the authenticated Vercel UI screenshot proving the deployment exists. Treat this as connector visibility/permission mismatch.
-- **Resume point:** verify `/`, `/shop.html`, `/blog.html`, `/contact.html`, `/privacy.html`, `/diagnostics.html`, and `/digital-products.html` against the confirmed public alias; then perform one controlled eBay click test and confirm campaign tracking.
+### 5. eBay / affiliate revenue
+- **Status:** LIVE / TRACKED.
+- **Campaign:** `5339172120` is used for Contractor Tested Picks eBay links.
+- **Full-store CTA:** corrected to use EPN tracking instead of the old untracked shortlink.
+- **Shop:** 26 tracked product groups remain live; homepage also contains tracked JRep82 Random Treasures inventory links.
+- **Resume point:** monitor for expired personal inventory listings and replace as needed; keep search-based affiliate groups intact.
 
-### 6. Contractor Business Operating System — Starter V1
-- **Status:** CHECKOUT ACTIVE — FULFILLMENT VERIFICATION REMAINS.
-- **Offer:** launch $19; regular $29.
-- **Stripe:** connected live Stripe account verified. Active live-mode Payment Link exists for `Contractor Business Operating System — Starter V1`, one-time price $19.00.
-- **Website:** `digital-products.html` links to the verified live Stripe Payment Link and now accurately discloses that automated file delivery is still being finalized.
-- **Payload:** encrypted product payload parts 1–3 are committed under `secure-download/` and excluded from Vercel deployment by `.vercelignore`.
-- **Resume point:** verify post-payment fulfillment path before promotion; do not claim automatic delivery until a successful controlled fulfillment test exists.
+### 6. Domain decision
+- **Status:** WAITING FOR JASON DECISION.
+- **Current sales site:** temporary Vercel alias is functional.
+- **Safety:** never change DNS without explicit approval and without preserving existing MX/email records.
 
-### 7. Analytics / affiliate event verification
-- **Status:** PARTIAL.
-- **Verified code:** local affiliate-click tracking + diagnostics + optional GA4 bridge exist. Both Starter V1 checkout CTAs now emit `buy_now_click` events.
-- **GA4 state:** no verified `G-...` Measurement ID is currently recorded in the repository config.
-- **Resume point:** after route verification, add verified Measurement ID, redeploy, confirm one `affiliate_outbound_click` and one `buy_now_click` event in GA4 Realtime/DebugView.
-
-### 8. Domain decision
-- **Status:** POST-LAUNCH / WAITING FOR JASON DECISION.
-- **Choices:** use temporary Vercel URL; reclaim `prestigeremodelingwi.com`; use another domain.
-- **Safety:** Never change DNS without Jason approval. Preserve existing MX/email records.
-
-### 9. Automated money funnel / social launch
-- **Status:** PARTIAL — checkout is active and Vercel deployment succeeded; route verification, fulfillment verification, analytics, and promotion remain.
-- **Remaining:** verify all revenue routes/clicks on confirmed public alias, verify digital-product fulfillment, add GA4 if available, then schedule Meta/YouTube pilot batch after Jason approval.
+### 7. Existing customer/estimate work
+- **Jeff estimate package:** previously completed customer-ready package; revise only if Jason requests.
+- **Connie Hendries foundation estimate:** previously completed customer-ready package; revise only if Jason requests.
+- **Car limp-mode diagnosis:** blocked until vehicle data/DTCs are supplied.
 
 ## Resume Instruction
-The active revenue sequence is: (1) verify all critical routes on the now-confirmed Vercel public alias; (2) verify eBay tracking on production; (3) verify the $19 Stripe checkout and actual customer fulfillment path end-to-end; (4) connect GA4 with a real Measurement ID if available; (5) schedule promotional content after Jason approval. Task 4 remains paused until vehicle data arrives.
+The current Forge revenue sequence is: **(1) finish live-funnel QA and conversion improvements; (2) activate/complete email nurture when Klaviyo flow creation is possible; (3) install a verified GA4 Measurement ID; (4) resolve Wisconsin digital-product sales-tax registration/classification before enabling Stripe Tax; (5) drive traffic and monitor real checkout/fulfillment results.** Do not regress to rebuilding the storefront, affiliate tracking, product ladder, or fulfillment mappings that are already live.
