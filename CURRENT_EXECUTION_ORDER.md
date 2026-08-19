@@ -13,37 +13,39 @@ Then resume the highest-priority unfinished Forge task unless Jason explicitly c
 ## Active Order
 
 ### 1. Contractor Tested Picks / Prestige digital revenue funnel
-- **Status:** LIVE — MULTI-PRODUCT CHECKOUT + FULFILLMENT + LEAD CAPTURE ACTIVE; TRAFFIC/DISTRIBUTION IS NEXT.
+- **Status:** LIVE — FOUR-TIER PRESTIGE PRODUCT LADDER + SEPARATE $19 BUNDLE + CHECKOUT + FULFILLMENT + LEAD CAPTURE ACTIVE.
 - **Public site:** `https://contractor-tested-picks-site.vercel.app`.
 - **Hosting/deploy:** GitHub `main` auto-deploys to Vercel project `prj_xUofNzAF7d2ZO58EgH7VucYsdd1u`.
-- **Live product ladder:** Prestige Essentials $6.99; Prestige Choice $16.99; Contractor Business OS Starter V1 $19 launch price; Prestige Pro $49.99; Prestige Premium v1.1 $99.99.
-- **Checkout:** all five offers have live Stripe Payment Links published on `digital-products.html`.
-- **Fulfillment:** Essentials redirects successful Stripe checkout to a protected Supabase delivery function. Choice, $19 Starter V1, Pro and Premium are mapped to private Google Drive ZIPs and handled by active hourly `Digital Product Fulfillment` automation using completed Stripe Checkout Session IDs plus Gmail Sent deduplication.
-- **Homepage:** promotes the product ladder and now has a verified `Free Profit Leak Checklist` CTA that jumps directly to `digital-products.html#profit-leak-checklist`.
-- **Free lead magnet:** `profit-leak-checklist.html` is live and verified 200. It contains a 12-point Contractor Profit Leak Checklist with print/save-PDF option and a UTM-tagged product-ladder CTA.
-- **Lead-magnet capture:** the digital-product page form submits to Klaviyo list `SJ8FBv`, tags the lead-magnet source, and unlocks the checklist link immediately after Klaviyo accepts the submission. The list remains double opt-in for marketing.
-- **Klaviyo content:** `CTP Welcome — Contractor Tested Picks` now includes the checklist and product-ladder links. Follow-up templates `CTP Follow-Up 1 — Estimate Change Order Job Cost` and `CTP Follow-Up 2 — When to Upgrade to Pro or Premium` also exist.
-- **Klaviyo blocker:** connected API can read flows and create/update templates but exposes no flow-creation action; the 3-email sequence assets are staged but not attached to an automated Klaviyo flow.
-- **Remodeling lead capture:** `/contact.html` directly submits through FormSubmit AJAX with validation, honeypot, status feedback and mailto fallback.
-- **Privacy:** public privacy notice updated August 19, 2026 for live contact forms, Klaviyo signup, Stripe checkout, automated fulfillment, Drive/Gmail, Supabase and affiliate tracking.
-- **Resume point:** distribute the now-live funnel organically, then measure real signups/clicks/orders. Do not rebuild existing systems.
+- **Prestige four-tier ladder:** Essentials $6.99; Choice $16.99; Pro $49.99; Premium v1.1 $99.99.
+- **Separate legacy offer:** Contractor Business Operating System — Starter V1 at $19 launch price is a separate 12-template bundle and is not part of the four-tier Prestige ladder.
+- **Checkout:** all five offers have verified active live Stripe Payment Links.
+- **Essentials:** new `Prestige_Essentials_v1_0_Digital_Download.zip` built August 19, 2026; workbook includes START HERE, Estimate, Change Order and Job Cost. Formula-error scan returned no common spreadsheet errors. ZIP is stored in Google Drive and mapped to its live $6.99 Stripe Payment Link.
+- **Verified Drive fulfillment assets:** Choice `Prestige_Choice_v1_0_Digital_Download.zip` 14,032 bytes; Pro `Prestige_Pro_v1_0_Digital_Download.zip` 21,298 bytes; Premium `Prestige_Premium_v1_1_Digital_Download.zip` 45,505 bytes. Exact Drive IDs, filenames and byte sizes were read back successfully on August 19.
+- **Package-content verification:** Choice README/manifest confirms the five promised core templates; Pro confirms Estimate, Invoice, Change Order, Job Cost, Payment Tracker, Job Progress, Materials & Expenses, Field Report, Client Sign-Off, Profit Dashboard and START HERE; Premium confirms the 17 advertised operating areas plus Quick Start PDF.
+- **Fulfillment:** active hourly `Digital Product Fulfillment` condition-watch handles all five paid offers. It queries completed Stripe Checkout Sessions by Payment Link, uses Checkout Session ID as the deduplication key, checks Gmail Sent before sending, fetches the mapped verified Google Drive ZIP, emails the product to the purchaser, and notifies Jason only when a new order is fulfilled.
+- **Homepage:** all four Prestige tiers are shown with direct verified Stripe Buy buttons plus `Compare All Products`. The free Profit Leak Checklist CTA remains above the paid funnel.
+- **Digital product page:** four-tier ladder is production-confirmed with direct buy links, separate $19 legacy bundle, truthful automated-delivery copy, and buy-click analytics hooks.
+- **Free lead magnet:** `profit-leak-checklist.html` is live and the `#profit-leak-checklist` signup section is restored on `digital-products.html` after a regression was caught and corrected.
+- **Lead-magnet capture:** signup submits to Klaviyo list `SJ8FBv`; list is verified and double opt-in for marketing.
+- **Remodeling lead capture:** `/contact.html` directly submits through FormSubmit AJAX with validation, honeypot, status feedback, analytics hook and mailto fallback. Production deployment is verified.
+- **Resume point:** confirm real completed Checkout Session behavior / first actual fulfillment, then push traffic into the live funnel. Do not rebuild these systems.
 
-### 2. Analytics / conversion measurement
+### 2. Product QA / paid fulfillment proof
+- **Status:** ASSETS + CHECKOUT + AUTOMATION VERIFIED; REAL PAID CUSTOMER-JOURNEY PROOF REMAINS.
+- **Verified packages:** Essentials, Choice, Pro and Premium have confirmed archive contents; the separate $19 Starter V1 remains mapped to its existing verified Drive package.
+- **Evidence standard:** do not claim a fully completed customer journey test until at least one successful completed paid Checkout Session is observed through automated email delivery.
+- **Resume point:** inspect completed Stripe Checkout Sessions for all five Payment Links and confirm fulfillment automation handles any unfulfilled paid order without duplication.
+
+### 3. Analytics / conversion measurement
 - **Status:** PARTIAL — EVENT CODE EXISTS; GA4 DESTINATION BLOCKED.
-- **Verified event hooks:** affiliate outbound clicks, digital-product buy clicks, lead submissions and email signup/lead-magnet events exist in code.
-- **Blocker:** `analytics-config.js` has no verified `G-...` Measurement ID. Searches of repo, Gmail and Drive did not recover one.
+- **Verified event hooks:** affiliate outbound clicks, homepage and digital-product buy clicks, lead submissions and email signup/lead-magnet events exist in code.
+- **Blocker:** `analytics-config.js` has no verified `G-...` Measurement ID. Searches of available records did not recover one.
 - **Resume point:** add only a verified GA4 Measurement ID, then confirm events in Realtime/DebugView. Never invent the ID.
 
-### 3. Digital-product tax configuration
+### 4. Digital-product tax configuration
 - **Status:** HOLD — DO NOT ENABLE STRIPE TAX YET.
-- **Verified Stripe state:** Stripe Tax capability/settings are present, but the account has zero tax registrations recorded.
-- **Search result:** no existing Wisconsin seller-permit / sales-tax registration record was recovered from connected Gmail or Drive.
-- **Resume point:** verify Wisconsin registration/classification first; then configure Stripe Tax only if appropriate.
-
-### 4. Product QA / fulfillment proof
-- **Status:** BUILT AND WIRED; REAL PAID TRANSACTION PROOF REMAINS.
-- **Verified packages:** Choice, Starter V1, Pro and Premium ZIPs pass archive integrity/content checks; spreadsheet scans found no obvious formula-error strings. Essentials was built and QA-scanned separately.
-- **Evidence standard:** do not claim a fully completed customer journey test until at least one controlled successful paid transaction has been observed from checkout through delivery.
+- **Verified Stripe state:** Stripe Tax capability/settings are present, but the account has zero tax registrations recorded in the prior check.
+- **Resume point:** verify Wisconsin registration/classification before enabling Stripe Tax if required.
 
 ### 5. eBay / affiliate revenue
 - **Status:** LIVE / TRACKED.
@@ -51,15 +53,20 @@ Then resume the highest-priority unfinished Forge task unless Jason explicitly c
 - **Full-store CTA:** uses EPN tracking.
 - **Shop:** 26 tracked product groups remain live; individual JRep82 homepage inventory links should be monitored for expiration.
 
-### 6. Domain decision
+### 6. Traffic / distribution
+- **Status:** FUNNEL READY FOR TRAFFIC.
+- **Assets already present:** free Contractor Profit Leak Checklist, contractor SEO guides, product ladder, eBay affiliate categories, direct paid checkout, email capture and fulfillment automation.
+- **Priority:** organic distribution should point visitors either to the free checklist, the $6.99 Essentials offer, a relevant SEO guide, or the tracked eBay category/store depending on audience intent.
+
+### 7. Domain decision
 - **Status:** WAITING FOR JASON DECISION.
 - **Current sales site:** temporary Vercel alias is functional.
 - **Safety:** never change DNS without explicit approval and without preserving existing MX/email records.
 
-### 7. Existing customer/estimate work
+### 8. Existing customer/estimate work
 - **Jeff estimate package:** previously completed customer-ready package; revise only if Jason requests.
 - **Connie Hendries foundation estimate:** previously completed customer-ready package; revise only if Jason requests.
 - **Car limp-mode diagnosis:** blocked until vehicle data/DTCs are supplied.
 
 ## Resume Instruction
-The current Forge revenue sequence is: **(1) distribute the live free-checklist/product funnel organically; (2) monitor real signup/click/order behavior; (3) activate the staged Klaviyo nurture sequence when flow creation becomes technically supported; (4) install a verified GA4 Measurement ID; (5) resolve Wisconsin digital-product sales-tax registration/classification before enabling Stripe Tax.** Do not regress to rebuilding the storefront, product ladder, affiliate tracking, lead magnet, or fulfillment mappings that are already live.
+The current Forge revenue sequence is: **(1) inspect current completed Stripe Checkout Sessions and confirm fulfillment behavior; (2) push organic traffic to the live free-checklist / $6.99 Essentials / four-tier product funnel; (3) measure signups, checkout activity and orders with available Stripe/Klaviyo evidence; (4) install a verified GA4 Measurement ID when available; (5) resolve Wisconsin digital-product tax registration/classification before enabling Stripe Tax.** Do not regress to rebuilding the storefront, four-tier product ladder, affiliate tracking, lead magnet, lead form, or fulfillment mappings that are already live.
