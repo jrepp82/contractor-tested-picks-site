@@ -2,126 +2,111 @@
 
 **Owner:** Forge / ChatGPT  
 **Last updated:** 2026-08-19  
-**Source of truth:** `FORGE_PRODUCTION_QUEUE.md` + `SUBSCRIPTION_AUTOMATION_SPEC.md`
+**Source of truth:** `CURRENT_EXECUTION_ORDER.md` + `FORGE_PRODUCTION_QUEUE.md` + live Stripe/Drive/GitHub/Vercel evidence.
 
 ## Mandatory Startup Rule
-At the beginning of every work session, open and read:
-1. `CURRENT_EXECUTION_ORDER.md`
-2. `FORGE_PRODUCTION_QUEUE.md`
-3. `SUBSCRIPTION_AUTOMATION_SPEC.md` when touching digital fulfillment or memberships.
+At the beginning of every work session, read this file and `FORGE_PRODUCTION_QUEUE.md`. When touching fulfillment or memberships, verify the live automation and Stripe/Drive mappings rather than trusting stale chat summaries.
 
-Resume the highest-priority unfinished Forge task unless Jason explicitly changes the order. Do not replace Forge's work with a new checklist, and do not drop in-progress work because Jason interrupts with another request. Completion requires a verifiable deliverable or confirmed external action.
+Resume the highest-priority unfinished Forge task unless Jason explicitly redirects. An interruption does not cancel in-progress work. Completion requires a verifiable deliverable or confirmed external action.
 
-## Active Order
+## 1. Digital revenue funnel — LIVE
+- Production site: `https://contractor-tested-picks-site.vercel.app`
+- Git: `jrepp82/contractor-tested-picks-site`, `main`; Vercel auto-deploy is active.
+- Core one-time ladder is live: Essentials $6.99, Choice $16.99, Pro $49.99, Premium v1.1 $99.99.
+- Separate Contractor Business OS Starter V1 remains live at $19.
+- Free Contractor Profit Leak Checklist + Klaviyo capture remain live.
+- Remodeling lead form remains direct-submit with fallback; do not regress to mailto-only.
+- eBay/EPN campaign `5339172120` remains the canonical affiliate campaign.
 
-### 1. Prestige digital revenue funnel — LIVE
-- **Public site:** `https://contractor-tested-picks-site.vercel.app`.
-- **Git source:** `jrepp82/contractor-tested-picks-site`, `main`; Vercel auto-deploy is configured for this project.
-- **One-time Prestige ladder:** Essentials $6.99; Choice $16.99; Pro $49.99; Premium v1.1 $99.99.
-- **Separate one-time offer:** Contractor Business Operating System Starter V1 at $19 remains separate from the four-tier ladder.
-- **One-time checkout + Drive/Gmail fulfillment:** active hourly automation remains mapped; do not rebuild it.
-- **Free Contractor Profit Leak Checklist:** live and connected to Klaviyo capture.
-- **Remodeling lead form:** direct-submit FormSubmit AJAX path remains active; do not regress it to mailto-only.
-- **Affiliate/eBay system:** existing tracked paths remain live.
-- **Highest cash-now action:** distribute traffic and measure real conversions instead of rebuilding working funnel components.
+## 2. Standalone contractor tools — LIVE / SELLABLE
+Production catalog: `https://contractor-tested-picks-site.vercel.app/standalone-tools.html`
+Dedicated AI page: `https://contractor-tested-picks-site.vercel.app/ai-prompt-pack.html`
+Both are deployed READY in Vercel and included in `sitemap.xml`.
 
-### 2. Prestige Monthly memberships — LIVE COMPONENTS VERIFIED / FIRST PAID CUSTOMER PROOF PENDING
-The earlier `NOT LIVE` / `zero recurring prices` state is obsolete.
+Live one-time standalone offers:
+- Contractor Estimate & Proposal Kit — $12.99 — `plink_1U6AHiJkrg28KsFAtZ4bPoH7`
+- Job Cost & Profit Tracker — $19.99 — `plink_1U6AI6Jkrg28KsFAKWJqczOI`
+- Change Order & Payment Protection Pack — $14.99 — `plink_1U6AIOJkrg28KsFAjmezBky0`
+- Lead & Follow-Up Tracker — $14.99 — `plink_1U6AIdJkrg28KsFAOZkA8yN2`
+- Material Takeoff & Labor Log — $17.99 — `plink_1U6AIqJkrg28KsFAftOMldFB`
+- Contractor Field Forms Pack — $14.99 — `plink_1U6AJ4Jkrg28KsFAg27AJ3TZ`
+- Contractor Labor Rate & Break-Even Calculator — $17.99 — `plink_1U6AJKJkrg28KsFANMMi2xiR`
+- Contractor Follow-Up Script Pack — $9.99 — `plink_1U6AL4Jkrg28KsFAswTGzv3m`
+- Product Photo Prompt Pack — $9.99 — `plink_1U6AJcJkrg28KsFA9IpcJw1q`
+- AI Estimating & Marketing Prompt Pack v1.0 — $14 launch — `plink_1U6ABPJkrg28KsFAxrCGeTqh`
 
-#### Live Stripe monthly tiers
-- Essentials Monthly — $19/mo — `prod_V6M9GJCytR9Cu7` — `price_1U69RSJkrg28KsFAXc7xCGlG` — `plink_1U69SgJkrg28KsFASlFzmDxw`
-- Choice Monthly — $39/mo — `prod_V6MA1rXYKcIIOc` — `price_1U69RiJkrg28KsFAiSeSJfRz` — `plink_1U69SwJkrg28KsFAJp40W2lt`
-- Pro Monthly — $79/mo — `prod_V6MAWHYuBrlZ71` — `price_1U69RxJkrg28KsFAe02oEpSy` — `plink_1U69TCJkrg28KsFAVLZMFhTC`
-- Premium Monthly — $149/mo — `prod_V6MAZiJKdPsdMv` — `price_1U69SCJkrg28KsFATJW4QjtN` — `plink_1U69TQJkrg28KsFAArCHlhdT`
+All ten have live Stripe Payment Links and Drive delivery mappings in automation `6a7660320e308191aec8cab859c03046`. One-time dedupe key remains Stripe Checkout Session ID.
 
-#### Website
-`digital-products.html` on `main` contains the production `#monthly-memberships` section with those live subscription links, tier benefits, signup delivery explanation, recurring-billing disclosure and cancellation/support language.
+AI Estimating & Marketing Prompt Pack canonical package:
+- 25 contractor prompts across estimating/pricing, change orders/scope, lead follow-up/closing, local marketing and internal operations.
+- Drive ID `1WrzbaIjVnrCpSmIX6vji9QwI-KbtWH3t`
+- ZIP `14_AI_Estimating_and_Marketing_Prompt_Pack_v1_0.zip`
+- Stripe product `prod_V6Muj8PPCLIJQy`; price `price_1U6AB3Jkrg28KsFA0KfdVcaO`; Payment Link above.
+Do not revert to the obsolete 64-prompt package claim or old Drive ID.
 
-#### Member drops
-Verified tier-specific Drive ZIPs exist for August 2026 and September 2026. Preserve the canonical Drive IDs, filenames and byte sizes recorded in `SUBSCRIPTION_AUTOMATION_SPEC.md`.
+## 3. Monthly memberships — LIVE PRODUCTS / M01+M02 PACKAGES / FIRST CUSTOMER PROOF PENDING
+Live recurring tiers:
+- Essentials $19/mo — `prod_V6M9GJCytR9Cu7` — `price_1U69RSJkrg28KsFAXc7xCGlG` — `plink_1U69SgJkrg28KsFASlFzmDxw`
+- Choice $39/mo — `prod_V6MA1rXYKcIIOc` — `price_1U69RiJkrg28KsFAiSeSJfRz` — `plink_1U69SwJkrg28KsFAJp40W2lt`
+- Pro $79/mo — `prod_V6MAWHYuBrlZ71` — `price_1U69RxJkrg28KsFAe02oEpSy` — `plink_1U69TCJkrg28KsFAVLZMFhTC`
+- Premium $149/mo — `prod_V6MAZiJKdPsdMv` — `price_1U69SCJkrg28KsFATJW4QjtN` — `plink_1U69TQJkrg28KsFAArCHlhdT`
+All four prices and links were independently verified `livemode:true` and recurring monthly.
 
-#### Fulfillment
-- Enabled automation: `Digital Product + Membership Fulfillment`
-- Jawbone: `6a7660320e308191aec8cab859c03046`
+Canonical fulfillment rule:
+- Membership identifier = Stripe `subscription.id`.
+- Unique delivery key = PAID Stripe `invoice.id`.
+- Subscriber month index = chronological count of successful paid subscription invoices: first=M01, second=M02, third=M03, etc.
+- Never dedupe membership delivery on subscription ID alone or subscription + calendar month.
+- Never send a monthly package for an unpaid/failed/void billing cycle.
+
+Canonical packages currently mapped:
+M01:
+- Essentials Drive `11ESOS7CLlZ4vKDU3RH654q1v9tfmc56M` — `Prestige_Essentials_M01_2026-08_v1.0.zip`
+- Choice `1s0Zz85lLgYfYUK9eBjqXNTJXOqzvoCf6` — `Prestige_Choice_M01_2026-08_v1.0.zip`
+- Pro `1GsY358Ci6Z_ZVViyux5mZNgava9amELG` — `Prestige_Pro_M01_2026-08_v1.0.zip`
+- Premium `1lCEURc_MQsn6IyRJJ6EriUeCzbSvfpvf` — `Prestige_Premium_M01_2026-08_v1.0.zip`
+M02:
+- Essentials `15QWA3H152GowyIdWMGTqQByQyyMQdaBC` — `Prestige_Essentials_M02_2026-09_v1.0.zip`
+- Choice `1UfhHJYhHPBxD8j7QiT5yMr63OwOdUsMW` — `Prestige_Choice_M02_2026-09_v1.0.zip`
+- Pro `1n_tV3XJRXBzbKnx8x3WmT9GVJIM3p1CB` — `Prestige_Pro_M02_2026-09_v1.0.zip`
+- Premium `1nMNck6a5Gh9TKN5nRxVBfYLqSlF4Yz7B` — `Prestige_Premium_M02_2026-09_v1.0.zip`
+
+The M01 ZIP is the complete welcome package for that tier; do not send a separate onboarding ZIP plus a second M01 drop. M02 is the second paid-cycle package.
+
+Latest live subscription audit on 2026-08-19 returned zero subscriptions (`GET /v1/subscriptions`, status=all). Therefore no paid membership is currently waiting for fulfillment and no real paid membership journey has yet been proven. Do not manufacture proof.
+
+**Next build requirement:** create, QA, upload and map M03 for all four tiers before any third paid renewal can occur. Continue M04–M06 production afterward so the membership engine stays ahead.
+
+## 4. Fulfillment automation — ACTIVE
+- Automation: `Digital Product + Membership Fulfillment`
+- ID: `6a7660320e308191aec8cab859c03046`
 - Cadence: hourly condition watch.
-- First paid cycle: send onboarding toolkit + current monthly drop only after a paid Stripe membership invoice is verified.
-- Renewal: send only the mapped monthly drop after a paid membership invoice is verified.
-- **Canonical membership dedupe key: PAID STRIPE INVOICE ID (`invoice.id`).**
-- Every membership delivery email must contain `Invoice reference: in_...`.
-- Never use `subscription.id` alone, and never treat `subscription ID + month` as the canonical idempotency key.
-- Failed/unpaid invoices receive no paid content; a later-paid same invoice can fulfill once using that invoice ID.
+- Covers core one-time ladder, all ten live standalone offers, mapped Shopify orders, and monthly M01/M02 membership delivery.
+- One-time dedupe: Checkout Session ID.
+- Membership dedupe: paid Invoice ID.
 
-#### Evidence boundary
-Latest Stripe check on August 19 found zero completed Checkout Sessions. Therefore the live products, prices, Payment Links, page wiring, Drive mappings and automation are present, but no real paid customer transaction has yet proven the customer-delivery path. Do not manufacture or claim proof that does not exist.
+## 5. Customer Portal — VERIFIED GAP
+Stripe portal configuration audit returned no active portal configurations on 2026-08-19. The connected Stripe write surface does not expose portal-configuration creation. This is a real remaining live setting, not a completed item.
+Required portal behavior when configured in Stripe Dashboard: payment-method update ON, invoice history ON, subscription cancellation ON. Do not claim Customer Portal is live until re-verified.
 
-#### Resume point
-Drive qualified traffic and monitor the first real paid membership invoice. Verify one correct onboarding + monthly-drop email with no duplicate send. Later verify a real renewal sends only the new monthly drop using its new Invoice ID.
+## 6. Shopify
+Four digital tier products remain draft/staged with fulfillment mapping. Wisconsin sales-tax classification / seller-registration status remains unresolved. Do not publish Shopify digital products or guess tax treatment until verified or explicitly directed after informed review.
 
-### 3. Prompt Pack standalone product — PACKAGE BUILT
-- `Prestige_AI_Estimating_Marketing_Prompt_Pack_v1_0.zip` was physically built and QA'd on August 19.
-- Contains Quick Start PDF, formatted prompt PDF, TXT/Markdown copy-paste libraries, license, sales copy, manifest and checksums.
-- Includes 64 specialized contractor prompts plus the Universal Contractor Setup Prompt.
-- Uploaded to Drive in `Digital Products - Contractor Starter Pack` as file ID `1UpPZ2vTZRrylWkPrG8Fz3UwRQlQ-2wW9`.
-- Next action: add it to the standalone catalog/storefront only after final offer price and channel placement are reconciled; do not rebuild the package.
+## 7. Analytics / email conversion gaps
+- Buy/affiliate/lead/signup event hooks exist.
+- Verified GA4 Measurement ID is still missing; never invent a `G-...` ID.
+- Klaviyo list capture exists, but no triggered nurture flow has been independently verified. Do not claim a welcome/upsell flow is live without evidence.
 
-### 4. Supplemental Month 1 training assets — BUILT / DO NOT REPLACE LIVE DROP MAP
-Forge also built supplemental tier-specific training PDFs and a combined August ZIP:
-- Essentials — Profit Leak Guard
-- Choice — Lead-to-Cash Billing Flow
-- Pro — Weekly Job Control
-- Premium — Contractor Command Cycle
-- Combined Drive file: `Prestige_Monthly_Membership_2026-08_Month_1.zip`, ID `1uWLndiHDd4xgmjFk9o38pHPfOf_Elr79`.
+## 8. Tax / compliance
+Wisconsin digital-product tax classification and seller-registration remain unresolved. Do not enable Stripe Tax or publish Shopify based on a guess. Existing DOR inquiry draft may be sent only with Jason's approval.
 
-These are supplemental production assets. The existing live Stripe fulfillment mapping remains pointed at the previously built canonical August tier-specific member-drop ZIPs. Do not silently replace the live mappings with the supplemental files.
+## 9. Immediate Revenue Sequence
+1. Keep urgent foreclosure/legal and active contracting estimate/collection work protected outside this repo.
+2. Drive qualified traffic to the live free checklist, core ladder, standalone catalog, AI Prompt Pack and memberships.
+3. Monitor and verify the first real paid automated fulfillment; fix any defect immediately.
+4. Build M03, then M04–M06, before customers can outrun the content map.
+5. Configure and verify Stripe Customer Portal when Dashboard access permits.
+6. Resolve GA4 and Klaviyo nurture gaps without disrupting live checkout.
+7. Resolve Wisconsin tax/registration before Shopify publication.
 
-### 5. Shopify digital sales channel
-- **Status:** four digital products staged/drafted with paid-order fulfillment mapping ready.
-- **Blocker:** Wisconsin sales-tax classification / seller-registration status remains unresolved.
-- Do not activate Shopify digital listings or guess tax treatment until the classification/registration issue is verified or Jason explicitly accepts the risk after review.
-
-### 6. Product QA / real paid fulfillment proof
-- Product ZIPs and mappings are verified.
-- One-time and monthly automations are enabled.
-- Real paid customer proof remains transaction-dependent because Stripe currently has no completed Checkout Sessions.
-- Monitor new transactions; do not create a fake success claim.
-
-### 7. Analytics / conversion measurement
-- Event hooks exist for affiliate clicks, digital buy clicks, leads and email signups.
-- GA4 destination remains blocked by missing verified `G-...` Measurement ID.
-- Add only a real verified ID, then test Realtime/DebugView.
-
-### 8. Digital-product tax configuration
-- Wisconsin classification / seller-registration status remains unresolved.
-- Do not enable Stripe Tax or publish Shopify listings based on a guessed tax classification.
-- Existing DOR inquiry draft can be sent when Jason approves sending it.
-
-### 9. eBay / affiliate revenue
-- EPN campaign `5339172120` remains the canonical tracking campaign.
-- Existing tracked product/store paths remain live.
-- Monitor per-item inventory links for expiration and replace only verified dead inventory links.
-
-### 10. Traffic / distribution
-- Funnel is ready for organic traffic.
-- Cold traffic: free Contractor Profit Leak Checklist.
-- Warm contractor traffic: Essentials $6.99 / relevant one-time tier or matching monthly membership.
-- Marketplace/eBay-intent traffic: tracked eBay category/store paths.
-- Do not spend on paid ads without Jason approving spend.
-
-### 11. Domain
-- Current Vercel alias is functional for the funnel.
-- Never change DNS/MX without explicit approval and preservation of email records.
-
-### 12. Existing customer/estimate work
-Customer estimate projects remain separate from this digital funnel. Do not let digital-product work cause active estimate/revenue follow-up to be dropped.
-
-## Resume Instruction
-Current Forge revenue sequence:
-1. Preserve foreclosure/legal deadline protection and active estimate cash opportunities outside this repo.
-2. Drive traffic to the already-live digital funnel instead of rebuilding it.
-3. Monitor and prove the first actual paid one-time or membership fulfillment.
-4. Keep future monthly member drops built and mapped ahead of billing periods.
-5. Place the finished AI Prompt Pack into the most profitable storefront/channel once pricing is finalized.
-6. Resolve Wisconsin digital-product tax/registration before Shopify publication.
-7. Install a verified GA4 Measurement ID when one becomes available.
-
-Do not regress to rebuilding completed one-time products, monthly Stripe products, member drops, live subscription links, fulfillment mappings, affiliate tracking, lead magnet, lead form or storefront sections without a verified defect.
+Do not regress to rebuilding completed one-time products, standalone ZIPs, live Stripe links, M01/M02 packages, affiliate tracking, lead magnet or lead form without a verified defect.
