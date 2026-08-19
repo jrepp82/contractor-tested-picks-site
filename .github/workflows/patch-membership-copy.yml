@@ -1,0 +1,70 @@
+name: Patch membership fulfillment copy
+
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-membership-copy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch only obsolete membership fulfillment wording
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('digital-products.html')
+          before = path.read_text(encoding='utf-8')
+          text = before
+
+          # Customer-facing labels: paid subscriber cycle, not generic signup/calendar month.
+          text = re.sub(r'(<strong>\s*)On signup:(\s*</strong>)', r'\1Month 1 package:\2', text, flags=re.I)
+          text = re.sub(r'(<strong>\s*)First payment:(\s*</strong>)', r'\1Month 1 package:\2', text, flags=re.I)
+          text = re.sub(r'(<strong>\s*)Each paid renewal:(\s*</strong>)', r'\1Later paid cycles:\2', text, flags=re.I)
+
+          # Replace the old split-delivery description if present.
+          text = re.sub(
+              r'onboarding toolkit is delivered by email after Stripe confirms payment\.?',
+              'one complete Month 1 package is delivered by email after the first successful paid invoice.',
+              text,
+              flags=re.I,
+          )
+          text = re.sub(
+              r'the monthly drop for your tier is delivered by email\.?',
+              'the next subscriber-month package for your tier is delivered after each later successful paid invoice.',
+              text,
+              flags=re.I,
+          )
+
+          # Normalize any remaining short labels without changing prices or URLs.
+          text = re.sub(r'\bOn signup\b', 'Month 1 package', text, flags=re.I)
+
+          if text == before:
+              raise SystemExit('No target membership-copy text matched; refusing broad rewrite.')
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Show focused diff and verify protected URLs remain
+        run: |
+          git diff -- digital-products.html
+          grep -q 'plink_1U69SgJkrg28KsFASlFzmDxw' digital-products.html
+          grep -q 'plink_1U69SwJkrg28KsFAJp40W2lt' digital-products.html
+          grep -q 'plink_1U69TCJkrg28KsFAVLZMFhTC' digital-products.html
+          grep -q 'plink_1U69TQJkrg28KsFAArCHlhdT' digital-products.html
+
+      - name: Commit surgical copy correction
+        run: |
+          git config user.name 'forge-prestige-automation'
+          git config user.email 'Jason@prestigeremodelingwi.com'
+          git add digital-products.html
+          git commit -m 'Correct monthly membership fulfillment wording [skip ci]'
+          git push origin HEAD:main
