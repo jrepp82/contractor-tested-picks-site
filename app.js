@@ -100,3 +100,72 @@
     });
   });
 })();
+
+(function connectPrestigeStoreNetwork(){
+  const destinations = [
+    {
+      label: 'Jobsite Gear',
+      title: 'Prestige Contractor Best Picks',
+      description: 'Rugged power, charging and field-ready products selected for contractor and jobsite use.',
+      url: 'https://prestige-digitool.myshopify.com/collections/prestige-contractor-best-picks',
+      cta: 'Shop Best Picks →',
+      rel: 'noopener'
+    },
+    {
+      label: 'Digital Contractor Tools',
+      title: 'Prestige DigiTools',
+      description: 'Estimating, job-cost, pricing and contractor operating tools built to protect profit and reduce paperwork.',
+      url: 'https://prestige-digitool.myshopify.com/collections/prestige-contractor-digital-tools',
+      cta: 'Browse DigiTools →',
+      rel: 'noopener'
+    },
+    {
+      label: 'Collectibles & Resale',
+      title: 'JRep82 Random Treasures',
+      description: 'Cards, collectibles, tools and resale inventory from Jason’s active eBay store.',
+      url: 'https://www.ebay.com/str/prestigerandomtreasures?mkcid=1&mkrid=711-53200-19255-0&siteid=0&campid=5339172120&customid=ctp-network-store&mkevt=1&toolid=10001',
+      cta: 'Shop eBay →',
+      rel: 'sponsored noopener'
+    },
+    {
+      label: 'Local Contracting',
+      title: 'Prestige Remodeling',
+      description: 'Decks, remodeling, exteriors, carpentry, welding and fabrication in Manitowoc and the Lakeshore.',
+      url: 'https://PrestigeRemodelingWI.com/#estimate',
+      cta: 'Request an Estimate →',
+      rel: 'noopener'
+    }
+  ];
+
+  if (document.querySelector('[data-prestige-store-network]')) return;
+  const anchor = document.querySelector('.disclosure-strip') || document.querySelector('main .hero');
+  if (!anchor || !anchor.parentNode) return;
+
+  const section = document.createElement('section');
+  section.className = 'section alt';
+  section.setAttribute('data-prestige-store-network','true');
+  section.innerHTML = `<div class="container"><div class="section-heading"><div><span class="eyebrow">Prestige network</span><h2>One network. Multiple ways to shop and work with Prestige.</h2><p>Contractor gear, digital business tools, eBay inventory and local remodeling are connected here so every traffic source can feed the rest of the Prestige system.</p></div></div><div class="product-grid">${destinations.map(d=>`<article class="product-card" data-network-destination="${d.title}"><div class="product-body"><div class="badges"><span class="badge">${d.label}</span></div><h3>${d.title}</h3><p>${d.description}</p><a class="btn btn-primary prestige-network-link" href="${d.url}" target="_blank" rel="${d.rel}">${d.cta}</a></div></article>`).join('')}</div></div>`;
+  anchor.insertAdjacentElement('afterend', section);
+
+  document.addEventListener('click', event => {
+    const link = event.target.closest('.prestige-network-link');
+    if (!link) return;
+    const card = link.closest('[data-network-destination]');
+    const detail = {
+      event: 'store_network_click',
+      destination_name: card?.dataset.networkDestination || link.textContent.trim(),
+      destination_url: link.href,
+      page_path: location.pathname,
+      timestamp: new Date().toISOString()
+    };
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(detail);
+    if (typeof window.gtag === 'function') {
+      window.gtag('event','store_network_click',{
+        destination_name: detail.destination_name,
+        link_url: detail.destination_url,
+        page_path: detail.page_path
+      });
+    }
+  });
+})();
