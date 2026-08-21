@@ -1,0 +1,108 @@
+name: Affiliate Social Publisher
+
+on:
+  schedule:
+    # Three daily publishing windows. GitHub cron is UTC.
+    - cron: '10 0 * * *'
+    - cron: '10 13 * * *'
+    - cron: '10 18 * * *'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Channel to publish
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - facebook
+          - instagram
+          - tiktok
+          - youtube-shorts
+      dry_run:
+        description: Build/validate without publishing
+        required: true
+        type: boolean
+        default: true
+      slot:
+        description: Optional deterministic content slot
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: affiliate-social-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v24.0' }}
+      META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+      META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+      META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+      META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+      TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+      TIKTOK_PRIVACY_LEVEL: ${{ vars.TIKTOK_PRIVACY_LEVEL || 'PUBLIC_TO_EVERYONE' }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      YOUTUBE_EXPECTED_CHANNEL_ID: ${{ secrets.YOUTUBE_EXPECTED_CHANNEL_ID }}
+      YOUTUBE_PRIVACY_STATUS: ${{ vars.YOUTUBE_PRIVACY_STATUS || 'public' }}
+      DIGITAL_FULFILLMENT_VERIFIED: 'false'
+      GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install short-video render tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg librsvg2-bin
+
+      - name: Validate canonical 60-item feed
+        run: node affiliate-content-feed-builder.js --validate
+
+      - name: Publish scheduled content
+        shell: bash
+        run: |
+          set -euo pipefail
+          PLATFORM="all"
+          SLOT="${GITHUB_RUN_NUMBER}"
+          DRY_RUN="false"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            PLATFORM='${{ inputs.platform }}'
+            DRY_RUN='${{ inputs.dry_run }}'
+            if [[ -n '${{ inputs.slot }}' ]]; then
+              SLOT='${{ inputs.slot }}'
+            fi
+          fi
+
+          ARGS=("--platform=${PLATFORM}" "--slot=${SLOT}")
+          if [[ "${DRY_RUN}" == "true" ]]; then
+            ARGS+=("--dry-run")
+          fi
+
+          node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
+
+      - name: Preserve run result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: social-publish-result-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            social-publish-result.json
+            .social-output/
+          if-no-files-found: ignore
+          retention-days: 14
