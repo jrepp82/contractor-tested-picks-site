@@ -146,7 +146,8 @@ async function jsonFetch(url, options = {}) {
   const text = await res.text();
   let json;
   try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
-  if (!res.ok || json.error) fail(`${options.method || 'GET'} ${url} failed (${res.status}): ${JSON.stringify(json)}`);
+  const providerError = json.error && json.error.code !== 'ok';
+  if (!res.ok || providerError) fail(`${options.method || 'GET'} ${url} failed (${res.status}): ${JSON.stringify(json)}`);
   return json;
 }
 function missing(names) { return names.filter(n => !process.env[n]); }
