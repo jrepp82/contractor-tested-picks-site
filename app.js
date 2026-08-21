@@ -217,3 +217,12 @@
     }
   });
 })();
+
+(function loadCrossStorePromotionEngine(){
+  if (window.PrestigeCrossStorePromotionEngine || document.querySelector('script[data-cross-store-engine-loader]')) return;
+  const script = document.createElement('script');
+  script.src = 'cross-store-promotion-engine.js';
+  script.defer = true;
+  script.setAttribute('data-cross-store-engine-loader','true');
+  document.head.appendChild(script);
+})();
