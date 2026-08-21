@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-21T12:28:00-05:00",
+  "source_of_truth": "normalized-products.json + Contractor Tested Picks content blueprints",
+  "counts": {
+    "total": 60,
+    "publishable_now": 50,
+    "gated": 10,
+    "by_category": {
+      "contractor-tools": 20,
+      "welding": 10,
+      "garage-motorcycle": 10,
+      "cards-collectibles": 10,
+      "prestige-digitools": 10
+    }
+  },
+  "rules": [
+    "Do not publish entries where publishable is false.",
+    "Prestige DigiTools entries remain gated until DIGITAL_FULFILLMENT_VERIFIED is cleared.",
+    "Grand Opening codes GRANDOPEN10 and BUNDLE15 expire after September 4, 2026.",
+    "Recon 2000 is not included in the grand-opening discount.",
+    "Generate final platform-specific URLs at publish time using affiliate-link-builder.js.",
+    "Do not claim a raw card will receive a particular grade or a product will guarantee a business result."
+  ],
+  "items": []
+}
