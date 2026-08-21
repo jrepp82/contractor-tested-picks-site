@@ -1,0 +1,12 @@
+{
+  "video_path": "./renders/example-short.mp4",
+  "title": "3 Things to Check Before Buying This Tool #Shorts",
+  "description": "A quick contractor-focused buying check generated from the Prestige affiliate content feed.",
+  "affiliate_url": "https://example.com/tracked-product-link",
+  "disclosure": "Affiliate link: I may earn a commission from qualifying purchases at no extra cost to you.",
+  "tags": ["contractor", "tools", "remodeling", "Prestige", "Shorts"],
+  "category_id": "22",
+  "privacy_status": "private",
+  "made_for_kids": false,
+  "notify_subscribers": false
+}

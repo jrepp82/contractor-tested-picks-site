@@ -1,10 +1,10 @@
 {
-  "schema_version": "1.1.0",
-  "updated_at": "2026-08-21T14:12:00-05:00",
+  "schema_version": "1.2.0",
+  "updated_at": "2026-08-21T14:38:00-05:00",
   "brand": "Prestige",
   "rules": [
     "Use active canonical URLs from this registry instead of duplicating hard-coded destinations.",
-    "Do not fabricate URLs for channels marked setup_incomplete or needs_connection.",
+    "Do not fabricate URLs for channels marked setup_incomplete, public_url_unverified, or needs_connection.",
     "Social and review destinations are traffic/trust channels, not commerce stores.",
     "Affiliate destinations must retain required disclosure and tracking parameters."
   ],
@@ -45,6 +45,27 @@
       "destination_category": "social-creator",
       "monetization_type": "audience_store_traffic_leads",
       "disclosure_requirement": "Affiliate disclosure required on posts containing affiliate links"
+    },
+    {
+      "store_id": "prestige-youtube-creator",
+      "brand": "Jason Reppen / Prestige",
+      "channel": "youtube",
+      "public_url": null,
+      "status": "account_confirmed_public_url_unverified_publish_auth_required",
+      "default_tracking_parameters": {
+        "utm_source": "youtube",
+        "utm_medium": "shorts"
+      },
+      "destination_category": "social-video",
+      "monetization_type": "audience_store_traffic_affiliate_future_youtube_monetization",
+      "disclosure_requirement": "Affiliate disclosure required in descriptions/content when affiliate links are used",
+      "connection_notes": [
+        "YouTube creator/channel history is confirmed on the Google account.",
+        "A Google security alert dated 2026-08-02 confirms that a YouTube Channel authorization existed; that does not prove this automation currently has upload permission.",
+        "The current public YouTube handle/channel URL has not been verified, so no public URL is fabricated.",
+        "The affiliate content engine already supports youtube-shorts and generates yt tracking IDs.",
+        "Automatic uploads require an authorized YouTube publishing connection using OAuth 2.0 with the youtube.upload scope or an equivalent approved publisher connector."
+      ]
     },
     {
       "store_id": "prestige-google-review",
