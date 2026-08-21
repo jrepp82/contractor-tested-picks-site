@@ -1,6 +1,14 @@
 name: Affiliate Social Publisher
 
 on:
+  pull_request:
+    paths:
+      - 'affiliate-social-publisher.js'
+      - 'affiliate-content-feed-builder.js'
+      - 'affiliate-content-feed.json'
+      - 'normalized-products.json'
+      - 'youtube-shorts-publisher.js'
+      - '.github/workflows/affiliate-social-publisher.yml'
   schedule:
     # Three daily publishing windows. GitHub cron is UTC.
     - cron: '10 0 * * *'
@@ -33,7 +41,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: affiliate-social-publisher
+  group: affiliate-social-publisher-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -65,6 +73,9 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Syntax check publisher
+        run: node --check affiliate-social-publisher.js
+
       - name: Install short-video render tools
         run: |
           sudo apt-get update -qq
@@ -73,7 +84,7 @@ jobs:
       - name: Validate canonical 60-item feed
         run: node affiliate-content-feed-builder.js --validate
 
-      - name: Publish scheduled content
+      - name: Publish or dry-run scheduled content
         shell: bash
         run: |
           set -euo pipefail
@@ -81,7 +92,9 @@ jobs:
           SLOT="${GITHUB_RUN_NUMBER}"
           DRY_RUN="false"
 
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            DRY_RUN="true"
+          elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             PLATFORM='${{ inputs.platform }}'
             DRY_RUN='${{ inputs.dry_run }}'
             if [[ -n '${{ inputs.slot }}' ]]; then
