@@ -1,10 +1,10 @@
 {
-  "schema_version": "1.0.0",
-  "updated_at": "2026-08-21T13:55:00-05:00",
+  "schema_version": "1.1.0",
+  "updated_at": "2026-08-21T14:12:00-05:00",
   "brand": "Prestige",
   "rules": [
     "Use active canonical URLs from this registry instead of duplicating hard-coded destinations.",
-    "Do not fabricate URLs for channels marked NEEDS_CONNECTION.",
+    "Do not fabricate URLs for channels marked setup_incomplete or needs_connection.",
     "Social and review destinations are traffic/trust channels, not commerce stores.",
     "Affiliate destinations must retain required disclosure and tracking parameters."
   ],
@@ -14,28 +14,21 @@
       "brand": "Prestige Remodeling",
       "channel": "website",
       "public_url": "https://PrestigeRemodelingWI.com/",
-      "affiliate_status": "none",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {},
-      "destination_category": "local-contracting",
       "status": "active",
-      "content_types": ["service", "estimate", "portfolio", "review", "local"],
-      "monetization_type": "lead_generation",
-      "disclosure_requirement": null
+      "destination_category": "local-contracting",
+      "monetization_type": "lead_generation"
     },
     {
       "store_id": "prestige-facebook-business",
       "brand": "Prestige Exteriors LLC / Prestige Remodeling",
       "channel": "facebook",
       "public_url": "https://www.facebook.com/Prestigeexteriorsllc",
-      "affiliate_status": "traffic_channel",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_source": "facebook", "utm_medium": "social"},
-      "destination_category": "social-business",
       "status": "active",
-      "content_types": ["reel", "post", "project", "sale", "affiliate", "review_request"],
+      "default_tracking_parameters": {
+        "utm_source": "facebook",
+        "utm_medium": "social"
+      },
+      "destination_category": "social-business",
       "monetization_type": "audience_leads_stars_store_traffic",
       "disclosure_requirement": "Affiliate disclosure required on posts containing affiliate links"
     },
@@ -44,13 +37,12 @@
       "brand": "Jason Reppen / Prestige",
       "channel": "instagram",
       "public_url": "https://www.instagram.com/Jason_Reppen",
-      "affiliate_status": "traffic_channel",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_source": "instagram", "utm_medium": "social"},
-      "destination_category": "social-creator",
       "status": "active",
-      "content_types": ["reel", "post", "story", "project", "sale", "affiliate"],
+      "default_tracking_parameters": {
+        "utm_source": "instagram",
+        "utm_medium": "social"
+      },
+      "destination_category": "social-creator",
       "monetization_type": "audience_store_traffic_leads",
       "disclosure_requirement": "Affiliate disclosure required on posts containing affiliate links"
     },
@@ -59,58 +51,44 @@
       "brand": "Prestige Exteriors LLC / Prestige Remodeling",
       "channel": "google_business_review",
       "public_url": "https://g.page/r/CaXV3fVM4owyEAE/review",
-      "affiliate_status": "none",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {},
-      "destination_category": "reviews",
       "status": "active",
-      "content_types": ["review_request", "post_job_followup", "customer_followup"],
-      "monetization_type": "trust_local_seo",
-      "disclosure_requirement": null
+      "destination_category": "reviews",
+      "monetization_type": "trust_local_seo"
     },
     {
       "store_id": "prestige-digitools-shopify",
       "brand": "Prestige DigiTools",
       "channel": "shopify",
       "public_url": "https://prestige-digitool.myshopify.com/",
-      "affiliate_status": "owned_store",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_medium": "referral"},
-      "destination_category": "digital-products-and-gear",
       "status": "active",
-      "content_types": ["product", "sale", "bundle", "reel", "post"],
-      "monetization_type": "commerce",
-      "disclosure_requirement": null
+      "default_tracking_parameters": {
+        "utm_medium": "referral"
+      },
+      "destination_category": "digital-products-and-gear",
+      "monetization_type": "commerce"
     },
     {
       "store_id": "prestige-contractor-best-picks",
       "brand": "Prestige Contractor Best Picks",
       "channel": "shopify_collection",
       "public_url": "https://prestige-digitool.myshopify.com/collections/prestige-contractor-best-picks",
-      "affiliate_status": "owned_store_collective",
-      "affiliate_program": "Shopify Collective where applicable",
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_medium": "referral"},
-      "destination_category": "contractor-gear",
       "status": "active",
-      "content_types": ["product", "sale", "bundle", "reel", "post"],
-      "monetization_type": "commerce",
-      "disclosure_requirement": null
+      "affiliate_program": "Shopify Collective where applicable",
+      "destination_category": "contractor-gear",
+      "monetization_type": "commerce"
     },
     {
       "store_id": "contractor-tested-picks",
       "brand": "Contractor Tested Picks",
       "channel": "affiliate_site",
       "public_url": "https://contractor-tested-picks-site.vercel.app/",
-      "affiliate_status": "active",
+      "status": "active",
       "affiliate_program": "eBay Partner Network",
       "campaign_id": "5339172120",
-      "default_tracking_parameters": {"customid": "generated_at_publish_time"},
+      "default_tracking_parameters": {
+        "customid": "generated_at_publish_time"
+      },
       "destination_category": "affiliate-commerce",
-      "status": "active",
-      "content_types": ["buying_guide", "product_pick", "reel", "post", "deal"],
       "monetization_type": "affiliate_commission",
       "disclosure_requirement": "eBay Partner Network affiliate disclosure required"
     },
@@ -119,75 +97,84 @@
       "brand": "JRep82 Random Treasures",
       "channel": "ebay",
       "public_url": "https://www.ebay.com/str/prestigerandomtreasures",
-      "affiliate_status": "owned_marketplace_plus_epn_tracking",
+      "status": "active",
       "affiliate_program": "eBay Partner Network",
       "campaign_id": "5339172120",
-      "default_tracking_parameters": {"customid": "generated_at_publish_time"},
+      "default_tracking_parameters": {
+        "customid": "generated_at_publish_time"
+      },
       "destination_category": "collectibles-resale",
+      "monetization_type": "marketplace_sales_affiliate_commission"
+    },
+    {
+      "store_id": "pinterest",
+      "brand": "Prestige Random Treasures / Prestige",
+      "channel": "pinterest",
+      "public_url": "https://www.pinterest.com/jreppen82/",
+      "status": "active_profile_connection_repair_needed",
+      "account_handle": "jreppen82",
+      "default_tracking_parameters": {
+        "utm_source": "pinterest",
+        "utm_medium": "social"
+      },
+      "destination_category": "social-discovery",
+      "monetization_type": "traffic_affiliate_sales",
+      "disclosure_requirement": "Affiliate disclosure required on affiliate pins",
+      "connection_notes": [
+        "Pinterest account exists and previously auto-published Instagram content.",
+        "Instagram claim is currently disconnected and must be re-authorized in Pinterest.",
+        "Pinterest merchant rejection dated 2026-08-21 says merchant domain URL is broken.",
+        "Pinterest currently shows claimed domain gx01a8-50.myshopify.com; live Prestige store is prestige-digitool.myshopify.com."
+      ]
+    },
+    {
+      "store_id": "tiktok",
+      "brand": "Jason Reppen / Prestige",
+      "channel": "tiktok",
+      "public_url": "https://www.tiktok.com/@jreppen82",
+      "status": "active_profile_shop_setup_incomplete",
+      "account_handle": "jreppen82",
+      "default_tracking_parameters": {
+        "utm_source": "tiktok",
+        "utm_medium": "social"
+      },
+      "destination_category": "social-video",
+      "monetization_type": "traffic_commerce_affiliate",
+      "disclosure_requirement": "Affiliate disclosure required on affiliate content",
+      "connection_notes": [
+        "TikTok Business Account exists.",
+        "TikTok confirms the TikTok account is already connected to TikTok Shop.",
+        "Business verification is complete.",
+        "TikTok Shop is not ready to sell until warehouse, shipping, tax, and payout setup are completed."
+      ]
+    },
+    {
+      "store_id": "poshmark",
+      "brand": "Jason Reppen / Prestige Random Treasures",
+      "channel": "poshmark",
+      "public_url": "https://poshmark.com/closet/jreppen82",
       "status": "active",
-      "content_types": ["listing", "collectible", "tool", "deal", "reel", "post"],
-      "monetization_type": "marketplace_sales_affiliate_commission",
-      "disclosure_requirement": "Affiliate disclosure required when using EPN-tracked links"
+      "account_handle": "jreppen82",
+      "destination_category": "marketplace",
+      "monetization_type": "marketplace_sales",
+      "connection_notes": [
+        "Poshmark account is confirmed as @jreppen82.",
+        "Seller drafts exist and can be published."
+      ]
     },
     {
       "store_id": "etsy",
       "brand": "Prestige",
       "channel": "etsy",
-      "public_url": "NEEDS_CONNECTION",
-      "affiliate_status": "unknown",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {},
+      "public_url": null,
+      "status": "shop_setup_incomplete",
       "destination_category": "marketplace",
-      "status": "needs_connection",
-      "content_types": ["product", "digital_product"],
       "monetization_type": "marketplace_sales",
-      "disclosure_requirement": null
-    },
-    {
-      "store_id": "pinterest",
-      "brand": "Prestige",
-      "channel": "pinterest",
-      "public_url": "NEEDS_CONNECTION",
-      "affiliate_status": "traffic_channel",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_source": "pinterest", "utm_medium": "social"},
-      "destination_category": "social-discovery",
-      "status": "needs_connection",
-      "content_types": ["pin", "product_pin", "guide", "affiliate"],
-      "monetization_type": "traffic_affiliate_sales",
-      "disclosure_requirement": "Affiliate disclosure required on affiliate pins"
-    },
-    {
-      "store_id": "tiktok",
-      "brand": "Prestige",
-      "channel": "tiktok",
-      "public_url": "NEEDS_CONNECTION",
-      "affiliate_status": "traffic_channel",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {"utm_source": "tiktok", "utm_medium": "social"},
-      "destination_category": "social-video",
-      "status": "needs_connection",
-      "content_types": ["short_video", "product", "affiliate"],
-      "monetization_type": "traffic_commerce_affiliate",
-      "disclosure_requirement": "Affiliate disclosure required on affiliate content"
-    },
-    {
-      "store_id": "poshmark",
-      "brand": "Prestige",
-      "channel": "poshmark",
-      "public_url": "NEEDS_CONNECTION",
-      "affiliate_status": "none",
-      "affiliate_program": null,
-      "campaign_id": null,
-      "default_tracking_parameters": {},
-      "destination_category": "marketplace",
-      "status": "needs_connection",
-      "content_types": ["listing", "resale"],
-      "monetization_type": "marketplace_sales",
-      "disclosure_requirement": null
+      "connection_notes": [
+        "Etsy account exists and identity verification completed.",
+        "Last seller onboarding evidence says to finish shop setup; no confirmed public shop URL was found.",
+        "Do not publish or fabricate an Etsy shop URL until onboarding is completed and the public shop name is known."
+      ]
     }
   ]
 }
