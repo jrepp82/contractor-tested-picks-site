@@ -169,3 +169,51 @@
     }
   });
 })();
+
+(function addPrestigeGrandOpeningPromotion(){
+  const starts = new Date('2026-08-21T05:20:00-05:00');
+  const ends = new Date('2026-09-05T00:00:00-05:00');
+  const now = new Date();
+  if (now < starts || now >= ends || document.querySelector('[data-grand-opening-promo]')) return;
+
+  const anchor = document.querySelector('.disclosure-strip') || document.querySelector('main .hero');
+  if (!anchor || !anchor.parentNode) return;
+
+  const section = document.createElement('section');
+  section.className = 'section';
+  section.setAttribute('data-grand-opening-promo','true');
+  section.style.padding = '24px 0 0';
+  section.innerHTML = `
+    <div class="container">
+      <div class="capture-panel" style="background:linear-gradient(135deg,#0b1f3a 0%,#12345a 58%,#1f5aa6 100%);">
+        <span class="eyebrow" style="margin-bottom:12px;">Grand opening • Ends Sept. 4</span>
+        <h2>Prestige Contractor Best Picks Grand Opening Sale</h2>
+        <p><strong style="color:#fff;">Save 10% with code GRANDOPEN10</strong> on eligible gear, or buy 2+ eligible items and use <strong style="color:#fff;">BUNDLE15</strong> for 15% off. The Recon 2000 power station is excluded.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary grand-opening-link" href="https://prestige-digitool.myshopify.com/collections/prestige-contractor-best-picks?utm_source=contractor-tested-picks&utm_medium=website&utm_campaign=grand-opening&utm_content=grand-opening-banner" target="_blank" rel="noopener">Shop the Grand Opening Sale →</a>
+        </div>
+      </div>
+    </div>`;
+
+  anchor.insertAdjacentElement('afterend', section);
+
+  section.querySelector('.grand-opening-link')?.addEventListener('click', event => {
+    const detail = {
+      event: 'grand_opening_click',
+      offer: 'GRANDOPEN10_OR_BUNDLE15',
+      destination_url: event.currentTarget.href,
+      page_path: location.pathname,
+      timestamp: new Date().toISOString()
+    };
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(detail);
+    if (typeof window.gtag === 'function') {
+      window.gtag('event','grand_opening_click',{
+        promotion_name: 'Prestige Grand Opening',
+        coupon: 'GRANDOPEN10_OR_BUNDLE15',
+        link_url: detail.destination_url,
+        page_path: detail.page_path
+      });
+    }
+  });
+})();
