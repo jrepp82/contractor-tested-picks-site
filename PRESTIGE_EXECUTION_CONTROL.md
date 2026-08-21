@@ -56,8 +56,29 @@ Completed and merged:
 - `cross-store-promotion-engine.js`
 - `prestige-store-network.json`
 
+Supported content destinations include Facebook, Instagram, YouTube Shorts, and TikTok. The current content resolver already emits `youtube-shorts` as a supported platform and the link builder uses deterministic `yt` tracking IDs.
+
 Safety rule:
 - Draft/unverified DigiTools must not be represented as live/purchasable until fulfillment is proven.
+
+## P1 - YouTube Shorts
+
+Status: `ACCOUNT CONFIRMED - PUBLIC CHANNEL URL + UPLOAD AUTHORIZATION STILL TO VERIFY`
+
+Verified:
+- The Google account has YouTube creator/channel history.
+- Google recorded a YouTube Channel authorization on 2026-08-02.
+- The Prestige affiliate-content resolver already supports `youtube-shorts`.
+- Affiliate/store links can already be generated with YouTube-specific `yt` attribution.
+
+Required to finish automated posting:
+1. Resolve and record the current YouTube channel ID, handle, and public URL.
+2. Authorize the publisher with Google OAuth 2.0 using the minimum `youtube.upload` scope.
+3. Store OAuth client/refresh credentials as deployment secrets, never in GitHub.
+4. Verify the authorized channel before every upload.
+5. Upload a test Short as private first and confirm title, description, tracking link, disclosure, audience setting and playback.
+6. Do not declare public automated posting complete until the Google API project can publish publicly. YouTube currently restricts uploads from unverified API projects to private viewing until the API project passes its required compliance audit.
+7. Once verified, feed rendered Reel/Short assets from the same content factory into the YouTube publisher rather than creating a separate YouTube workflow.
 
 ## P1 - Shopify
 
@@ -76,6 +97,7 @@ See `MARKETPLACE_CONNECTIONS.md`.
 
 - Facebook: operational destination confirmed.
 - Instagram: operational destination confirmed.
+- YouTube: account/channel relationship confirmed; current public URL and automated upload OAuth still require verification.
 - eBay: operational destination confirmed.
 - Poshmark: account operational; listing/storefront work remains.
 - Pinterest: connected but merchant/domain + Instagram reauthorization repair required.
@@ -114,7 +136,7 @@ Completion standard before selling draft DigiTools broadly:
 ## P2 - Revenue attribution
 
 Target closed loop:
-`product feed -> content idea -> platform post/Reel -> tracked link -> store/marketplace -> purchase -> fulfillment -> attribution`
+`product feed -> content idea -> platform post/Reel/Short -> tracked link -> store/marketplace -> purchase -> fulfillment -> attribution`
 
 No component is considered complete if the downstream handoff is missing.
 
