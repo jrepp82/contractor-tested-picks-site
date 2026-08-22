@@ -10,6 +10,22 @@ Read the source-of-truth files before digital revenue work. Audit live state bef
 ## Mandatory New-Idea Execution Rule
 Any business, revenue, automation, marketing, affiliate, e-commerce, digital-product, content, or AI idea Jason sends is an execution target by default, not an inspiration item. In the same work session: verify what can be verified, identify the shortest path to revenue or risk reduction, adapt it to the existing Prestige system, create or modify the usable asset when tools permit, connect it to a monetization/lead path, test the result, and record any genuine external blocker. Do not create a passive "ideas" backlog when executable work can be completed now.
 
+## Mandatory Production Quality / Sellability Gate
+Functional is not finished. Every customer-facing Prestige revenue asset must be treated as production-grade commerce and must meet the highest practical quality available with the current tools before it is called complete.
+
+Required by default:
+- premium, modern, attention-grabbing visual hierarchy consistent with the Prestige brand;
+- no emoji placeholders, generic filler cards, blank visuals, lorem ipsum, temporary copy, dead buttons, untracked monetization links, or knowingly weak presentation left in production;
+- strong naming, headline, offer framing, product merchandising, CTA hierarchy and trust signals designed to maximize legitimate conversion without deceptive claims;
+- each page must feed at least one real revenue or lead path and, when relevant, cross-connect affiliate sales, digital products, memberships, eBay inventory, email capture and Prestige Remodeling leads rather than becoming an isolated microsite;
+- product/category cards must have intentional product-specific visual treatment and clear buying intent; dynamic affiliate search cards must not falsely imply one pictured listing is the exact live destination;
+- mobile must receive the same quality standard as desktop: readable typography, balanced spacing, polished cards, obvious CTAs and no awkward overflow or giant empty sections;
+- preserve verified Stripe checkout, fulfillment, EPN tracking, disclosures, analytics and lead routing while improving presentation;
+- perform live production verification after meaningful customer-facing changes;
+- proactively improve obvious quality defects when discovered instead of waiting for Jason to identify them.
+
+A page that merely loads is not done. A page is done only when it is functional, connected, sellable, visually credible and verified in production.
+
 ## 1. Live revenue system
 Production: `https://contractor-tested-picks-site.vercel.app`
 Repo: `jrepp82/contractor-tested-picks-site`, `main`, Vercel auto-deploy.
