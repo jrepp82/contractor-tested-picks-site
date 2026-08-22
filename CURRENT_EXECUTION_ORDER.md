@@ -7,6 +7,21 @@
 ## Mandatory Startup Rule
 Read the source-of-truth files before digital revenue work. Audit live state before trusting old chats. Resume unfinished work after every interruption. Completion requires a verified deliverable or confirmed external action.
 
+## Mandatory Continuity / Decision-Preservation Rule
+Continuity is a hard requirement, not a preference.
+
+Before changing branding, pricing, product names, website structure, funnel architecture, automation flow, deployment, or task status:
+1. Read the current source-of-truth and relevant locked-decision files first.
+2. Inspect the current live/repo state instead of assuming an older chat or artifact is current.
+3. The newest explicit owner decision overrides older conflicting files or assistant output.
+4. Preserve existing approved/working architecture and make surgical changes unless Jason explicitly orders a rebuild.
+5. Never create a duplicate project, duplicate storefront, duplicate funnel, or replacement system when an existing one can be continued.
+6. Interrupted work remains ACTIVE / IN PROGRESS and must be resumed from the exact stopping point after new requests are handled.
+7. Distinguish clearly between WORKING, IN PROGRESS, READY FOR OWNER ACTION, DEPLOYED and VERIFIED DONE. Do not call something done because a draft/file/commit exists.
+8. Never change locked prices, payout/bank/tax settings, irreversible data, or unverified legal/licensing claims without required owner approval.
+9. Treat Automated Money Machines, Prestige Select, Prestige DigiTools, affiliate marketing, eBay, website traffic, email capture, checkout, fulfillment, memberships, analytics, content distribution and local Prestige Remodeling lead generation as ONE connected revenue system, not separate side projects.
+10. When prior context is available, use it before asking Jason to repeat information.
+
 ## Mandatory New-Idea Execution Rule
 Any business, revenue, automation, marketing, affiliate, e-commerce, digital-product, content, or AI idea Jason sends is an execution target by default, not an inspiration item. In the same work session: verify what can be verified, identify the shortest path to revenue or risk reduction, adapt it to the existing Prestige system, create or modify the usable asset when tools permit, connect it to a monetization/lead path, test the result, and record any genuine external blocker. Do not create a passive "ideas" backlog when executable work can be completed now.
 
