@@ -1,11 +1,14 @@
 # Current Execution Order
 
 **Owner:** Forge / ChatGPT  
-**Last updated:** 2026-08-19  
+**Last updated:** 2026-08-21  
 **Source of truth:** this file + `FORGE_PRODUCTION_QUEUE.md` + `SUBSCRIPTION_AUTOMATION_SPEC.md` + `MEMBERSHIP_RELEASE_MAP_M01_M06.md` + live Stripe/Drive/GitHub/Vercel evidence.
 
 ## Mandatory Startup Rule
 Read the source-of-truth files before digital revenue work. Audit live state before trusting old chats. Resume unfinished work after every interruption. Completion requires a verified deliverable or confirmed external action.
+
+## Mandatory New-Idea Execution Rule
+Any business, revenue, automation, marketing, affiliate, e-commerce, digital-product, content, or AI idea Jason sends is an execution target by default, not an inspiration item. In the same work session: verify what can be verified, identify the shortest path to revenue or risk reduction, adapt it to the existing Prestige system, create or modify the usable asset when tools permit, connect it to a monetization/lead path, test the result, and record any genuine external blocker. Do not create a passive "ideas" backlog when executable work can be completed now.
 
 ## 1. Live revenue system
 Production: `https://contractor-tested-picks-site.vercel.app`
