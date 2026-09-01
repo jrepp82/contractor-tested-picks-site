@@ -1,0 +1,13 @@
+{
+  "status": "ready_for_channel_test",
+  "campaign": "Prestige Remodeling Local Lead Reel",
+  "priority": ["facebook", "youtube", "instagram", "pinterest", "tiktok"],
+  "targets": ["facebook", "youtube", "instagram"],
+  "media_type": "video",
+  "media_url": "PENDING_PUBLIC_VIDEO_URL",
+  "captions": {
+    "facebook": "Small missed costs turn into big remodeling problems. Delivery, disposal, setup and extra labor all matter before the job starts. Prestige Remodeling scopes the whole job before work begins. Manitowoc-area homeowners: request an estimate at PrestigeRemodelingWI.com or call 920-242-0969.",
+    "youtube": "The little costs can wreck a remodeling budget. Prestige Remodeling scopes the whole job before work starts. Manitowoc-area homeowners: PrestigeRemodelingWI.com | 920-242-0969 #remodeling #contractor #Manitowoc",
+    "instagram": "The expensive part is often the cost nobody planned for. Delivery. Disposal. Setup. Extra labor. Scope the whole job before work starts. Request an estimate: PrestigeRemodelingWI.com #Manitowoc #Remodeling #WisconsinContractor"
+  }
+}
