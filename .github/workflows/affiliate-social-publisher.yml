@@ -145,13 +145,13 @@ jobs:
           node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
 
       - name: Publish Threads
-        if: ${{ env.TARGET_PLATFORM == 'threads' }}
+        if: ${{ env.TARGET_PLATFORM == 'threads' || env.TARGET_PLATFORM == 'all' }}
         shell: bash
         run: |
           set -euo pipefail
           ARGS=("--slot=${PUBLISH_SLOT}")
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
-          node threads-publisher.js "${ARGS[@]}" | tee social-publish-result.json
+          node threads-publisher.js "${ARGS[@]}" | tee threads-publish-result.json
 
       - name: Preserve run result
         if: always()
@@ -160,6 +160,7 @@ jobs:
           name: social-publish-result-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             social-publish-result.json
+            threads-publish-result.json
             .social-output/
             .social-quality/
           if-no-files-found: ignore
