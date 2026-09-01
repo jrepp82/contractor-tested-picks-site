@@ -8,6 +8,8 @@ on:
       - 'affiliate-content-feed.json'
       - 'normalized-products.json'
       - 'youtube-shorts-publisher.js'
+      - 'threads-publisher.js'
+      - 'meta-expansion-publisher.js'
       - 'social-quality-gate.js'
       - '.github/workflows/affiliate-social-publisher.yml'
   push:
@@ -16,6 +18,7 @@ on:
   schedule:
     - cron: '0 18 * * *'
     - cron: '0 20 * * *'
+    - cron: '0 22 * * *'
     - cron: '0 0 * * 1'
     - cron: '0 1 * * 2'
     - cron: '0 1 * * 3'
@@ -37,7 +40,7 @@ on:
         required: true
         type: choice
         default: all
-        options: [all, facebook, instagram, tiktok, youtube-shorts]
+        options: [all, facebook, instagram, threads, tiktok, youtube-shorts]
       dry_run:
         description: Build/validate without publishing
         required: true
@@ -65,6 +68,7 @@ jobs:
       META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
       META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
       META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
       TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
       TIKTOK_PRIVACY_LEVEL: ${{ vars.TIKTOK_PRIVACY_LEVEL || 'PUBLIC_TO_EVERYONE' }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
@@ -84,9 +88,11 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Syntax check publisher
+      - name: Syntax check publishers
         run: |
           node --check affiliate-social-publisher.js
+          node --check threads-publisher.js
+          node --check meta-expansion-publisher.js
           node --check social-quality-gate.js
 
       - name: Install short-video render tools
@@ -116,6 +122,7 @@ jobs:
             case '${{ github.event.schedule }}' in
               '0 18 * * *') PLATFORM="facebook" ;;
               '0 20 * * *') PLATFORM="instagram" ;;
+              '0 22 * * *') PLATFORM="threads" ;;
               '0 0 * * 1'|'0 1 * * 2'|'0 1 * * 3'|'0 0 * * 4'|'0 0 * * 5'|'0 21 * * 5'|'0 0 * * 0') PLATFORM="youtube-shorts" ;;
               '0 18 * * 1'|'0 11 * * 2'|'0 3 * * 4'|'0 18 * * 4'|'0 23 * * 5'|'0 22 * * 6'|'0 14 * * 0') PLATFORM="tiktok" ;;
             esac
@@ -125,15 +132,26 @@ jobs:
           echo "PUBLISH_DRY_RUN=${DRY_RUN}" >> "$GITHUB_ENV"
 
       - name: Prepublish quality gate
+        if: ${{ env.TARGET_PLATFORM != 'threads' }}
         run: node social-quality-gate.js --platform="${TARGET_PLATFORM}"
 
-      - name: Publish or dry-run scheduled content
+      - name: Publish core channels
+        if: ${{ env.TARGET_PLATFORM != 'threads' }}
         shell: bash
         run: |
           set -euo pipefail
           ARGS=("--platform=${TARGET_PLATFORM}" "--slot=${PUBLISH_SLOT}")
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
+
+      - name: Publish Threads
+        if: ${{ env.TARGET_PLATFORM == 'threads' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARGS=("--slot=${PUBLISH_SLOT}")
+          if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
+          node threads-publisher.js "${ARGS[@]}" | tee social-publish-result.json
 
       - name: Preserve run result
         if: always()
