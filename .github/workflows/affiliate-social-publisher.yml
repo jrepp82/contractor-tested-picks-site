@@ -9,11 +9,30 @@ on:
       - 'normalized-products.json'
       - 'youtube-shorts-publisher.js'
       - '.github/workflows/affiliate-social-publisher.yml'
+  push:
+    paths:
+      - '.social-launch-now'
   schedule:
-    # Three daily publishing windows. GitHub cron is UTC.
-    - cron: '10 0 * * *'
-    - cron: '10 13 * * *'
-    - cron: '10 18 * * *'
+    # Facebook: 1:00 PM Central daily (18:00 UTC while Central is on daylight time).
+    - cron: '0 18 * * *'
+    # Instagram: 3:00 PM Central daily.
+    - cron: '0 20 * * *'
+    # YouTube Shorts: day-specific evening windows from 2026 engagement data.
+    - cron: '0 0 * * 1'   # Sun 7 PM CT
+    - cron: '0 1 * * 2'   # Mon 8 PM CT
+    - cron: '0 1 * * 3'   # Tue 8 PM CT
+    - cron: '0 0 * * 4'   # Wed 7 PM CT
+    - cron: '0 0 * * 5'   # Thu 7 PM CT
+    - cron: '0 21 * * 5'  # Fri 4 PM CT
+    - cron: '0 0 * * 0'   # Sat 7 PM CT
+    # TikTok: day-specific primary windows from 2026 engagement data.
+    - cron: '0 18 * * 1'  # Mon 1 PM CT
+    - cron: '0 11 * * 2'  # Tue 6 AM CT
+    - cron: '0 3 * * 4'   # Wed 10 PM CT
+    - cron: '0 18 * * 4'  # Thu 1 PM CT
+    - cron: '0 23 * * 5'  # Fri 6 PM CT
+    - cron: '0 22 * * 6'  # Sat 5 PM CT
+    - cron: '0 14 * * 0'  # Sun 9 AM CT
   workflow_dispatch:
     inputs:
       platform:
@@ -41,7 +60,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: affiliate-social-publisher-${{ github.ref }}
+  group: affiliate-social-publisher-${{ github.ref }}-${{ github.event.schedule || github.event_name }}
   cancel-in-progress: false
 
 jobs:
@@ -100,6 +119,18 @@ jobs:
             if [[ -n '${{ inputs.slot }}' ]]; then
               SLOT='${{ inputs.slot }}'
             fi
+          elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            PLATFORM="all"
+            SLOT="launch-now-${GITHUB_RUN_NUMBER}"
+          elif [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
+            SCHEDULE='${{ github.event.schedule }}'
+            case "$SCHEDULE" in
+              '0 18 * * *') PLATFORM="facebook" ;;
+              '0 20 * * *') PLATFORM="instagram" ;;
+              '0 0 * * 1'|'0 1 * * 2'|'0 1 * * 3'|'0 0 * * 4'|'0 0 * * 5'|'0 21 * * 5'|'0 0 * * 0') PLATFORM="youtube-shorts" ;;
+              '0 18 * * 1'|'0 11 * * 2'|'0 3 * * 4'|'0 18 * * 4'|'0 23 * * 5'|'0 22 * * 6'|'0 14 * * 0') PLATFORM="tiktok" ;;
+              *) PLATFORM="all" ;;
+            esac
           fi
 
           ARGS=("--platform=${PLATFORM}" "--slot=${SLOT}")
