@@ -6,7 +6,7 @@ const Publisher = require('./affiliate-social-publisher.js');
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, '.social-quality');
-const PLATFORMS = ['facebook','instagram','tiktok','youtube-shorts'];
+const ALL = ['facebook','instagram','tiktok','youtube-shorts'];
 
 function fail(msg){ throw new Error(msg); }
 function assert(cond,msg){ if(!cond) fail(msg); }
@@ -22,9 +22,7 @@ function checkManifest(m){
   assert(!hasPlaceholder(m.caption), `${m.platform} caption contains placeholder text`);
   assert(!hasPlaceholder(m.affiliate_url), `${m.platform} URL contains placeholder text`);
   assert(clean(m.disclosure).length >= 3, `${m.platform} disclosure missing`);
-  if (m.platform === 'instagram') {
-    assert(/^https:\/\//i.test(clean(m.image_url)), 'instagram requires a public HTTPS image');
-  }
+  if (m.platform === 'instagram') assert(/^https:\/\//i.test(clean(m.image_url)), 'instagram requires a public HTTPS image');
 }
 
 function probeVideo(file){
@@ -41,22 +39,23 @@ function probeVideo(file){
 }
 
 function main(){
+  const requested = process.argv.find(x => x.startsWith('--platform='));
+  const target = requested ? requested.split('=')[1] : 'all';
+  assert(target === 'all' || ALL.includes(target), `unsupported quality-gate platform ${target}`);
+  const platforms = target === 'all' ? ALL : [target];
   const date = new Date();
   const slot = process.env.PUBLISH_SLOT || `qa-${date.toISOString().slice(0,10)}`;
   fs.mkdirSync(OUT,{recursive:true});
   const results = [];
-  for (const platform of PLATFORMS){
+  for (const platform of platforms){
     const m = Publisher.manifestFor({platform,date,slot});
     checkManifest(m);
     const row = {platform,content_id:m.content_id,hook:m.hook,cta:m.cta};
-    if (platform === 'tiktok' || platform === 'youtube-shorts'){
-      const file = Publisher.renderVerticalVideo(m, OUT);
-      row.video = probeVideo(file);
-    }
+    if (platform === 'tiktok' || platform === 'youtube-shorts') row.video = probeVideo(Publisher.renderVerticalVideo(m, OUT));
     results.push(row);
   }
-  fs.writeFileSync(path.join(OUT,'quality-gate-result.json'), JSON.stringify({ok:true,checked_at:new Date().toISOString(),results},null,2));
-  console.log(JSON.stringify({ok:true,results},null,2));
+  fs.writeFileSync(path.join(OUT,`quality-gate-${target}.json`), JSON.stringify({ok:true,target,checked_at:new Date().toISOString(),results},null,2));
+  console.log(JSON.stringify({ok:true,target,results},null,2));
 }
 
 try { main(); }
