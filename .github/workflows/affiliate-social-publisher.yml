@@ -37,12 +37,7 @@ on:
         required: true
         type: choice
         default: all
-        options:
-          - all
-          - facebook
-          - instagram
-          - tiktok
-          - youtube-shorts
+        options: [all, facebook, instagram, tiktok, youtube-shorts]
       dry_run:
         description: Build/validate without publishing
         required: true
@@ -102,44 +97,42 @@ jobs:
       - name: Validate canonical 60-item feed
         run: node affiliate-content-feed-builder.js --validate
 
-      - name: Prepublish quality gate
-        run: node social-quality-gate.js
-
-      - name: Publish or dry-run scheduled content
+      - name: Resolve channel and slot
         shell: bash
         run: |
-          set -euo pipefail
           PLATFORM="all"
           SLOT="${GITHUB_RUN_NUMBER}"
           DRY_RUN="false"
-
           if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
             DRY_RUN="true"
           elif [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
             PLATFORM='${{ inputs.platform }}'
             DRY_RUN='${{ inputs.dry_run }}'
-            if [[ -n '${{ inputs.slot }}' ]]; then
-              SLOT='${{ inputs.slot }}'
-            fi
+            if [[ -n '${{ inputs.slot }}' ]]; then SLOT='${{ inputs.slot }}'; fi
           elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
             PLATFORM="all"
             SLOT="launch-now-${GITHUB_RUN_NUMBER}"
           elif [[ "${GITHUB_EVENT_NAME}" == "schedule" ]]; then
-            SCHEDULE='${{ github.event.schedule }}'
-            case "$SCHEDULE" in
+            case '${{ github.event.schedule }}' in
               '0 18 * * *') PLATFORM="facebook" ;;
               '0 20 * * *') PLATFORM="instagram" ;;
               '0 0 * * 1'|'0 1 * * 2'|'0 1 * * 3'|'0 0 * * 4'|'0 0 * * 5'|'0 21 * * 5'|'0 0 * * 0') PLATFORM="youtube-shorts" ;;
               '0 18 * * 1'|'0 11 * * 2'|'0 3 * * 4'|'0 18 * * 4'|'0 23 * * 5'|'0 22 * * 6'|'0 14 * * 0') PLATFORM="tiktok" ;;
-              *) PLATFORM="all" ;;
             esac
           fi
+          echo "TARGET_PLATFORM=${PLATFORM}" >> "$GITHUB_ENV"
+          echo "PUBLISH_SLOT=${SLOT}" >> "$GITHUB_ENV"
+          echo "PUBLISH_DRY_RUN=${DRY_RUN}" >> "$GITHUB_ENV"
 
-          ARGS=("--platform=${PLATFORM}" "--slot=${SLOT}")
-          if [[ "${DRY_RUN}" == "true" ]]; then
-            ARGS+=("--dry-run")
-          fi
+      - name: Prepublish quality gate
+        run: node social-quality-gate.js --platform="${TARGET_PLATFORM}"
 
+      - name: Publish or dry-run scheduled content
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARGS=("--platform=${TARGET_PLATFORM}" "--slot=${PUBLISH_SLOT}")
+          if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
 
       - name: Preserve run result
