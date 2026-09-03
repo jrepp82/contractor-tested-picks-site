@@ -1,0 +1,10 @@
+Prestige DigiTools Labor Rate Engine V2
+SKU: PDT-LABORRATE-001
+Version: 2.0
+Built: 2026-09-03
+Package: prestige-digitools-labor-rate-break-even-engine-v2.zip
+Bytes: 12132
+SHA256: 86aebd40da9ee0faf3e901b23247a3ee95d02808cd04bf0e9b1741ca84a2f2b4
+QA SHA256: abdda565d61a2c4a4c5c873a5dffdcec2eb40eb6dcf9fcfe92db8fce7426e333
+Stripe Payment Link ID: plink_1UBL1qHB1wxxj42cHzCMtnbA
+Price: 1799 cents USD
