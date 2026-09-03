@@ -1,9 +1,14 @@
 {
-  "generated_for": "2026-09-03",
+  "status": "generated",
   "campaign": "Roof Leak Reality",
-  "hook": "A roof leak does not always start directly above the stain.",
-  "body": "Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.",
-  "cta": "Need an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore. PrestigeRemodelingWI.com | 920-242-0969",
+  "targets": [
+    "facebook",
+    "instagram",
+    "tiktok",
+    "youtube-shorts"
+  ],
+  "media_type": "video",
+  "media_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
   "captions": {
     "facebook": "A roof leak does not always start directly above the stain.\n\nWater can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.\n\nNeed an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore. PrestigeRemodelingWI.com | 920-242-0969",
     "instagram": "A roof leak does not always start directly above the stain.\n\nWater can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.\n\nPrestigeRemodelingWI.com | 920-242-0969\n\n#Manitowoc #Wisconsin #Remodeling #Contractor #HomeImprovement",
@@ -11,12 +16,6 @@
     "tiktok": "A roof leak does not always start directly above the stain. Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair. PrestigeRemodelingWI.com | 920-242-0969 #remodeling #contractor #wisconsin"
   },
   "source": "local-fallback",
-  "fallback_reason": "Expecting value: line 1 column 1 (char 0)",
-  "video_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
-  "video_specs": {
-    "width": 1080,
-    "height": 1920,
-    "duration_seconds": 12
-  },
-  "publishing_status": "GENERATED_PENDING_PROVIDER_DELIVERY"
+  "generated_for": "2026-09-03",
+  "multi_channel_package": ".social-output/prestige-local/2026-09-03/package.json"
 }
