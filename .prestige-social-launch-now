@@ -1,1 +1,1 @@
-Prestige handoff diagnostic verification 2026-09-03. Probe Money Machine Bot Hub social-package endpoint, generate today's media, attempt every connected provider, and persist delivery results even when credentials are missing.
+Prestige backend-API handoff verification 2026-09-03. Pull social package from api-v2 AppDeploy backend, render and persist media, attempt connected providers, and persist the exact delivery report.
