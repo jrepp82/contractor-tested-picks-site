@@ -1,7 +1,7 @@
 {
   "date": "2026-09-03",
-  "source": "appdeploy-direct-publisher-with-github-verification",
-  "configured_secret_names": [],
+  "source": "appdeploy-direct-publisher-plus-nextdoor-with-github-verification",
+  "configured_appdeploy_secret_names": [],
   "deliveries": [
     {
       "platform": "facebook",
@@ -38,6 +38,16 @@
         "GOOGLE_CLIENT_SECRET",
         "YOUTUBE_REFRESH_TOKEN"
       ]
+    },
+    {
+      "platform": "nextdoor",
+      "status": "SKIPPED_MISSING_CREDENTIALS",
+      "published": false,
+      "missing": [
+        "NEXTDOOR_ACCESS_TOKEN",
+        "NEXTDOOR_SECURE_PROFILE_ID"
+      ],
+      "requires_publish_api_approval": true
     }
   ],
   "all_published": false

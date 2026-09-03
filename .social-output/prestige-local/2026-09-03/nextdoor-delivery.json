@@ -1,0 +1,10 @@
+{
+  "platform": "nextdoor",
+  "status": "SKIPPED_MISSING_CREDENTIALS",
+  "published": false,
+  "missing": [
+    "NEXTDOOR_ACCESS_TOKEN",
+    "NEXTDOOR_SECURE_PROFILE_ID"
+  ],
+  "requires_publish_api_approval": true
+}
