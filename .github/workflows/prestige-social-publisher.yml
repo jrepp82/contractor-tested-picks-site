@@ -19,25 +19,12 @@ permissions:
 
 concurrency:
   group: prestige-social-publisher-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v24.0' }}
-      META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
-      META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
-      META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
-      META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
-      TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
-      TIKTOK_PRIVACY_LEVEL: ${{ vars.TIKTOK_PRIVACY_LEVEL || 'PUBLIC_TO_EVERYONE' }}
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-      YOUTUBE_EXPECTED_CHANNEL_ID: ${{ secrets.YOUTUBE_EXPECTED_CHANNEL_ID }}
-      YOUTUBE_PRIVACY_STATUS: ${{ vars.YOUTUBE_PRIVACY_STATUS || 'public' }}
 
     steps:
       - name: Check out repository
@@ -131,17 +118,8 @@ jobs:
             sleep 10
           fi
 
-      - name: Publish Prestige content to connected channels
-        run: python prestige-social/publisher.py
-
-      - name: Commit delivery results
-        if: always() && env.PRESTIGE_DRY_RUN != 'true'
+      - name: Hand off persisted reel to AppDeploy direct publisher
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        shell: bash
         run: |
-          git config user.name 'Prestige Automation'
-          git config user.email 'automation@users.noreply.github.com'
-          git add prestige-social/queue .social-output/prestige-local
-          if ! git diff --cached --quiet; then
-            git commit -m "Record Prestige social delivery results"
-            git pull --rebase
-            git push
-          fi
+          curl -sS -L --fail-with-body --max-time 180 -X POST 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-now'
