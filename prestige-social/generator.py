@@ -16,8 +16,8 @@ def fetch_bot_package(today, attempts=3):
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
-            req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.0', 'Accept': 'application/json'})
-            with urllib.request.urlopen(req, timeout=180) as response:
+            req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.1', 'Accept': 'application/json'})
+            with urllib.request.urlopen(req, timeout=90) as response:
                 raw = response.read().decode()
                 if not raw.strip():
                     raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
@@ -44,14 +44,15 @@ def fetch_bot_package(today, attempts=3):
             return data
         except Exception as exc:
             last_error = exc
+            print(f'Bot package attempt {attempt}/{attempts} failed: {exc}')
             if attempt < attempts:
                 time.sleep(5 * attempt)
     raise RuntimeError(f'Premium Bot Hub package unavailable after {attempts} attempts: {last_error}')
 
 
 def download(url, path):
-    req = urllib.request.Request(url, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.0'})
-    with urllib.request.urlopen(req, timeout=120) as response:
+    req = urllib.request.Request(url, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.1'})
+    with urllib.request.urlopen(req, timeout=45) as response:
         data = response.read()
     if len(data) < 10000:
         raise RuntimeError(f'Visual download was unexpectedly small: {url}')
@@ -78,16 +79,28 @@ def write_srt(package, path):
     path.write_text('\n'.join(blocks))
 
 
-def create_voiceover(package, out_path):
+def create_voiceover(package, out_path, attempts=3):
     voiceover = ' '.join(str(package.get('voiceover') or '').split())
     if not voiceover:
         raise RuntimeError('Premium package is missing voiceover copy')
-    result = subprocess.run([
-        'edge-tts', '--voice', 'en-US-GuyNeural', '--rate', '+3%', '--text', voiceover,
-        '--write-media', str(out_path)
-    ], text=True, capture_output=True)
-    if result.returncode != 0 or not out_path.exists() or out_path.stat().st_size < 10000:
-        raise RuntimeError(f'Voiceover generation failed: {result.stderr or result.stdout}')
+    last_error = None
+    for attempt in range(1, attempts + 1):
+        if out_path.exists():
+            out_path.unlink()
+        try:
+            result = subprocess.run([
+                'edge-tts', '--voice', 'en-US-GuyNeural', '--rate', '+3%', '--text', voiceover,
+                '--write-media', str(out_path)
+            ], text=True, capture_output=True, timeout=45)
+            if result.returncode == 0 and out_path.exists() and out_path.stat().st_size >= 10000:
+                return
+            last_error = RuntimeError(result.stderr or result.stdout or 'voiceover output missing')
+        except subprocess.TimeoutExpired:
+            last_error = RuntimeError('neural voiceover provider timed out after 45 seconds')
+        print(f'Voiceover attempt {attempt}/{attempts} failed: {last_error}')
+        if attempt < attempts:
+            time.sleep(5 * attempt)
+    raise RuntimeError(f'Voiceover generation failed after {attempts} attempts: {last_error}')
 
 
 def render_video(package, outdir):
@@ -122,10 +135,13 @@ def render_video(package, outdir):
         '-i', voice.name,
         '-filter_complex', filters,
         '-map', '[v]', '-map', '[a]', '-t', '18', '-r', '30',
-        '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
+        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p',
         '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', video.name
     ]
-    result = subprocess.run(cmd, cwd=outdir, text=True, capture_output=True)
+    try:
+        result = subprocess.run(cmd, cwd=outdir, text=True, capture_output=True, timeout=120)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError('Premium video render exceeded 120-second safety timeout') from exc
     if result.returncode != 0:
         raise RuntimeError(f'Premium video render failed: {result.stderr[-5000:]}')
     if not video.exists() or video.stat().st_size < 300000:
@@ -133,7 +149,7 @@ def render_video(package, outdir):
     probe = subprocess.run([
         'ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries',
         'stream=width,height', '-of', 'json', str(video)
-    ], text=True, capture_output=True, check=True)
+    ], text=True, capture_output=True, check=True, timeout=20)
     stream = (json.loads(probe.stdout).get('streams') or [{}])[0]
     if stream.get('width') != 1080 or stream.get('height') != 1920:
         raise RuntimeError(f'Video QA failed resolution check: {stream}')
