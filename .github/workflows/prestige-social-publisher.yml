@@ -24,7 +24,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v24.0' }}
       META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
@@ -48,10 +48,13 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install render tools
+      - name: Install premium reel tools
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg librsvg2-bin
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --quiet edge-tts
+          ffmpeg -version | head -1
+          edge-tts --version
 
       - name: Resolve execution mode
         shell: bash
@@ -72,18 +75,46 @@ jobs:
         shell: bash
         run: |
           set +e
-          curl -sS -L --max-time 45 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://money-machine-bot-hub-uvnwsq.v2.appdeploy.ai/api/social-package'
+          curl -sS -L --max-time 180 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
           CURL_RC=$?
           echo "CURL_RC=${CURL_RC}"
           echo '--- response headers ---'
           cat /tmp/bot-headers.txt || true
           echo '--- response preview ---'
-          head -c 1000 /tmp/bot-body.txt || true
+          head -c 1800 /tmp/bot-body.txt || true
           echo
           exit 0
 
-      - name: Generate today's Prestige marketing package
-        run: python prestige-social/generator.py
+      - name: Generate premium Prestige reel with retry
+        shell: bash
+        run: |
+          set +e
+          for attempt in 1 2 3; do
+            echo "Premium media generation attempt ${attempt}/3"
+            python prestige-social/generator.py && exit 0
+            RC=$?
+            echo "Generation attempt ${attempt} failed with ${RC}"
+            sleep $((attempt * 10))
+          done
+          echo 'Premium Prestige media generation failed after 3 attempts.'
+          exit 1
+
+      - name: Enforce premium media gate
+        run: |
+          python - <<'PY'
+          import datetime, json, pathlib
+          today = datetime.date.today().isoformat()
+          root = pathlib.Path('.social-output/prestige-local') / today
+          package = json.loads((root / 'package.json').read_text())
+          video = pathlib.Path(package['video_path'])
+          cq = package.get('quality') or {}
+          vq = (package.get('media') or {}).get('quality') or {}
+          assert cq.get('passed') and float(cq.get('score', 0)) >= 90, cq
+          assert vq.get('passed') and float(vq.get('score', 0)) >= 90, vq
+          assert package.get('media_mode') == 'premium-ai-visual-motion-reel', package.get('media_mode')
+          assert video.exists() and video.stat().st_size >= 300000, video
+          print('Premium gate PASS:', cq.get('score'), vq.get('score'), video)
+          PY
 
       - name: Persist generated media before live publishing
         if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
@@ -92,10 +123,10 @@ jobs:
           git config user.email 'automation@users.noreply.github.com'
           git add prestige-social/queue .social-output/prestige-local
           if ! git diff --cached --quiet; then
-            git commit -m "Generate daily Prestige social media"
+            git commit -m "Generate premium daily Prestige social media"
             git pull --rebase
             git push
-            sleep 8
+            sleep 10
           fi
 
       - name: Publish Prestige content to connected channels
