@@ -1,1 +1,1 @@
-Prestige-only social publishing test 2026-09-03 self-contained generator -> Buffer -> Facebook. Verify a real Buffer post result and persist delivery status.
+Prestige social automation verification 2026-09-03. Generate today's local marketing post, validate the queue, report disconnected publishing credentials without failing, and persist queue state.
