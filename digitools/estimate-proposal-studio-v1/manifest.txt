@@ -1,0 +1,10 @@
+Prestige DigiTools Contractor Estimate & Proposal Studio PRO V1
+SKU: PDT-ESTPROP-001
+Version: 1.0
+Built: 2026-09-03
+Package: prestige-digitools-contractor-estimate-proposal-studio-pro-v1.zip
+Bytes: 11205
+SHA256: 0459f1bb48f94fbf466226020c096f47d6e283fd3a021dd429a55b83ec369095
+QA: ZIP integrity PASS; 13/13 static feature checks PASS; 6/6 formula regression checks PASS
+Shopify status: DRAFT
+Price: 1299 cents USD
