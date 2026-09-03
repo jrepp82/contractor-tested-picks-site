@@ -71,21 +71,19 @@ jobs:
           python -m py_compile prestige-social/generator.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
-      - name: Probe Money Machine Social Bot handoff
+      - name: Probe Money Machine Bot health only
         shell: bash
         run: |
           set +e
-          curl -sS -L --max-time 180 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
+          curl -sS -L --max-time 30 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/_healthcheck'
           CURL_RC=$?
           echo "CURL_RC=${CURL_RC}"
-          echo '--- response headers ---'
           cat /tmp/bot-headers.txt || true
-          echo '--- response preview ---'
-          head -c 1800 /tmp/bot-body.txt || true
+          cat /tmp/bot-body.txt || true
           echo
-          exit 0
+          if [[ "${CURL_RC}" != "0" ]]; then exit 1; fi
 
-      - name: Generate premium Prestige reel with retry
+      - name: Generate premium Prestige reel with bounded rate-limit retry
         shell: bash
         run: |
           sed -i 's/timeout=90/timeout=180/' prestige-social/generator.py
@@ -95,9 +93,12 @@ jobs:
             python prestige-social/generator.py && exit 0
             RC=$?
             echo "Generation attempt ${attempt} failed with ${RC}"
-            sleep $((attempt * 10))
+            if [[ ${attempt} -lt 3 ]]; then
+              echo 'Waiting 65 seconds to clear the 6-images-per-60-seconds provider window before retrying.'
+              sleep 65
+            fi
           done
-          echo 'Premium Prestige media generation failed after 3 attempts.'
+          echo 'Premium Prestige media generation failed after bounded retries.'
           exit 1
 
       - name: Enforce premium media gate
