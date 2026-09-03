@@ -1,0 +1,59 @@
+name: Estimate Studio QA Renderer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.estimate-studio-qa-launch'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: estimate-studio-qa-render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and verify approved Shopify artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-digitools-contractor-estimate-proposal-studio-pro-v1.zip?v=1788474910'
+          curl -fsSL "$URL" -o /tmp/estimate-studio-v1.zip
+          test "$(stat -c%s /tmp/estimate-studio-v1.zip)" = '11205'
+          echo '0459f1bb48f94fbf466226020c096f47d6e283fd3a021dd429a55b83ec369095  /tmp/estimate-studio-v1.zip' | sha256sum -c -
+          unzip -t /tmp/estimate-studio-v1.zip
+      - name: Materialize noindex QA app from verified ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p digitools/estimate-proposal-studio-v1/app
+          unzip -p /tmp/estimate-studio-v1.zip index.html > digitools/estimate-proposal-studio-v1/app/index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('digitools/estimate-proposal-studio-v1/app/index.html')
+          s=p.read_text()
+          marker='<meta name="viewport" content="width=device-width,initial-scale=1">'
+          if 'name="robots"' not in s:
+              s=s.replace(marker, marker+'\n<meta name="robots" content="noindex,nofollow,noarchive">',1)
+          p.write_text(s)
+          PY
+          grep -q 'Contractor Estimate & Proposal Studio PRO' digitools/estimate-proposal-studio-v1/app/index.html
+          grep -q 'noindex,nofollow,noarchive' digitools/estimate-proposal-studio-v1/app/index.html
+      - name: Persist verified QA app
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Prestige QA Automation'
+          git config user.email 'automation@users.noreply.github.com'
+          git add digitools/estimate-proposal-studio-v1/app/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish verified Estimate Studio V1 QA app'
+            git pull --rebase
+            git push
+          fi
