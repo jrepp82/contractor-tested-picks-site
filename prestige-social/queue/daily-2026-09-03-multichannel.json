@@ -1,19 +1,32 @@
 {
-  "status": "generated",
-  "campaign": "Fall Exterior Readiness",
+  "status": "premium_media_ready",
+  "campaign": "Deck Ledger Waterproofing: The Failure Starts Behind the Wall",
   "targets": [
     "facebook",
     "instagram",
     "tiktok",
     "youtube-shorts"
   ],
-  "media_type": "video",
+  "media_type": "vertical-video",
+  "media_mode": "premium-technical-vector-motion-reel",
   "media_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
   "captions": {
-    "facebook": "Don't wait for the snow to fly. Inspect your home's exterior this September to ensure your family stays warm all winter. #ManitowocHomeowners #PrestigeRemodeling",
-    "instagram": "September is the ideal time for home maintenance in Manitowoc. Check your seals and siding before the Wisconsin winter arrives. #HomeImprovement #ManitowocWI #PrestigeRemodeling",
-    "youtube-shorts": "Prepare your home for a Wisconsin winter. Learn why early fall inspections are crucial for energy efficiency. #HomeMaintenance #Manitowoc",
-    "tiktok": "Wisconsin winters are tough on homes. Here is why you should check your exterior now. #Manitowoc #HomeRenovation #WinterReady"
+    "facebook": "One of the nastier deck failures can start behind the ledger where nobody sees it. The wall needs a real water-shedding sequence: continuous WRB, properly lapped flashing, protected penetrations, and a drainage path. Caulk alone is not the system. Planning a deck or exterior repair around Manitowoc? Request an estimate at PrestigeRemodelingWI.com.",
+    "instagram": "Deck ledger waterproofing is a layering problem, not a caulk problem. Continuous WRB. Positive flashing lap. Protected penetrations. Drainage path out. Planning a deck or exterior repair in the Manitowoc area? PrestigeRemodelingWI.com #ManitowocWI #DeckRepair #Remodeling #ExteriorRepair #ContractorTips",
+    "youtube-shorts": "Deck ledger leaks often begin behind the wall. This 18-second contractor breakdown shows the water-management stack that matters: continuous WRB, positive-lap flashing, protected fastener penetrations, and a clear drainage path. PrestigeRemodelingWI.com #Shorts",
+    "tiktok": "Caulk is not a drainage plane. A deck ledger needs continuous WRB, a positive flashing lap, protected penetrations, and a path for water to get OUT. Manitowoc-area deck and exterior estimates: PrestigeRemodelingWI.com #ContractorTok #DeckRepair #Remodeling"
+  },
+  "content_quality": {
+    "score": 96,
+    "passed": true,
+    "review": "Deterministic rubric v1: contractor-specific technical lesson; no fabricated customer, job, review, price, or urgency; complete four-channel captions; clear local estimate CTA; three-scene teaching sequence.",
+    "review_source": "deterministic-rubric-v1"
+  },
+  "visual_quality": {
+    "score": 94,
+    "passed": true,
+    "review": "Deterministic visual rubric v1: three custom 1080x1920 construction diagrams; high-contrast hierarchy; no stock imagery or fake project photography; each scene directly teaches the ledger-water-management sequence.",
+    "review_source": "deterministic-rubric-v1"
   },
   "source": "money-machine-social-bot",
   "generated_for": "2026-09-03",

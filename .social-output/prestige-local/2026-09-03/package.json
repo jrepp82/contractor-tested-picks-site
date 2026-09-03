@@ -1,21 +1,50 @@
 {
   "generated_for": "2026-09-03",
-  "campaign": "Fall Exterior Readiness",
-  "hook": "Is your Manitowoc home ready for the first frost?",
-  "body": "As temperatures begin to drop in Wisconsin, small gaps in siding or aging window seals can lead to significant heat loss. Taking the time to inspect your home's exterior now can help maintain indoor comfort and manage energy costs throughout the winter months. Professional assessments identify vulnerabilities before they become costly repairs.",
-  "captions": {
-    "facebook": "Don't wait for the snow to fly. Inspect your home's exterior this September to ensure your family stays warm all winter. #ManitowocHomeowners #PrestigeRemodeling",
-    "instagram": "September is the ideal time for home maintenance in Manitowoc. Check your seals and siding before the Wisconsin winter arrives. #HomeImprovement #ManitowocWI #PrestigeRemodeling",
-    "youtube-shorts": "Prepare your home for a Wisconsin winter. Learn why early fall inspections are crucial for energy efficiency. #HomeMaintenance #Manitowoc",
-    "tiktok": "Wisconsin winters are tough on homes. Here is why you should check your exterior now. #Manitowoc #HomeRenovation #WinterReady"
+  "campaign": "Deck Ledger Waterproofing: The Failure Starts Behind the Wall",
+  "hook": "Deck ledger leaks start where you cannot see them.",
+  "body": "A deck ledger connection has to shed water in layers. Keep the weather-resistive barrier continuous, lap flashing over the ledger, and detail fastener penetrations so water cannot track behind the board. Caulk by itself is not a drainage plane.",
+  "voiceover": "Deck ledger leaks start where you cannot see them. Caulk is not a drainage plane. Keep the weather barrier continuous, lap flashing over the ledger, and protect every fastener penetration. Before siding covers the connection, verify water has a clear path out, not a path into the wall.",
+  "visual_plan": {
+    "opening": "Technical cross-section showing a leak path behind an improperly protected deck ledger.",
+    "middle": "Layered diagram showing cladding, continuous WRB, positive-lap Z flashing and structural ledger.",
+    "close": "Four-item pre-cover inspection checklist and local estimate CTA.",
+    "on_screen_text": [
+      "Caulk is not a drainage plane",
+      "WRB + flashing + protected penetrations",
+      "Give water a clear path OUT"
+    ]
   },
-  "cta": "Visit PrestigeRemodelingWI.com to request an estimate for your home exterior project.",
+  "captions": {
+    "facebook": "One of the nastier deck failures can start behind the ledger where nobody sees it. The wall needs a real water-shedding sequence: continuous WRB, properly lapped flashing, protected penetrations, and a drainage path. Caulk alone is not the system. Planning a deck or exterior repair around Manitowoc? Request an estimate at PrestigeRemodelingWI.com.",
+    "instagram": "Deck ledger waterproofing is a layering problem, not a caulk problem. Continuous WRB. Positive flashing lap. Protected penetrations. Drainage path out. Planning a deck or exterior repair in the Manitowoc area? PrestigeRemodelingWI.com #ManitowocWI #DeckRepair #Remodeling #ExteriorRepair #ContractorTips",
+    "youtube-shorts": "Deck ledger leaks often begin behind the wall. This 18-second contractor breakdown shows the water-management stack that matters: continuous WRB, positive-lap flashing, protected fastener penetrations, and a clear drainage path. PrestigeRemodelingWI.com #Shorts",
+    "tiktok": "Caulk is not a drainage plane. A deck ledger needs continuous WRB, a positive flashing lap, protected penetrations, and a path for water to get OUT. Manitowoc-area deck and exterior estimates: PrestigeRemodelingWI.com #ContractorTok #DeckRepair #Remodeling"
+  },
+  "cta": "Planning a deck or exterior repair in Manitowoc? Request an estimate at PrestigeRemodelingWI.com.",
+  "quality": {
+    "score": 96,
+    "passed": true,
+    "review": "Deterministic rubric v1: contractor-specific technical lesson; no fabricated customer, job, review, price, or urgency; complete four-channel captions; clear local estimate CTA; three-scene teaching sequence.",
+    "review_source": "deterministic-rubric-v1"
+  },
+  "media": {
+    "kind": "custom-technical-vector-scenes",
+    "quality": {
+      "score": 94,
+      "passed": true,
+      "review": "Deterministic visual rubric v1: three custom 1080x1920 construction diagrams; high-contrast hierarchy; no stock imagery or fake project photography; each scene directly teaches the ledger-water-management sequence.",
+      "review_source": "deterministic-rubric-v1"
+    }
+  },
   "source": "money-machine-social-bot",
+  "generation_mode": "deterministic-budget-fallback-v1",
   "video_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
   "video_specs": {
     "width": 1080,
     "height": 1920,
-    "duration_seconds": 12
+    "duration_seconds": 18,
+    "fps": 30
   },
-  "publishing_status": "GENERATED_PENDING_PROVIDER_DELIVERY"
+  "media_mode": "premium-technical-vector-motion-reel",
+  "publishing_status": "PREMIUM_MEDIA_READY_PENDING_PROVIDER_DELIVERY"
 }
