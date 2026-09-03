@@ -4,6 +4,7 @@ KEY=os.environ.get('BUFFER_API_KEY','').strip()
 ROOT=pathlib.Path(__file__).resolve().parent
 QUEUE=ROOT/'queue'
 PLACEHOLDER_MARKERS=('PENDING_','PLACEHOLDER','TODO','TBD','YOUR_')
+SKIP_STATUSES=('sent','retired','blocked_media')
 
 def gql(query):
     if not KEY: raise RuntimeError('BUFFER_API_KEY is missing')
@@ -59,7 +60,7 @@ def main():
     failures=[]
     for f in sorted(QUEUE.glob('*.json')):
         d=json.loads(f.read_text())
-        if d.get('status')=='sent': continue
+        if d.get('status') in SKIP_STATUSES: continue
         try:
             validate_queue_item(d,f.name)
             targets=d.get('targets') or list(available)
