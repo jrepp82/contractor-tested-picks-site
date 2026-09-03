@@ -115,7 +115,7 @@ Do not reactivate a DigiTool until its final files, listing claims, checkout, an
 
 Product status on 2026-09-03:
 - Contractor Labor Rate & Break-Even Engine: live at $17.99 through Stripe; no-secrets redirect/download handoff verified.
-- Contractor Estimate & Proposal Studio v1.0: product files complete and live-browser QA passed; not yet attached to a public listing or checkout, so keep it draft until its listing and delivery mapping are created.
+- Contractor Estimate & Proposal Studio v1.0: product files complete and live-browser QA passed; the verified ZIP now replaces the canonical Drive delivery file and the Shopify fulfillment watcher checks its exact filename, size and hash. The listing remains draft until a paid Shopify checkout/delivery test is recorded.
 
 ## P1 - Marketplace/social connections
 
@@ -165,7 +165,7 @@ Verified on 2026-09-03:
 Accepted limitation:
 - The low-ticket download URL is un-gated and can be shared.
 - No real paid transaction was placed during QA.
-- Secure per-order verification, refund-state gating and automatic email attachment delivery remain future upgrades requiring a Stripe restricted key/webhook connection.
+- The active hourly Stripe fulfillment watcher provides a second, per-order email-attachment path through the connected Stripe, Drive and Gmail accounts, with paid/refund/dispute checks and deduplication. It is enabled but has not yet processed a real sale, so delivery proof remains pending. AppDeploy-side secret-key verification remains a future upgrade.
 
 Completion standard before activating any additional draft DigiTools:
 - exact product/file mapping verified,
