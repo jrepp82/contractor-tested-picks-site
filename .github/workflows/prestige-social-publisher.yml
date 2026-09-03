@@ -55,7 +55,7 @@ jobs:
 
       - name: Validate publisher code
         run: |
-          python -m py_compile prestige-social/generator.py prestige-social/smart_generator.py prestige-social/deterministic_fallback.py prestige-social/publisher.py
+          python -m py_compile prestige-social/generator.py prestige-social/smart_generator.py prestige-social/deterministic_fallback.py prestige-social/nextdoor_publisher.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
       - name: Probe Money Machine Bot health only
@@ -135,9 +135,28 @@ jobs:
           echo
           cat /tmp/direct-status.json
           echo
+
+      - name: Publish approved Nextdoor business profile
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        shell: bash
+        env:
+          NEXTDOOR_ACCESS_TOKEN: ${{ secrets.NEXTDOOR_ACCESS_TOKEN }}
+          NEXTDOOR_SECURE_PROFILE_ID: ${{ secrets.NEXTDOOR_SECURE_PROFILE_ID }}
+        run: |
+          set +e
+          python prestige-social/nextdoor_publisher.py
+          RC=$?
+          echo "Nextdoor adapter exit code: ${RC}"
+          exit 0
+
+      - name: Build truthful multi-platform delivery report
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        shell: bash
+        run: |
           python - <<'PY'
           import datetime, json, pathlib
           today = datetime.date.today().isoformat()
+          root = pathlib.Path('.social-output/prestige-local') / today
           response = json.loads(pathlib.Path('/tmp/direct-publish.json').read_text())
           status = json.loads(pathlib.Path('/tmp/direct-status.json').read_text())
           configured = set(response.get('configured') or status.get('configuredNames') or [])
@@ -159,14 +178,19 @@ jobs:
                   deliveries.append({'platform': platform, 'status': record.get('status','UNKNOWN'), 'published': record.get('status') == 'PUBLISHED', 'providerId': record.get('providerId'), 'detail': record.get('detail')})
               else:
                   deliveries.append({'platform': platform, 'status': 'NO_PROVIDER_DELIVERY_RECORDED', 'published': False})
+          nextdoor_path = root / 'nextdoor-delivery.json'
+          if nextdoor_path.exists():
+              deliveries.append(json.loads(nextdoor_path.read_text()))
+          else:
+              deliveries.append({'platform':'nextdoor','status':'SKIPPED_MISSING_CREDENTIALS','published':False,'missing':['NEXTDOOR_ACCESS_TOKEN','NEXTDOOR_SECURE_PROFILE_ID'],'requires_publish_api_approval':True})
           report = {
               'date': today,
-              'source': 'appdeploy-direct-publisher-with-github-verification',
-              'configured_secret_names': sorted(configured),
+              'source': 'appdeploy-direct-publisher-plus-nextdoor-with-github-verification',
+              'configured_appdeploy_secret_names': sorted(configured),
               'deliveries': deliveries,
               'all_published': all(x.get('published') for x in deliveries),
           }
-          path = pathlib.Path('.social-output/prestige-local') / today / 'delivery-result.json'
+          path = root / 'delivery-result.json'
           path.write_text(json.dumps(report, indent=2))
           print('Truthful delivery report:', json.dumps(report, indent=2))
           PY
@@ -176,7 +200,7 @@ jobs:
         run: |
           git config user.name 'Prestige Automation'
           git config user.email 'automation@users.noreply.github.com'
-          git add .social-output/prestige-local/*/delivery-result.json
+          git add .social-output/prestige-local/*/delivery-result.json .social-output/prestige-local/*/nextdoor-delivery.json
           if ! git diff --cached --quiet; then
             git commit -m "Record Prestige social delivery status"
             git pull --rebase
