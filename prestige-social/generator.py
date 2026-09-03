@@ -3,6 +3,7 @@ import json
 import pathlib
 import subprocess
 import time
+import urllib.error
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent
@@ -10,18 +11,73 @@ REPO = ROOT.parent
 QUEUE = ROOT / 'queue'
 OUTPUT = REPO / '.social-output' / 'prestige-local'
 BOT_ENDPOINT = 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
+STAGE_ENDPOINT = 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-stage'
+
+
+def request_json(url, method='GET', timeout=75):
+    headers = {'User-Agent': 'Prestige-GitHub-Publisher/2.2', 'Accept': 'application/json'}
+    data = b'{}' if method == 'POST' else None
+    if data is not None:
+        headers['Content-Type'] = 'application/json'
+    req = urllib.request.Request(url, data=data, method=method, headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            raw = response.read().decode()
+            if not raw.strip():
+                raise RuntimeError(f'Empty JSON response from {url}')
+            return json.loads(raw)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode(errors='replace')
+        raise RuntimeError(f'HTTP {exc.code} from {url}: {body[:1600]}') from exc
+
+
+def run_stage(step, timeout=75):
+    print(f'Running staged social step: {step}')
+    result = request_json(f'{STAGE_ENDPOINT}/{step}', method='POST', timeout=timeout)
+    print(f'Stage {step} result:', result)
+    return result
+
+
+def quality_passed(result):
+    quality = (result or {}).get('quality') or {}
+    return bool(quality.get('passed')) and float(quality.get('score', 0)) >= 90
+
+
+def prepare_staged_package():
+    run_stage('reset', timeout=30)
+    run_stage('script')
+    review = run_stage('review')
+    for rewrite_attempt in range(1, 4):
+        if quality_passed(review):
+            break
+        if rewrite_attempt == 3:
+            raise RuntimeError(f'Content failed 90/100 after revisions: {review}')
+        print(f'Content below 90; rewrite pass {rewrite_attempt}/2')
+        run_stage('rewrite')
+        review = run_stage('review')
+
+    visual = None
+    for media_pass in range(1, 3):
+        for index in range(1, 4):
+            run_stage(f'image-{index}')
+        visual = run_stage('visual-review')
+        if quality_passed(visual):
+            break
+        if media_pass == 2:
+            raise RuntimeError(f'Visuals failed 90/100 after two complete image sets: {visual}')
+        print('Visual set below 90; regenerating one complete three-image set within the six-image provider window.')
+
+    finalized = run_stage('finalize', timeout=30)
+    if not finalized.get('finalized'):
+        raise RuntimeError(f'Bot Hub did not finalize staged package: {finalized}')
+    print('Staged package finalized:', finalized)
 
 
 def fetch_bot_package(today, attempts=1):
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
-            req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.1', 'Accept': 'application/json'})
-            with urllib.request.urlopen(req, timeout=180) as response:
-                raw = response.read().decode()
-                if not raw.strip():
-                    raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
-                data = json.loads(raw)
+            data = request_json(BOT_ENDPOINT, timeout=45)
             required = ['campaign', 'hook', 'body', 'voiceover', 'visual_plan', 'captions', 'cta', 'quality', 'media']
             if any(not data.get(k) for k in required):
                 raise ValueError('Bot package is incomplete')
@@ -51,7 +107,7 @@ def fetch_bot_package(today, attempts=1):
 
 
 def download(url, path):
-    req = urllib.request.Request(url, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.1'})
+    req = urllib.request.Request(url, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.2'})
     with urllib.request.urlopen(req, timeout=45) as response:
         data = response.read()
     if len(data) < 10000:
@@ -158,6 +214,7 @@ def render_video(package, outdir):
 
 def main():
     today = datetime.date.today()
+    prepare_staged_package()
     package = fetch_bot_package(today)
     outdir = OUTPUT / today.isoformat()
     video = render_video(package, outdir)
