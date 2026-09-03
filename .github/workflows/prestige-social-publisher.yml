@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          curl -sS -L --max-time 90 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
+          curl -sS -L --max-time 180 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
           CURL_RC=$?
           echo "CURL_RC=${CURL_RC}"
           echo '--- response headers ---'
@@ -88,6 +88,7 @@ jobs:
       - name: Generate premium Prestige reel with retry
         shell: bash
         run: |
+          sed -i 's/timeout=90/timeout=180/' prestige-social/generator.py
           set +e
           for attempt in 1 2 3; do
             echo "Premium media generation attempt ${attempt}/3"
