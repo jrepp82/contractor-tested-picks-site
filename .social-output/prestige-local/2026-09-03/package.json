@@ -1,0 +1,24 @@
+{
+  "generated_for": "2026-09-03",
+  "campaign": "Siding Water Management",
+  "hook": "Siding is part of a water-management system\u2014not just the outside color of the house.",
+  "body": "Flashing, housewrap, window and door transitions, penetrations, and kick-out details help control where water goes. Covering a bad detail with new siding does not make the underlying problem disappear.",
+  "captions": {
+    "facebook": "Siding is part of a water-management system\u2014not just the outside color of the house.\n\nFlashing, housewrap, window and door transitions, penetrations, and kick-out details help control where water goes. Covering a bad detail with new siding does not make the underlying problem disappear.\n\nNeed an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore.\nPrestigeRemodelingWI.com | 920-242-0969",
+    "instagram": "Siding is part of a water-management system\u2014not just the outside color of the house.\n\nFlashing, housewrap, window and door transitions, penetrations, and kick-out details help control where water goes. Covering a bad detail with new siding does not make the underlying problem disappear.\n\nPrestigeRemodelingWI.com | 920-242-0969\n\n#Manitowoc #Wisconsin #Remodeling #Contractor #HomeImprovement",
+    "youtube-shorts": "Siding is part of a water-management system\u2014not just the outside color of the house. Flashing, housewrap, window and door transitions, penetrations, and kick-out details help control where water goes. Covering a bad detail with new siding does not make the underlying problem disappear. PrestigeRemodelingWI.com | 920-242-0969 #Shorts #Remodeling #Manitowoc",
+    "tiktok": "Siding is part of a water-management system\u2014not just the outside color of the house. Flashing, housewrap, window and door transitions, penetrations, and kick-out details help control where water goes. Covering a bad detail with new siding does not make the underlying problem disappear. PrestigeRemodelingWI.com | 920-242-0969 #remodeling #contractor #wisconsin"
+  },
+  "video_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
+  "video_specs": {
+    "width": 1080,
+    "height": 1920,
+    "duration_seconds": 12
+  },
+  "publishing_status": "BLOCKED_CREDENTIALS",
+  "required_connections": [
+    "Buffer or Meta for Facebook/Instagram",
+    "TikTok access token",
+    "Google/YouTube OAuth refresh token"
+  ]
+}
