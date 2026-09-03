@@ -1,0 +1,11 @@
+{
+  "product": "Contractor Labor Rate & Break-Even Engine PRO V2",
+  "sku": "PDT-LABORRATE-001",
+  "version": "2.0",
+  "artifact": "prestige-digitools-labor-rate-break-even-engine-v2.zip",
+  "bytes": 12132,
+  "sha256": "86aebd40da9ee0faf3e901b23247a3ee95d02808cd04bf0e9b1741ca84a2f2b4",
+  "qa_status": "passed",
+  "delivery": "Stripe Payment Link -> Vercel delivery page -> ZIP",
+  "support": "Jason@PrestigeRemodelingWI.com"
+}
