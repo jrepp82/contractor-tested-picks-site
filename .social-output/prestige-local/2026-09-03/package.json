@@ -1,17 +1,16 @@
 {
   "generated_for": "2026-09-03",
-  "campaign": "Roof Leak Reality",
-  "hook": "A roof leak does not always start directly above the stain.",
-  "body": "Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.",
-  "cta": "Need an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore. PrestigeRemodelingWI.com | 920-242-0969",
+  "campaign": "Fall Exterior Readiness",
+  "hook": "Is your Manitowoc home ready for the first frost?",
+  "body": "As temperatures begin to drop in Wisconsin, small gaps in siding or aging window seals can lead to significant heat loss. Taking the time to inspect your home's exterior now can help maintain indoor comfort and manage energy costs throughout the winter months. Professional assessments identify vulnerabilities before they become costly repairs.",
   "captions": {
-    "facebook": "A roof leak does not always start directly above the stain.\n\nWater can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.\n\nNeed an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore. PrestigeRemodelingWI.com | 920-242-0969",
-    "instagram": "A roof leak does not always start directly above the stain.\n\nWater can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.\n\nPrestigeRemodelingWI.com | 920-242-0969\n\n#Manitowoc #Wisconsin #Remodeling #Contractor #HomeImprovement",
-    "youtube-shorts": "A roof leak does not always start directly above the stain. Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair. PrestigeRemodelingWI.com | 920-242-0969 #Shorts #Remodeling #Manitowoc",
-    "tiktok": "A roof leak does not always start directly above the stain. Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair. PrestigeRemodelingWI.com | 920-242-0969 #remodeling #contractor #wisconsin"
+    "facebook": "Don't wait for the snow to fly. Inspect your home's exterior this September to ensure your family stays warm all winter. #ManitowocHomeowners #PrestigeRemodeling",
+    "instagram": "September is the ideal time for home maintenance in Manitowoc. Check your seals and siding before the Wisconsin winter arrives. #HomeImprovement #ManitowocWI #PrestigeRemodeling",
+    "youtube-shorts": "Prepare your home for a Wisconsin winter. Learn why early fall inspections are crucial for energy efficiency. #HomeMaintenance #Manitowoc",
+    "tiktok": "Wisconsin winters are tough on homes. Here is why you should check your exterior now. #Manitowoc #HomeRenovation #WinterReady"
   },
-  "source": "local-fallback",
-  "fallback_reason": "Expecting value: line 1 column 1 (char 0)",
+  "cta": "Visit PrestigeRemodelingWI.com to request an estimate for your home exterior project.",
+  "source": "money-machine-social-bot",
   "video_path": ".social-output/prestige-local/2026-09-03/prestige-short.mp4",
   "video_specs": {
     "width": 1080,
