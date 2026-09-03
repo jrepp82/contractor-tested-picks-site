@@ -18,7 +18,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: prestige-social-publisher-${{ github.ref }}
+  group: prestige-social-publisher-v2-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
