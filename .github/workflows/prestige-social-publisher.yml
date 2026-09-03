@@ -13,12 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Pull latest Prestige social bot package
+      - name: Generate and queue fresh Prestige social bot package
         run: |
           python - <<'PY'
           import json, pathlib, urllib.request
-          url='https://prestige-money-machine-bots-oexnns.v2.appdeploy.ai/api/latest/social-publishing'
-          with urllib.request.urlopen(url, timeout=60) as r:
+          url='https://prestige-money-machine-bots-oexnns.v2.appdeploy.ai/api/run/social-publishing'
+          req=urllib.request.Request(url,data=b'{}',headers={'Content-Type':'application/json'},method='POST')
+          with urllib.request.urlopen(req, timeout=90) as r:
               latest=json.loads(r.read().decode())
           package=json.loads(latest['output'])
           media_url=str(package.get('media_url') or '').strip()
