@@ -1,6 +1,6 @@
 # Prestige Execution Control Board
 
-Updated: 2026-08-21
+Updated: 2026-09-03
 Owner: Jason Reppen / Prestige
 Purpose: one source of truth for what is actually complete, what is blocked, and what must happen next. External AI output from Grok/Gemini is input only until audited and integrated here.
 
@@ -36,6 +36,20 @@ Two separate estimates required:
 
 Known limitation: no final dimensions/prep/product/access details are recorded beyond the approximate 40 LF foundation quantity and small-deck description. Do not invent quantities or a fixed customer price without a defensible basis.
 
+## P0 - Lead engine
+
+Status: `LIVE - DATABASE CAPTURE + OWNER EMAIL ALERT VERIFIED`
+
+Verified on 2026-09-03:
+- Production website estimate form posts to the AppDeploy lead API.
+- Valid leads are stored before notification attempts.
+- The direct API test returned success.
+- The server email relay accepted the owner alert and a matching production-origin message arrived at `jreppen82@gmail.com`, with `Jason@PrestigeRemodelingWI.com` copied.
+- The five-minute `lead-alert-worker-v2` is enabled with zero failures.
+
+Remaining limitation:
+- AppDeploy push alerts require the owner to sign in and enable the device; email is the verified primary alert path.
+
 ## P1 - Main Prestige website
 
 Canonical source: approved V33 structure only.
@@ -44,7 +58,7 @@ Rules:
 - Do not deploy V35.
 - Do not redesign the locked hero/section structure without explicit approval.
 - Use `Estimates`, never `Free estimates`.
-- Confirm live domain/DNS for `PrestigeRemodelingWI.com` before declaring launch complete.
+- Live domain/DNS for `PrestigeRemodelingWI.com` was confirmed on 2026-09-03; AppDeploy serves the production application.
 
 ## P1 - Affiliate/content engine
 
@@ -60,6 +74,12 @@ Supported content destinations include Facebook, Instagram, YouTube Shorts, and 
 
 Safety rule:
 - Draft/unverified DigiTools must not be represented as live/purchasable until fulfillment is proven.
+
+Automation status on 2026-09-03:
+- The GitHub `Affiliate Social Publisher` workflow exists and contains scheduled jobs for Facebook, Instagram, Threads, TikTok and YouTube Shorts.
+- Automatic publishing is not proven because the required platform tokens/secrets cannot be listed or verified through the available connection.
+- The AppDeploy Make.com social cron is intentionally disabled because `MAKE_SOCIAL_WEBHOOK_URL` is not configured.
+- A tested 30-day batch scheduler and a daily 7:30 AM Central review reminder are active fallbacks; do not call social autopublishing live yet.
 
 ## P1 - YouTube Shorts
 
@@ -90,6 +110,10 @@ Grand Opening Sale:
 - Recon 2000 excluded from these discounts.
 
 Do not activate draft DigiTools until reliable instant fulfillment is confirmed.
+
+Product status on 2026-09-03:
+- Contractor Labor Rate & Break-Even Engine: live at $17.99 through Stripe; no-secrets redirect/download handoff verified.
+- Contractor Estimate & Proposal Studio v1.0: product files complete and live-browser QA passed; not yet attached to a public listing or checkout, so keep it draft until its listing and delivery mapping are created.
 
 ## P1 - Marketplace/social connections
 
@@ -124,14 +148,29 @@ Important: the often-cited `32%` GBP figure is an expert-survey estimate (Whites
 
 ## P2 - Digital fulfillment
 
-Automated fulfillment watcher exists and is enabled for mapped Stripe/Shopify digital products and memberships.
-Completion standard before selling draft DigiTools broadly:
-- paid transaction detection verified,
+### Contractor Labor Rate & Break-Even Engine
+
+Status: `LIVE - NO-SECRETS STRIPE REDIRECT HANDOFF`
+
+Verified on 2026-09-03:
+- Live Payment Link `plink_1UBL1qHB1wxxj42cHzCMtnbA` is active.
+- Price is $17.99 USD, one-time, quantity 1, with no shipping.
+- Stripe redirects successful payments to `https://prestigeremodelingwi.com/digitools/labor-rate-download.html`.
+- The confirmation page exposes the tested ZIP immediately and gives accurate extraction/start instructions.
+- The ZIP returns `200 application/zip`; archive integrity and the contained labor-rate calculator were audited.
+- The AppDeploy funnel monitor verifies the website, Stripe link, confirmation page and ZIP and currently reports healthy.
+
+Accepted limitation:
+- The low-ticket download URL is un-gated and can be shared.
+- No real paid transaction was placed during QA.
+- Secure per-order verification, refund-state gating and automatic email attachment delivery remain future upgrades requiring a Stripe restricted key/webhook connection.
+
+Completion standard before activating any additional draft DigiTools:
 - exact product/file mapping verified,
-- duplicate prevention verified,
-- customer delivery verified,
-- failed/refunded/canceled states do not deliver,
-- customer receives correct file exactly once.
+- checkout success destination verified,
+- product file and formula QA passed,
+- customer delivery method is visible and truthful,
+- a real paid lifecycle test is recorded when feasible.
 
 ## P2 - Revenue attribution
 
