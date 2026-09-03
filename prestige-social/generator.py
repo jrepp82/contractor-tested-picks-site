@@ -4,7 +4,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent
 QUEUE = ROOT / 'queue'
 OUTPUT = REPO / '.social-output' / 'prestige-local'
-BOT_ENDPOINT = 'https://money-machine-bot-hub-uvnwsq.v2.appdeploy.ai/api/social-package'
+BOT_ENDPOINT = 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
 
 FALLBACK = [
     {'campaign':'Scope Before You Start','hook':'The cheapest remodeling quote can become the most expensive job.','body':'A clear remodeling scope should account for setup, protection, delivery, disposal, hidden conditions, labor, and finish work—not just the obvious materials.'},
@@ -16,9 +16,12 @@ FALLBACK = [
 
 def fetch_bot_package(today):
     try:
-        req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent':'Prestige-GitHub-Publisher/1.0'})
+        req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent':'Prestige-GitHub-Publisher/1.0','Accept':'application/json'})
         with urllib.request.urlopen(req, timeout=45) as response:
-            data = json.loads(response.read().decode())
+            raw = response.read().decode()
+            if not raw.strip():
+                raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
+            data = json.loads(raw)
         required = ['campaign','hook','body','captions','cta']
         if any(not data.get(k) for k in required):
             raise ValueError('Bot package is incomplete')
