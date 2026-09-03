@@ -1,4 +1,9 @@
-import datetime, html, json, pathlib, subprocess, textwrap, urllib.request
+import datetime
+import json
+import pathlib
+import subprocess
+import time
+import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent
@@ -6,68 +11,134 @@ QUEUE = ROOT / 'queue'
 OUTPUT = REPO / '.social-output' / 'prestige-local'
 BOT_ENDPOINT = 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
 
-FALLBACK = [
-    {'campaign':'Scope Before You Start','hook':'The cheapest remodeling quote can become the most expensive job.','body':'A clear remodeling scope should account for setup, protection, delivery, disposal, hidden conditions, labor, and finish work—not just the obvious materials.'},
-    {'campaign':'Bathroom Water Protection','hook':'Tile is not the waterproofing in a shower.','body':'The waterproofing system behind the finished surface protects the wall assembly. Ask how seams, penetrations, and tub or shower transitions are handled.'},
-    {'campaign':'Roof Leak Reality','hook':'A roof leak does not always start directly above the stain.','body':'Water can travel along decking, framing, fasteners, flashing, and insulation before it becomes visible inside. Diagnosis should trace the water path before repair.'},
-    {'campaign':'Siding Water Management','hook':'Siding is part of a water-management system—not just the outside color of the house.','body':'Flashing, housewrap, openings, penetrations, and transitions control where water goes. New siding should not simply cover a bad detail.'},
-    {'campaign':'Contractor Quality','hook':'The work you cannot see often matters more than the finish you can.','body':'Fasteners, flashing, waterproofing, framing connections, prep, substrate condition, and air or water sealing determine whether a remodel keeps performing.'},
-]
 
-def fetch_bot_package(today):
-    try:
-        req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent':'Prestige-GitHub-Publisher/1.0','Accept':'application/json'})
-        with urllib.request.urlopen(req, timeout=45) as response:
-            raw = response.read().decode()
-            if not raw.strip():
-                raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
-            data = json.loads(raw)
-        required = ['campaign','hook','body','captions','cta']
-        if any(not data.get(k) for k in required):
-            raise ValueError('Bot package is incomplete')
-        captions = data.get('captions') or {}
-        for channel in ['facebook','instagram','youtube-shorts','tiktok']:
-            if not captions.get(channel):
-                raise ValueError(f'Bot package missing {channel} caption')
-        data['generated_for'] = today.isoformat()
-        data['source'] = 'money-machine-social-bot'
-        return data
-    except Exception as exc:
-        post = FALLBACK[today.toordinal() % len(FALLBACK)]
-        cta = 'Need an estimate for your project? Prestige Remodeling serves Manitowoc and the Wisconsin lakeshore. PrestigeRemodelingWI.com | 920-242-0969'
-        return {
-            'generated_for': today.isoformat(),
-            'campaign': post['campaign'],
-            'hook': post['hook'],
-            'body': post['body'],
-            'cta': cta,
-            'captions': {
-                'facebook': f"{post['hook']}\n\n{post['body']}\n\n{cta}",
-                'instagram': f"{post['hook']}\n\n{post['body']}\n\nPrestigeRemodelingWI.com | 920-242-0969\n\n#Manitowoc #Wisconsin #Remodeling #Contractor #HomeImprovement",
-                'youtube-shorts': f"{post['hook']} {post['body']} PrestigeRemodelingWI.com | 920-242-0969 #Shorts #Remodeling #Manitowoc",
-                'tiktok': f"{post['hook']} {post['body']} PrestigeRemodelingWI.com | 920-242-0969 #remodeling #contractor #wisconsin",
-            },
-            'source': 'local-fallback',
-            'fallback_reason': str(exc),
-        }
+def fetch_bot_package(today, attempts=3):
+    last_error = None
+    for attempt in range(1, attempts + 1):
+        try:
+            req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.0', 'Accept': 'application/json'})
+            with urllib.request.urlopen(req, timeout=180) as response:
+                raw = response.read().decode()
+                if not raw.strip():
+                    raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
+                data = json.loads(raw)
+            required = ['campaign', 'hook', 'body', 'voiceover', 'visual_plan', 'captions', 'cta', 'quality', 'media']
+            if any(not data.get(k) for k in required):
+                raise ValueError('Bot package is incomplete')
+            captions = data.get('captions') or {}
+            for channel in ['facebook', 'instagram', 'youtube-shorts', 'tiktok']:
+                if not captions.get(channel):
+                    raise ValueError(f'Bot package missing {channel} caption')
+            quality = data.get('quality') or {}
+            media = data.get('media') or {}
+            media_quality = media.get('quality') or {}
+            media_urls = media.get('urls') or []
+            if not quality.get('passed') or float(quality.get('score', 0)) < 90:
+                raise ValueError(f'Content quality gate failed: {quality}')
+            if not media_quality.get('passed') or float(media_quality.get('score', 0)) < 90:
+                raise ValueError(f'Visual quality gate failed: {media_quality}')
+            if len(media_urls) != 3 or any(not str(url).startswith('https://') for url in media_urls):
+                raise ValueError('Exactly three signed premium media URLs are required')
+            data['generated_for'] = today.isoformat()
+            data['source'] = 'money-machine-social-bot'
+            return data
+        except Exception as exc:
+            last_error = exc
+            if attempt < attempts:
+                time.sleep(5 * attempt)
+    raise RuntimeError(f'Premium Bot Hub package unavailable after {attempts} attempts: {last_error}')
 
-def svg_text(lines, start_y, size, gap, fill='#ffffff', weight='700'):
-    return '\n'.join(
-        f'<text x="540" y="{start_y+i*gap}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="{size}" font-weight="{weight}" fill="{fill}">{html.escape(line)}</text>'
-        for i, line in enumerate(lines)
-    )
+
+def download(url, path):
+    req = urllib.request.Request(url, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.0'})
+    with urllib.request.urlopen(req, timeout=120) as response:
+        data = response.read()
+    if len(data) < 10000:
+        raise RuntimeError(f'Visual download was unexpectedly small: {url}')
+    path.write_bytes(data)
+
+
+def safe_caption(value, max_chars=90):
+    return ' '.join(str(value or '').split())[:max_chars]
+
+
+def write_srt(package, path):
+    on_screen = list((package.get('visual_plan') or {}).get('on_screen_text') or [])
+    while len(on_screen) < 3:
+        on_screen.append(package['hook'] if not on_screen else package['cta'])
+    entries = [
+        ('00:00:00,000', '00:00:04,700', safe_caption(package['hook'], 110)),
+        ('00:00:04,700', '00:00:09,500', safe_caption(on_screen[0], 90)),
+        ('00:00:09,500', '00:00:14,200', safe_caption(on_screen[1], 90)),
+        ('00:00:14,200', '00:00:18,000', safe_caption(package['cta'], 100)),
+    ]
+    blocks = []
+    for i, (start, end, text) in enumerate(entries, 1):
+        blocks.append(f'{i}\n{start} --> {end}\n{text}\n')
+    path.write_text('\n'.join(blocks))
+
+
+def create_voiceover(package, out_path):
+    voiceover = ' '.join(str(package.get('voiceover') or '').split())
+    if not voiceover:
+        raise RuntimeError('Premium package is missing voiceover copy')
+    result = subprocess.run([
+        'edge-tts', '--voice', 'en-US-GuyNeural', '--rate', '+3%', '--text', voiceover,
+        '--write-media', str(out_path)
+    ], text=True, capture_output=True)
+    if result.returncode != 0 or not out_path.exists() or out_path.stat().st_size < 10000:
+        raise RuntimeError(f'Voiceover generation failed: {result.stderr or result.stdout}')
+
 
 def render_video(package, outdir):
     outdir.mkdir(parents=True, exist_ok=True)
-    hook_lines = textwrap.wrap(package['hook'], width=27)[:7]
-    body_lines = textwrap.wrap(package['body'], width=38)[:6]
-    svg = outdir / 'prestige-short.svg'
-    png = outdir / 'prestige-short.png'
-    mp4 = outdir / 'prestige-short.mp4'
-    svg.write_text(f'''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07182f"/><stop offset="1" stop-color="#101820"/></linearGradient></defs><rect width="1080" height="1920" fill="url(#bg)"/><rect x="64" y="72" width="952" height="10" rx="5" fill="#d5a947"/><text x="540" y="185" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="52" font-weight="800" fill="#d5a947">PRESTIGE REMODELING</text><text x="540" y="252" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#c2cede">MANITOWOC - WISCONSIN LAKESHORE</text>{svg_text(hook_lines,560,70,92)}<rect x="100" y="1240" width="880" height="4" fill="#d5a947" opacity="0.75"/>{svg_text(body_lines,1330,34,54,'#dce6f2','500')}<rect x="120" y="1710" width="840" height="112" rx="18" fill="#d5a947"/><text x="540" y="1780" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="40" font-weight="800" fill="#07182f">REQUEST AN ESTIMATE</text><text x="540" y="1870" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="29" fill="#dce6f2">PrestigeRemodelingWI.com - 920-242-0969</text></svg>''')
-    subprocess.run(['rsvg-convert','-w','1080','-h','1920','-o',str(png),str(svg)], check=True)
-    subprocess.run(['ffmpeg','-y','-loop','1','-i',str(png),'-f','lavfi','-i','anullsrc=channel_layout=stereo:sample_rate=44100','-t','12','-r','30','-vf','format=yuv420p','-c:v','libx264','-preset','veryfast','-c:a','aac','-b:a','96k','-shortest','-movflags','+faststart',str(mp4)], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    return mp4
+    media_urls = package['media']['urls']
+    shots = [outdir / f'shot-{i + 1}.png' for i in range(3)]
+    for url, shot in zip(media_urls, shots):
+        download(url, shot)
+    captions = outdir / 'captions.srt'
+    voice = outdir / 'voiceover.mp3'
+    video = outdir / 'prestige-short.mp4'
+    write_srt(package, captions)
+    create_voiceover(package, voice)
+    filters = (
+        "[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+        "zoompan=z='min(zoom+0.00065,1.07)':d=192:s=1080x1920:fps=30,setsar=1[v0];"
+        "[1:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+        "zoompan=z='if(lte(zoom,1.0),1.07,max(1.0,zoom-0.00065))':d=192:s=1080x1920:fps=30,setsar=1[v1];"
+        "[2:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,"
+        "zoompan=z='min(zoom+0.00055,1.06)':d=192:s=1080x1920:fps=30,setsar=1[v2];"
+        "[v0][v1]xfade=transition=fade:duration=0.6:offset=5.8[x1];"
+        "[x1][v2]xfade=transition=fade:duration=0.6:offset=11.6,"
+        "subtitles=captions.srt:force_style='FontName=DejaVu Sans,FontSize=17,PrimaryColour=&H00FFFFFF,"
+        "OutlineColour=&H00000000,BackColour=&H64000000,BorderStyle=3,Outline=2,Shadow=0,Alignment=2,MarginV=115'[v];"
+        "[3:a]apad=pad_dur=18[a]"
+    )
+    cmd = [
+        'ffmpeg', '-y',
+        '-loop', '1', '-t', '6.4', '-i', shots[0].name,
+        '-loop', '1', '-t', '6.4', '-i', shots[1].name,
+        '-loop', '1', '-t', '6.4', '-i', shots[2].name,
+        '-i', voice.name,
+        '-filter_complex', filters,
+        '-map', '[v]', '-map', '[a]', '-t', '18', '-r', '30',
+        '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', video.name
+    ]
+    result = subprocess.run(cmd, cwd=outdir, text=True, capture_output=True)
+    if result.returncode != 0:
+        raise RuntimeError(f'Premium video render failed: {result.stderr[-5000:]}')
+    if not video.exists() or video.stat().st_size < 300000:
+        raise RuntimeError('Premium rendered video is missing or unexpectedly small')
+    probe = subprocess.run([
+        'ffprobe', '-v', 'error', '-select_streams', 'v:0', '-show_entries',
+        'stream=width,height', '-of', 'json', str(video)
+    ], text=True, capture_output=True, check=True)
+    stream = (json.loads(probe.stdout).get('streams') or [{}])[0]
+    if stream.get('width') != 1080 or stream.get('height') != 1920:
+        raise RuntimeError(f'Video QA failed resolution check: {stream}')
+    return video
+
 
 def main():
     today = datetime.date.today()
@@ -75,27 +146,33 @@ def main():
     outdir = OUTPUT / today.isoformat()
     video = render_video(package, outdir)
     package['video_path'] = str(video.relative_to(REPO))
-    package['video_specs'] = {'width':1080,'height':1920,'duration_seconds':12}
-    package['publishing_status'] = 'GENERATED_PENDING_PROVIDER_DELIVERY'
+    package['video_specs'] = {'width': 1080, 'height': 1920, 'duration_seconds': 18, 'fps': 30}
+    package['media_mode'] = 'premium-ai-visual-motion-reel'
+    package['publishing_status'] = 'PREMIUM_MEDIA_READY_PENDING_PROVIDER_DELIVERY'
     (outdir / 'package.json').write_text(json.dumps(package, indent=2))
     item = {
-        'status': 'generated',
+        'status': 'premium_media_ready',
         'campaign': package['campaign'],
-        'targets': ['facebook','instagram','tiktok','youtube-shorts'],
-        'media_type': 'video',
+        'targets': ['facebook', 'instagram', 'tiktok', 'youtube-shorts'],
+        'media_type': 'vertical-video',
+        'media_mode': package['media_mode'],
         'media_path': package['video_path'],
         'captions': package['captions'],
-        'source': package.get('source','money-machine-social-bot'),
+        'content_quality': package['quality'],
+        'visual_quality': package['media']['quality'],
+        'source': package.get('source', 'money-machine-social-bot'),
         'generated_for': today.isoformat(),
-        'multi_channel_package': str((outdir/'package.json').relative_to(REPO)),
+        'multi_channel_package': str((outdir / 'package.json').relative_to(REPO)),
     }
     QUEUE.mkdir(parents=True, exist_ok=True)
     path = QUEUE / f'daily-{today.isoformat()}-multichannel.json'
     path.write_text(json.dumps(item, indent=2))
     print('Content source:', package.get('source'))
-    print('Created Prestige multi-channel queue item:', path)
-    print('Generated multi-channel package:', outdir/'package.json')
-    print('Generated vertical video:', video)
+    print('Content quality:', package['quality'])
+    print('Visual quality:', package['media']['quality'])
+    print('Media mode:', package['media_mode'])
+    print('Generated premium vertical video:', video)
+
 
 if __name__ == '__main__':
     main()
