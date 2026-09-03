@@ -68,6 +68,20 @@ jobs:
           python -m py_compile prestige-social/generator.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
+      - name: Probe Money Machine Social Bot handoff
+        shell: bash
+        run: |
+          set +e
+          curl -sS -L --max-time 45 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://money-machine-bot-hub-uvnwsq.v2.appdeploy.ai/api/social-package'
+          CURL_RC=$?
+          echo "CURL_RC=${CURL_RC}"
+          echo '--- response headers ---'
+          cat /tmp/bot-headers.txt || true
+          echo '--- response preview ---'
+          head -c 1000 /tmp/bot-body.txt || true
+          echo
+          exit 0
+
       - name: Generate today's Prestige marketing package
         run: python prestige-social/generator.py
 
