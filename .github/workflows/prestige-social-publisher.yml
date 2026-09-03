@@ -55,7 +55,7 @@ jobs:
 
       - name: Validate publisher code
         run: |
-          python -m py_compile prestige-social/generator.py prestige-social/deterministic_fallback.py prestige-social/publisher.py
+          python -m py_compile prestige-social/generator.py prestige-social/smart_generator.py prestige-social/deterministic_fallback.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
       - name: Probe Money Machine Bot health only
@@ -75,11 +75,11 @@ jobs:
         run: |
           set +e
           for attempt in 1 2 3; do
-            echo "Premium AI media generation attempt ${attempt}/3"
-            python prestige-social/generator.py 2>&1 | tee /tmp/prestige-generator.log
+            echo "Premium media preparation attempt ${attempt}/3"
+            python prestige-social/smart_generator.py 2>&1 | tee /tmp/prestige-generator.log
             RC=${PIPESTATUS[0]}
             if [[ ${RC} -eq 0 ]]; then exit 0; fi
-            if grep -q 'ai_daily_token_budget_exceeded' /tmp/prestige-generator.log; then
+            if grep -q 'ai_daily_token_budget_exceeded\|AI_DAILY_BUDGET_EXHAUSTED' /tmp/prestige-generator.log; then
               echo 'AppDeploy AI daily budget is exhausted. Switching immediately to the zero-token contractor technical reel builder.'
               python prestige-social/deterministic_fallback.py && exit 0
               echo 'Zero-token fallback failed.'
