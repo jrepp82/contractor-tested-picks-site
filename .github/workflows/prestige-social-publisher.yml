@@ -125,8 +125,60 @@ jobs:
             sleep 10
           fi
 
-      - name: Hand off persisted reel to AppDeploy direct publisher
+      - name: Hand off persisted reel and record truthful delivery status
         if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
         shell: bash
         run: |
-          curl -sS -L --fail-with-body --max-time 180 -X POST 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-now'
+          curl -sS -L --fail-with-body --max-time 180 -X POST 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-now' -o /tmp/direct-publish.json
+          curl -sS -L --fail-with-body --max-time 60 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-status' -o /tmp/direct-status.json
+          cat /tmp/direct-publish.json
+          echo
+          cat /tmp/direct-status.json
+          echo
+          python - <<'PY'
+          import datetime, json, pathlib
+          today = datetime.date.today().isoformat()
+          response = json.loads(pathlib.Path('/tmp/direct-publish.json').read_text())
+          status = json.loads(pathlib.Path('/tmp/direct-status.json').read_text())
+          configured = set(response.get('configured') or status.get('configuredNames') or [])
+          actual = {x.get('platform'): x for x in (status.get('deliveries') or [])}
+          requirements = {
+              'facebook': [('META_PAGE_ID',), ('META_PAGE_ACCESS_TOKEN','META_ACCESS_TOKEN')],
+              'instagram': [('META_IG_USER_ID',), ('META_ACCESS_TOKEN',)],
+              'tiktok': [('TIKTOK_ACCESS_TOKEN',)],
+              'youtube-shorts': [('GOOGLE_CLIENT_ID',), ('GOOGLE_CLIENT_SECRET',), ('YOUTUBE_REFRESH_TOKEN',)],
+          }
+          deliveries = []
+          for platform, groups in requirements.items():
+              missing = ['|'.join(group) for group in groups if not any(name in configured for name in group)]
+              if missing:
+                  deliveries.append({'platform': platform, 'status': 'SKIPPED_MISSING_CREDENTIALS', 'published': False, 'missing': missing})
+                  continue
+              record = actual.get(platform)
+              if record:
+                  deliveries.append({'platform': platform, 'status': record.get('status','UNKNOWN'), 'published': record.get('status') == 'PUBLISHED', 'providerId': record.get('providerId'), 'detail': record.get('detail')})
+              else:
+                  deliveries.append({'platform': platform, 'status': 'NO_PROVIDER_DELIVERY_RECORDED', 'published': False})
+          report = {
+              'date': today,
+              'source': 'appdeploy-direct-publisher-with-github-verification',
+              'configured_secret_names': sorted(configured),
+              'deliveries': deliveries,
+              'all_published': all(x.get('published') for x in deliveries),
+          }
+          path = pathlib.Path('.social-output/prestige-local') / today / 'delivery-result.json'
+          path.write_text(json.dumps(report, indent=2))
+          print('Truthful delivery report:', json.dumps(report, indent=2))
+          PY
+
+      - name: Persist delivery result
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        run: |
+          git config user.name 'Prestige Automation'
+          git config user.email 'automation@users.noreply.github.com'
+          git add .social-output/prestige-local/*/delivery-result.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Record Prestige social delivery status"
+            git pull --rebase
+            git push
+          fi
