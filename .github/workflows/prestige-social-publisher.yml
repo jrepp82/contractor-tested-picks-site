@@ -19,12 +19,12 @@ permissions:
 
 concurrency:
   group: prestige-social-publisher-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 20
     env:
       META_GRAPH_VERSION: ${{ vars.META_GRAPH_VERSION || 'v24.0' }}
       META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          curl -sS -L --max-time 180 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
+          curl -sS -L --max-time 90 -D /tmp/bot-headers.txt -o /tmp/bot-body.txt -w 'HTTP_STATUS=%{http_code}\nCONTENT_TYPE=%{content_type}\nRESPONSE_BYTES=%{size_download}\n' 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
           CURL_RC=$?
           echo "CURL_RC=${CURL_RC}"
           echo '--- response headers ---'
