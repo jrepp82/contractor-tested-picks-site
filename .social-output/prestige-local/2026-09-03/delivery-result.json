@@ -1,43 +1,55 @@
 {
   "date": "2026-09-03",
-  "source": "appdeploy-direct-publisher-plus-nextdoor-with-github-verification",
+  "source": "github-actions-direct-first-appdeploy-backup-plus-nextdoor",
   "configured_appdeploy_secret_names": [],
   "deliveries": [
     {
+      "ok": true,
       "platform": "facebook",
-      "status": "SKIPPED_MISSING_CREDENTIALS",
-      "published": false,
+      "status": "SKIPPED",
+      "reason": "missing_credentials",
       "missing": [
         "META_PAGE_ID",
-        "META_PAGE_ACCESS_TOKEN|META_ACCESS_TOKEN"
-      ]
+        "META_ACCESS_TOKEN"
+      ],
+      "published": false,
+      "delivery_source": "github-actions-direct"
     },
     {
+      "ok": true,
       "platform": "instagram",
-      "status": "SKIPPED_MISSING_CREDENTIALS",
-      "published": false,
+      "status": "SKIPPED",
+      "reason": "missing_credentials",
       "missing": [
         "META_IG_USER_ID",
         "META_ACCESS_TOKEN"
-      ]
+      ],
+      "published": false,
+      "delivery_source": "github-actions-direct"
     },
     {
+      "ok": true,
       "platform": "tiktok",
-      "status": "SKIPPED_MISSING_CREDENTIALS",
-      "published": false,
+      "status": "SKIPPED",
+      "reason": "missing_credentials",
       "missing": [
         "TIKTOK_ACCESS_TOKEN"
-      ]
+      ],
+      "published": false,
+      "delivery_source": "github-actions-direct"
     },
     {
+      "ok": true,
       "platform": "youtube-shorts",
-      "status": "SKIPPED_MISSING_CREDENTIALS",
-      "published": false,
+      "status": "SKIPPED",
+      "reason": "missing_credentials",
       "missing": [
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
         "YOUTUBE_REFRESH_TOKEN"
-      ]
+      ],
+      "published": false,
+      "delivery_source": "github-actions-direct"
     },
     {
       "platform": "nextdoor",
@@ -47,8 +59,10 @@
         "NEXTDOOR_ACCESS_TOKEN",
         "NEXTDOOR_SECURE_PROFILE_ID"
       ],
-      "requires_publish_api_approval": true
+      "requires_publish_api_approval": true,
+      "delivery_source": "github-actions-nextdoor"
     }
   ],
+  "published_platforms": [],
   "all_published": false
 }
