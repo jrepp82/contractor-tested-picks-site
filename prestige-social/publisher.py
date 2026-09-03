@@ -54,6 +54,18 @@ def result_succeeded(result):
     return isinstance(post_obj, dict) and bool(post_obj.get('id'))
 
 def main():
+    if not KEY:
+        ready=[]
+        for f in sorted(QUEUE.glob('*.json')):
+            d=json.loads(f.read_text())
+            if d.get('status') not in SKIP_STATUSES:
+                try:
+                    validate_queue_item(d,f.name)
+                    ready.append(f.name)
+                except Exception as exc:
+                    print(f.name,'not publish-ready:',exc)
+        print(json.dumps({'ok':True,'status':'BLOCKED_CREDENTIALS','missing':['BUFFER_API_KEY'],'ready_queue':ready},indent=2))
+        return
     channels=buffer_channels()
     print('Connected channels:',[(c['service'],c['displayName'] or c['name']) for c in channels])
     available={c['service']:c for c in channels}
