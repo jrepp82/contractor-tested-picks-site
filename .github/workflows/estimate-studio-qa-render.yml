@@ -19,21 +19,26 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch and verify approved Shopify artifact
+      - name: Fetch and verify approved Shopify artifact payload
         shell: bash
         run: |
           set -euo pipefail
           URL='https://cdn.shopify.com/s/files/1/0739/9066/8477/files/prestige-digitools-contractor-estimate-proposal-studio-pro-v1.zip?v=1788474910'
           curl -fsSL "$URL" -o /tmp/estimate-studio-v1.zip
-          test "$(stat -c%s /tmp/estimate-studio-v1.zip)" = '11205'
-          echo '0459f1bb48f94fbf466226020c096f47d6e283fd3a021dd429a55b83ec369095  /tmp/estimate-studio-v1.zip' | sha256sum -c -
+          echo "Hosted ZIP bytes: $(stat -c%s /tmp/estimate-studio-v1.zip)"
+          echo "Hosted ZIP SHA256: $(sha256sum /tmp/estimate-studio-v1.zip | awk '{print $1}')"
           unzip -t /tmp/estimate-studio-v1.zip
-      - name: Materialize noindex QA app from verified ZIP
+          rm -rf /tmp/estimate-studio-payload && mkdir -p /tmp/estimate-studio-payload
+          unzip -q /tmp/estimate-studio-v1.zip -d /tmp/estimate-studio-payload
+          echo 'c3f8f68cc2ad938bae0310de725234341873e433cfeada0649eef5926eb836b6  /tmp/estimate-studio-payload/index.html' | sha256sum -c -
+          echo 'e44d2cbf5596850a37acf5efc609afec5dc4d2a7ef6535b301662737f2c11ab0  /tmp/estimate-studio-payload/README.txt' | sha256sum -c -
+          echo '2f63e0d7c90d80eb2411383a2f2b79eded3af60b89af1f54dbc3cadd01fbce30  /tmp/estimate-studio-payload/LICENSE.txt' | sha256sum -c -
+      - name: Materialize noindex QA app from verified payload
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p digitools/estimate-proposal-studio-v1/app
-          unzip -p /tmp/estimate-studio-v1.zip index.html > digitools/estimate-proposal-studio-v1/app/index.html
+          cp /tmp/estimate-studio-payload/index.html digitools/estimate-proposal-studio-v1/app/index.html
           python - <<'PY'
           from pathlib import Path
           p=Path('digitools/estimate-proposal-studio-v1/app/index.html')
