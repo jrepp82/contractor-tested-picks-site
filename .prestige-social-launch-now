@@ -1,1 +1,1 @@
-Prestige bot-to-publisher integration verification 2026-09-03. Pull today's campaign from Money Machine Bot Hub /api/social-package, render real media, persist it, and execute every connected publishing provider. Record exact provider results or missing credentials.
+Prestige handoff diagnostic verification 2026-09-03. Probe Money Machine Bot Hub social-package endpoint, generate today's media, attempt every connected provider, and persist delivery results even when credentials are missing.
