@@ -1,49 +1,44 @@
 {
-  "ok": false,
-  "dry_run": false,
-  "generated_for": "2026-09-03",
-  "campaign": "Fall Exterior Readiness",
-  "public_video_url": "https://raw.githubusercontent.com/jrepp82/contractor-tested-picks-site/main/.social-output/prestige-local/2026-09-03/prestige-short.mp4",
-  "results": [
+  "date": "2026-09-03",
+  "source": "appdeploy-direct-publisher-with-github-verification",
+  "configured_secret_names": [],
+  "deliveries": [
     {
-      "ok": true,
       "platform": "facebook",
-      "status": "SKIPPED",
-      "reason": "missing_credentials",
+      "status": "SKIPPED_MISSING_CREDENTIALS",
+      "published": false,
       "missing": [
         "META_PAGE_ID",
-        "META_ACCESS_TOKEN"
+        "META_PAGE_ACCESS_TOKEN|META_ACCESS_TOKEN"
       ]
     },
     {
-      "ok": true,
       "platform": "instagram",
-      "status": "SKIPPED",
-      "reason": "missing_credentials",
+      "status": "SKIPPED_MISSING_CREDENTIALS",
+      "published": false,
       "missing": [
         "META_IG_USER_ID",
         "META_ACCESS_TOKEN"
       ]
     },
     {
-      "ok": true,
       "platform": "tiktok",
-      "status": "SKIPPED",
-      "reason": "missing_credentials",
+      "status": "SKIPPED_MISSING_CREDENTIALS",
+      "published": false,
       "missing": [
         "TIKTOK_ACCESS_TOKEN"
       ]
     },
     {
-      "ok": true,
       "platform": "youtube-shorts",
-      "status": "SKIPPED",
-      "reason": "missing_credentials",
+      "status": "SKIPPED_MISSING_CREDENTIALS",
+      "published": false,
       "missing": [
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
         "YOUTUBE_REFRESH_TOKEN"
       ]
     }
-  ]
+  ],
+  "all_published": false
 }
