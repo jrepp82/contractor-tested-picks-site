@@ -10,15 +10,22 @@ API = 'https://nextdoor.com/external/api/partner/v1/post/create/'
 RAW = 'https://raw.githubusercontent.com/jrepp82/contractor-tested-picks-site/main/'
 
 
+def write_result(root, result):
+    root.mkdir(parents=True, exist_ok=True)
+    (root / 'nextdoor-delivery.json').write_text(json.dumps(result, indent=2))
+    print(json.dumps(result))
+    return 0
+
+
 def main():
+    today = datetime.date.today().isoformat()
+    root = REPO / '.social-output' / 'prestige-local' / today
     token = os.environ.get('NEXTDOOR_ACCESS_TOKEN', '').strip()
     profile = os.environ.get('NEXTDOOR_SECURE_PROFILE_ID', '').strip()
     if not token or not profile:
-        print(json.dumps({'platform': 'nextdoor', 'status': 'SKIPPED_MISSING_CREDENTIALS', 'published': False, 'missing': [name for name, value in [('NEXTDOOR_ACCESS_TOKEN', token), ('NEXTDOOR_SECURE_PROFILE_ID', profile)] if not value]}))
-        return 0
+        missing = [name for name, value in [('NEXTDOOR_ACCESS_TOKEN', token), ('NEXTDOOR_SECURE_PROFILE_ID', profile)] if not value]
+        return write_result(root, {'platform': 'nextdoor', 'status': 'SKIPPED_MISSING_CREDENTIALS', 'published': False, 'missing': missing, 'requires_publish_api_approval': True})
 
-    today = datetime.date.today().isoformat()
-    root = REPO / '.social-output' / 'prestige-local' / today
     package_path = root / 'package.json'
     if not package_path.exists():
         raise RuntimeError('Current-day premium package is missing')
@@ -52,14 +59,14 @@ def main():
             data = json.loads(raw) if raw.strip() else {}
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode('utf-8', errors='replace')
-        raise RuntimeError(f'Nextdoor API HTTP {exc.code}: {detail[:1500]}') from exc
+        result = {'platform': 'nextdoor', 'status': 'ERROR', 'published': False, 'detail': f'HTTP {exc.code}: {detail[:1200]}'}
+        write_result(root, result)
+        raise RuntimeError(result['detail']) from exc
 
     share_link = data.get('share_link') or data.get('url')
     post_id = data.get('post_share_id') or data.get('id')
     result = {'platform': 'nextdoor', 'status': 'PUBLISHED', 'published': True, 'providerId': post_id, 'share_link': share_link}
-    (root / 'nextdoor-delivery.json').write_text(json.dumps(result, indent=2))
-    print(json.dumps(result))
-    return 0
+    return write_result(root, result)
 
 
 if __name__ == '__main__':
