@@ -3,6 +3,22 @@
   "trailingSlash": false,
   "headers": [
     {
+      "source": "/digitools/labor-rate-v2",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive, nosnippet" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; frame-ancestors 'self'; form-action 'self' https://buy.stripe.com" }
+      ]
+    },
+    {
+      "source": "/digitools/labor-rate-v2/prestige-digitools-labor-rate-break-even-engine-v2.zip",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive, nosnippet" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"prestige-digitools-labor-rate-break-even-engine-v2.zip\"" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
