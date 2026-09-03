@@ -1,6 +1,8 @@
 name: Prestige Social Publisher
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 14 * * *'
 permissions:
   contents: write
 jobs:
@@ -8,15 +10,55 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Pull latest Prestige social bot package
+        run: |
+          python - <<'PY'
+          import json, pathlib, urllib.request
+          url='https://prestige-money-machine-bots-oexnns.v2.appdeploy.ai/api/latest/social-publishing'
+          with urllib.request.urlopen(url, timeout=60) as r:
+              latest=json.loads(r.read().decode())
+          package=json.loads(latest['output'])
+          media_url=str(package.get('media_url') or '').strip()
+          targets=list(package.get('targets') or ['facebook'])
+          if not media_url:
+              targets=[t for t in targets if t=='facebook']
+          if not targets:
+              targets=['facebook']
+          captions=dict(package.get('captions') or {})
+          if not captions.get('facebook'):
+              raise RuntimeError('Social bot package has no Facebook caption')
+          item={
+              'status':'ready',
+              'campaign':package.get('campaign') or 'Prestige Daily Social',
+              'targets':targets,
+              'media_type':package.get('media_type') or 'video',
+              'media_url':media_url,
+              'captions':{t:(captions.get(t) or captions['facebook']) for t in targets},
+              'source_bot_run_id':latest['id'],
+              'source_bot_created_at':latest.get('createdAt'),
+              'video_plan':package.get('video_plan',''),
+              'instagram_caption':package.get('instagram_caption',''),
+              'youtube_caption':package.get('youtube_caption',''),
+              'tiktok_caption':package.get('tiktok_caption','')
+          }
+          path=pathlib.Path('prestige-social/queue')/f"bot-{latest['id']}.json"
+          path.parent.mkdir(parents=True, exist_ok=True)
+          if path.exists():
+              print('Queue item already exists:', path)
+          else:
+              path.write_text(json.dumps(item, indent=2))
+              print('Created queue item:', path, 'targets=', targets)
+          PY
       - name: Publish queued Prestige content through Buffer
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
         run: python prestige-social/publisher.py
       - name: Commit delivery results
+        if: always()
         run: |
           if git diff --quiet; then exit 0; fi
           git config user.name 'Prestige Automation'
           git config user.email 'automation@users.noreply.github.com'
           git add prestige-social/queue
-          git commit -m 'Record Prestige social delivery results'
+          git commit -m 'Record Prestige social bot delivery results'
           git push
