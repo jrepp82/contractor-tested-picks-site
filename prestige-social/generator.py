@@ -12,12 +12,12 @@ OUTPUT = REPO / '.social-output' / 'prestige-local'
 BOT_ENDPOINT = 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/social-package'
 
 
-def fetch_bot_package(today, attempts=3):
+def fetch_bot_package(today, attempts=1):
     last_error = None
     for attempt in range(1, attempts + 1):
         try:
             req = urllib.request.Request(BOT_ENDPOINT, headers={'User-Agent': 'Prestige-GitHub-Publisher/2.1', 'Accept': 'application/json'})
-            with urllib.request.urlopen(req, timeout=90) as response:
+            with urllib.request.urlopen(req, timeout=180) as response:
                 raw = response.read().decode()
                 if not raw.strip():
                     raise ValueError(f'Bot API returned empty body with HTTP {response.status}')
@@ -46,7 +46,7 @@ def fetch_bot_package(today, attempts=3):
             last_error = exc
             print(f'Bot package attempt {attempt}/{attempts} failed: {exc}')
             if attempt < attempts:
-                time.sleep(5 * attempt)
+                time.sleep(65)
     raise RuntimeError(f'Premium Bot Hub package unavailable after {attempts} attempts: {last_error}')
 
 
