@@ -3,6 +3,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 14 * * *'
+  push:
+    paths:
+      - '.social-launch-now'
 permissions:
   contents: write
 jobs:
