@@ -143,6 +143,9 @@ jobs:
           ARGS=("--platform=${TARGET_PLATFORM}" "--slot=${PUBLISH_SLOT}")
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
+          if [[ "${PUBLISH_DRY_RUN}" != "true" ]]; then
+            node -e "const r=require('./social-publish-result.json'); const bad=(r.results||[]).filter(x=>x.status==='SKIPPED'||x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
+          fi
 
       - name: Publish Threads
         if: ${{ env.TARGET_PLATFORM == 'threads' || env.TARGET_PLATFORM == 'all' }}
@@ -152,6 +155,9 @@ jobs:
           ARGS=("--slot=${PUBLISH_SLOT}")
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node threads-publisher.js "${ARGS[@]}" | tee threads-publish-result.json
+          if [[ "${PUBLISH_DRY_RUN}" != "true" ]]; then
+            node -e "const r=require('./threads-publish-result.json'); const bad=(r.results||[r]).filter(x=>x.status==='SKIPPED'||x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Threads publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
+          fi
 
       - name: Preserve run result
         if: always()
