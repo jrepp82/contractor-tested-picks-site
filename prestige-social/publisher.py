@@ -16,6 +16,7 @@ REPO_SLUG = os.environ.get('GITHUB_REPOSITORY', 'jrepp82/contractor-tested-picks
 BRANCH = os.environ.get('GITHUB_REF_NAME', 'main')
 SITE = 'https://PrestigeRemodelingWI.com'
 DELIVERED_STATUSES = {'PUBLISHED', 'SUBMITTED', 'ALREADY_DELIVERED'}
+ALLOWED_MEDIA_MODES = {'premium-ai-visual-motion-reel', 'premium-technical-vector-motion-reel'}
 
 
 def env(name):
@@ -87,8 +88,8 @@ def validate_package(package):
         raise RuntimeError(f'Publisher refuses content below 90/100: {quality}')
     if not media_quality.get('passed') or float(media_quality.get('score', 0)) < 90:
         raise RuntimeError(f'Publisher refuses visuals below 90/100: {media_quality}')
-    if package.get('media_mode') != 'premium-ai-visual-motion-reel':
-        raise RuntimeError(f"Publisher refuses non-premium media mode: {package.get('media_mode')}")
+    if package.get('media_mode') not in ALLOWED_MEDIA_MODES:
+        raise RuntimeError(f"Publisher refuses unsupported premium media mode: {package.get('media_mode')}")
     if not package.get('voiceover'):
         raise RuntimeError('Publisher refuses package without voiceover')
     if not package.get('captions'):
