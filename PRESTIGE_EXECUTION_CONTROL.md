@@ -102,14 +102,16 @@ Required to finish automated posting:
 
 ## P1 - Shopify
 
-Status: `LIVE PHYSICAL STORE + DIGITAL FULFILLMENT GATED`
+Status: `LIVE PHYSICAL STORE + UNVERIFIED DIGITAL PRODUCTS PAUSED`
 Store: `https://prestige-digitool.myshopify.com/`
 Grand Opening Sale:
 - `GRANDOPEN10` - 10% off eligible lower-priced physical products.
 - `BUNDLE15` - 15% off 2+ eligible lower-priced physical products.
 - Recon 2000 excluded from these discounts.
 
-Do not activate draft DigiTools until reliable instant fulfillment is confirmed.
+On 2026-09-03, all 15 Digital Contractor Tool listings were changed from ACTIVE to DRAFT because no Shopify order proved their attached-file delivery. Physical Shopify Collective products were not changed.
+
+Do not reactivate a DigiTool until its final files, listing claims, checkout, and delivery path pass QA.
 
 Product status on 2026-09-03:
 - Contractor Labor Rate & Break-Even Engine: live at $17.99 through Stripe; no-secrets redirect/download handoff verified.
