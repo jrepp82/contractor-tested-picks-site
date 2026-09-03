@@ -55,7 +55,7 @@ jobs:
 
       - name: Validate publisher code
         run: |
-          python -m py_compile prestige-social/generator.py prestige-social/publisher.py
+          python -m py_compile prestige-social/generator.py prestige-social/deterministic_fallback.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
       - name: Probe Money Machine Bot health only
@@ -70,22 +70,28 @@ jobs:
           echo
           if [[ "${CURL_RC}" != "0" ]]; then exit 1; fi
 
-      - name: Generate premium Prestige reel with bounded rate-limit retry
+      - name: Generate premium Prestige reel with bounded recovery
         shell: bash
         run: |
-          sed -i 's/timeout=90/timeout=180/' prestige-social/generator.py
           set +e
           for attempt in 1 2 3; do
-            echo "Premium media generation attempt ${attempt}/3"
-            python prestige-social/generator.py && exit 0
-            RC=$?
+            echo "Premium AI media generation attempt ${attempt}/3"
+            python prestige-social/generator.py 2>&1 | tee /tmp/prestige-generator.log
+            RC=${PIPESTATUS[0]}
+            if [[ ${RC} -eq 0 ]]; then exit 0; fi
+            if grep -q 'ai_daily_token_budget_exceeded' /tmp/prestige-generator.log; then
+              echo 'AppDeploy AI daily budget is exhausted. Switching immediately to the zero-token contractor technical reel builder.'
+              python prestige-social/deterministic_fallback.py && exit 0
+              echo 'Zero-token fallback failed.'
+              exit 1
+            fi
             echo "Generation attempt ${attempt} failed with ${RC}"
             if [[ ${attempt} -lt 3 ]]; then
-              echo 'Waiting 65 seconds to clear the 6-images-per-60-seconds provider window before retrying.'
+              echo 'Waiting 65 seconds only for recoverable image/provider windows before retrying.'
               sleep 65
             fi
           done
-          echo 'Premium Prestige media generation failed after bounded retries.'
+          echo 'Premium Prestige media generation failed after bounded recovery.'
           exit 1
 
       - name: Enforce premium media gate
@@ -98,11 +104,12 @@ jobs:
           video = pathlib.Path(package['video_path'])
           cq = package.get('quality') or {}
           vq = (package.get('media') or {}).get('quality') or {}
+          allowed_modes = {'premium-ai-visual-motion-reel', 'premium-technical-vector-motion-reel'}
           assert cq.get('passed') and float(cq.get('score', 0)) >= 90, cq
           assert vq.get('passed') and float(vq.get('score', 0)) >= 90, vq
-          assert package.get('media_mode') == 'premium-ai-visual-motion-reel', package.get('media_mode')
+          assert package.get('media_mode') in allowed_modes, package.get('media_mode')
           assert video.exists() and video.stat().st_size >= 300000, video
-          print('Premium gate PASS:', cq.get('score'), vq.get('score'), video)
+          print('Premium gate PASS:', cq.get('score'), vq.get('score'), package.get('media_mode'), video)
           PY
 
       - name: Persist generated media before live publishing
