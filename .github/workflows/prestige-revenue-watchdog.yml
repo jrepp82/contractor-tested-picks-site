@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '13 * * * *'
+  push:
+    paths:
+      - '.revenue-watchdog-launch'
 
 permissions:
   contents: read
