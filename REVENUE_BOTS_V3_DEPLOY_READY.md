@@ -1,1 +1,1 @@
-Prestige Revenue Bots V3 fallback marker: AppDeploy is at its 125/125 lifetime deployment limit. Live Stripe offers are created; remaining route deployment is moving through the existing GitHub/Vercel production backend. Do not claim unverified routes live.
+Prestige Revenue Bots V3 fallback: AppDeploy deployment quota is exhausted. Stripe offers are live; fallback backend work is proceeding through GitHub/Vercel. This file is informational only.
