@@ -42,10 +42,10 @@ jobs:
           grep -qi "Five cash engines" /tmp/route.out
           check "Prestige Revenue Router" "https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/"
           grep -qi "Prestige Revenue Router" /tmp/route.out
-          check "Lead Exchange redirect" "https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html"
-          grep -qi "Prestige Revenue Router" /tmp/route.out
-          check "Emergency Dispatch redirect" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
-          grep -qi "Prestige Revenue Router" /tmp/route.out
+          check "Lead Exchange bridge" "https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html"
+          grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#lead" /tmp/route.out
+          check "Emergency Dispatch bridge" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
+          grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#dispatch" /tmp/route.out
           check "Seller Photo Cleanup Utility" "https://contractor-tested-picks-site.vercel.app/revenue-lab/card-photo-cleaner.html"
           grep -qi "Process Batch" /tmp/route.out
           check "Collectibles Arbitrage Control" "https://contractor-tested-picks-site.vercel.app/revenue-lab/arbitrage-control.html"
