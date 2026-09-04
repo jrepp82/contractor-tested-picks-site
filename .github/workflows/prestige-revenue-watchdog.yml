@@ -46,6 +46,8 @@ jobs:
           grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#lead" /tmp/route.out
           check "Emergency Dispatch bridge" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
           grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#dispatch" /tmp/route.out
+          check "Seller Photo Cleanup offer" "https://contractor-tested-picks-site.vercel.app/revenue-lab/photo-cleanup-lifetime.html"
+          grep -qi "Get Lifetime Access" /tmp/route.out
           check "Seller Photo Cleanup Utility" "https://contractor-tested-picks-site.vercel.app/revenue-lab/card-photo-cleaner.html"
           grep -qi "Process Batch" /tmp/route.out
           check "Collectibles Arbitrage Control" "https://contractor-tested-picks-site.vercel.app/revenue-lab/arbitrage-control.html"
@@ -78,8 +80,9 @@ jobs:
             "https://buy.stripe.com/fZuaEX6dG3DS1w575n7ss0e"
             "https://buy.stripe.com/28EeVdgSkdes8YxgFX7ss0l"
             "https://buy.stripe.com/eVq3cv6dG5M0caJ2P77ss0m"
+            "https://buy.stripe.com/9B6bJ1atWeiw8Yx9dv7ss0p"
           )
           for url in "${links[@]}"; do
             curl --retry 2 --connect-timeout 12 --max-time 30 -fsSL "$url" -o /dev/null
           done
-          echo "PASS: 10 live Stripe checkout routes responded" >> "$GITHUB_STEP_SUMMARY"
+          echo "PASS: 11 live Stripe checkout routes responded" >> "$GITHUB_STEP_SUMMARY"
