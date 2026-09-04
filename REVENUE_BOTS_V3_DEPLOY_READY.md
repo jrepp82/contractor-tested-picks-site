@@ -1,6 +1,6 @@
 # Prestige Revenue Bots V3 — AppDeploy Limit Fallback
 
-AppDeploy rejected the website patch because the account has reached its 125/125 lifetime deployment limit. Revenue automation is therefore being deployed through the existing GitHub/Vercel production backend instead of waiting on AppDeploy.
+AppDeploy rejected the website patch because the account has reached its 125/125 lifetime deployment limit. Revenue automation is being deployed through the existing GitHub/Vercel production backend instead.
 
 Live Stripe offers already created:
 - Labor Rate Engine $17.99 — https://buy.stripe.com/5kQ28r9pS4HW1w5blD7ss00
