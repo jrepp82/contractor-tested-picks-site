@@ -40,10 +40,12 @@ jobs:
           check "Priority Site Visit" "https://contractor-tested-picks-site.vercel.app/priority-site-visit.html"
           check "Revenue Expansion hub" "https://contractor-tested-picks-site.vercel.app/revenue-lab/"
           grep -qi "Five cash engines" /tmp/route.out
-          check "Qualified Lead Exchange" "https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html"
-          grep -qi "Local service leads" /tmp/route.out
-          check "Emergency Dispatch Coordination" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
-          grep -qi "Urgent local service coordination" /tmp/route.out
+          check "Prestige Revenue Router" "https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/"
+          grep -qi "Qualified local requests" /tmp/route.out
+          check "Lead Exchange redirect" "https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html"
+          grep -qi "Qualified local requests" /tmp/route.out
+          check "Emergency Dispatch redirect" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
+          grep -qi "Qualified local requests" /tmp/route.out
           check "Seller Photo Cleanup Utility" "https://contractor-tested-picks-site.vercel.app/revenue-lab/card-photo-cleaner.html"
           grep -qi "Process Batch" /tmp/route.out
           check "Collectibles Arbitrage Control" "https://contractor-tested-picks-site.vercel.app/revenue-lab/arbitrage-control.html"
@@ -51,22 +53,20 @@ jobs:
           check "Industrial Surplus Spread Analyzer" "https://contractor-tested-picks-site.vercel.app/revenue-lab/surplus-spread-calculator.html"
           grep -qi "40% of conservative liquidation" /tmp/route.out
 
-      - name: Verify revenue intake relay with safe QA lead
+      - name: Verify Revenue Router database storage with safe QA
         shell: bash
         run: |
           set -euo pipefail
-          response=$(curl --retry 2 --retry-delay 2 --connect-timeout 12 --max-time 40 -fsSL \
-            -X POST "https://contractor-tested-picks-site.vercel.app/api/revenue-lead" \
-            -H "Content-Type: application/json" \
-            --data '{"source":"lead-broker","name":"Prestige Automated QA","phone":"9205550100","email":"Jason@PrestigeRemodelingWI.com","location":"Manitowoc, WI","service":"Revenue bot storage QA","urgency":"Automated QA","details":"Automated storage verification only. Delete immediately.","routingConsent":true,"smsConsent":false,"marketingConsent":false,"pageUrl":"https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html","clientReceivedAt":"automated-watchdog"}')
-          printf '%s' "$response" > /tmp/revenue-qa.json
+          curl --retry 2 --retry-delay 2 --connect-timeout 12 --max-time 40 -fsSL \
+            "https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/api/revenue-qa" \
+            -o /tmp/revenue-qa.json
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/revenue-qa.json'))
           assert d.get('ok') is True, d
           assert d.get('leadId') == 'qa-verified', d
           PY
-          echo "PASS: Revenue Expansion intake relayed through Prestige QA storage path" >> "$GITHUB_STEP_SUMMARY"
+          echo "PASS: Revenue Router database create/read/delete QA" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify material checklist PDF
         shell: bash
