@@ -1,10 +1,20 @@
-Prestige DigiTools Contractor Estimate & Proposal Studio PRO V1
+Prestige DigiTools Contractor Estimate & Proposal Studio PRO V1.1
 SKU: PDT-ESTPROP-001
-Version: 1.0
-Built: 2026-09-03
-Package: prestige-digitools-contractor-estimate-proposal-studio-pro-v1.zip
-Bytes: 11205
-SHA256: 0459f1bb48f94fbf466226020c096f47d6e283fd3a021dd429a55b83ec369095
-QA: ZIP integrity PASS; 13/13 static feature checks PASS; 6/6 formula regression checks PASS
+Version: 1.1
+Built: 2026-09-04
+Package: prestige-digitools-contractor-estimate-proposal-studio-pro-v1.1.zip
+Bytes: 12038
+SHA256: c0f717a2e81170cfacb9f814292e79e43c88221a6492674277aa703124fa7d2b
+QA: ZIP integrity PASS; JavaScript syntax PASS; 13/13 static feature checks PASS; 7/7 formula regression checks PASS
+Private Drive artifact ID: 1ngctwKriDHHqXGkDXxQN9KymqUbPEps4
+Drive binary verification: PASS; exact bytes/hash match locked source
+Shopify product: gid://shopify/Product/8478321344701
 Shopify status: DRAFT
-Price: 1299 cents USD
+Stripe live product: prod_VCG9uSm0MqXJl1
+Stripe live price: price_1UBrckHB1wxxj42cYCZ3VJPP
+Stripe Payment Link: plink_1UBriqHB1wxxj42c0G9687xk
+Stripe checkout URL: https://buy.stripe.com/4gMcN50Tm0rG0s175n7ss01
+Price: 1299 cents USD, one-time
+Post-checkout page: /digitools/estimate-proposal-studio-v1/success.html
+Fulfillment: paid-order worker enabled; verifies exact live product/price/amount, grants checkout email private Drive reader access, and sends delivery email; duplicate fulfillment guarded by Stripe identifier search in Sent mail.
+State: SOURCE LOCKED PASS; DRIVE BINARY PASS; CHECKOUT CONFIG PASS; FULFILLMENT WORKER ENABLED; LIVE CUSTOMER PURCHASE TEST NOT YET PERFORMED.
