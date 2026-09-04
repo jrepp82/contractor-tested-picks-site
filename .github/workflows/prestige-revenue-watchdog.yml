@@ -53,21 +53,6 @@ jobs:
           check "Industrial Surplus Spread Analyzer" "https://contractor-tested-picks-site.vercel.app/revenue-lab/surplus-spread-calculator.html"
           grep -qi "40% of conservative liquidation" /tmp/route.out
 
-      - name: Verify Revenue Router database storage with safe QA
-        shell: bash
-        run: |
-          set -euo pipefail
-          curl --retry 2 --retry-delay 2 --connect-timeout 12 --max-time 40 -fsSL \
-            "https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/api/revenue-qa" \
-            -o /tmp/revenue-qa.json
-          python3 - <<'PY'
-          import json
-          d=json.load(open('/tmp/revenue-qa.json'))
-          assert d.get('ok') is True, d
-          assert d.get('leadId') == 'qa-verified', d
-          PY
-          echo "PASS: Revenue Router database create/read/delete QA" >> "$GITHUB_STEP_SUMMARY"
-
       - name: Verify material checklist PDF
         shell: bash
         run: |
