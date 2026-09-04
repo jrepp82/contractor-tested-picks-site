@@ -1,0 +1,48 @@
+{
+  "product": "Contractor Job Cost & Profit Control PRO",
+  "brand": "Prestige DigiTools",
+  "version": "1.0",
+  "sku": "PDT-JOBCOST-001",
+  "status": "LIVE_PAYMENT_LANE_LOCKED",
+  "currency": "usd",
+  "amount_cents": 1999,
+  "stripe": {
+    "account": "acct_1RlkcuHB1wxxj42c",
+    "product_id": "prod_VCGNo4zQwY6g6P",
+    "price_id": "price_1UBrqaHB1wxxj42cumYpjZe2",
+    "payment_link_id": "plink_1UBsNtHB1wxxj42cLLL0iCza",
+    "payment_url": "https://buy.stripe.com/4gMfZh8lO1vKb6Fahz7ss05",
+    "livemode": true,
+    "active": true
+  },
+  "artifact": {
+    "filename": "prestige-digitools-contractor-job-cost-profit-control-pro-v1.zip",
+    "bytes": 11837,
+    "sha256": "359c5804e24ede75027846039f5ee5aae003a81869967e13221bace6794e46d2",
+    "private_drive_file_id": "1e8lYnkcpuSRZe85cPenyewaDq0XE-HRE"
+  },
+  "checkout": {
+    "quantity": 1,
+    "price_verified_cents": 1999,
+    "redirect": "https://contractor-tested-picks-site.vercel.app/digitools/job-cost-v1/complete.html?session_id={CHECKOUT_SESSION_ID}",
+    "confirmation_page_http_status": 200
+  },
+  "fulfillment": {
+    "mode": "private-drive-email-verified",
+    "worker": "Prestige Stripe Fulfillment",
+    "duplicate_guard": "sent-gmail-stripe-session-or-payment-id",
+    "required_match": ["paid", "product", "price", "amount", "currency", "payment_link", "file_identity"],
+    "public_zip_exposed": false
+  },
+  "qa": {
+    "zip_integrity": "PASS",
+    "javascript_syntax": "PASS",
+    "feature_checks": "14/14 PASS",
+    "formula_regressions": "8/8 PASS",
+    "hosted_confirmation": "PASS HTTP 200",
+    "stripe_payment_link_config": "PASS",
+    "live_customer_charge_exercised": false
+  },
+  "locked_at_utc": "2026-09-04T08:23:00Z",
+  "support": "Jason@PrestigeRemodelingWI.com"
+}
