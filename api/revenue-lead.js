@@ -1,4 +1,4 @@
-const TARGET='https://prestigeremodelingwi.com/api/leads';
+const TARGET='https://prestige-remodeling-a3-0s6imc.v2.appdeploy.ai/api/leads';
 const SOURCES=new Set(['lead-broker','dispatch-request','lead-buyer','dispatch-provider']);
 const clean=(v,n)=>typeof v==='string'?v.trim().slice(0,n):'';
 const emailOk=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
