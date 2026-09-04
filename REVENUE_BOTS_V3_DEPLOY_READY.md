@@ -1,1 +1,1 @@
-Prestige Revenue Bots V3 fallback: AppDeploy deployment quota is exhausted. Stripe offers are live; fallback backend work is proceeding through GitHub/Vercel. This file is informational only.
+Prestige Revenue Bots V3 fallback is active because AppDeploy deployment quota is exhausted. Stripe offers are live. Remaining backend/frontend deployment is through GitHub/Vercel and must be verified before being called live.
