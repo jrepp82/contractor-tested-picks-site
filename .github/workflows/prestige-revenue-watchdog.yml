@@ -1,0 +1,66 @@
+name: Prestige Revenue Funnel Watchdog Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '13 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prestige-revenue-watchdog
+  cancel-in-progress: true
+
+jobs:
+  revenue-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check public revenue routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          check() {
+            local label="$1" url="$2"
+            echo "Checking $label — $url"
+            curl --retry 2 --retry-delay 3 --connect-timeout 12 --max-time 30 -fsSL "$url" -o /tmp/route.out
+            printf 'PASS: %s\n' "$label" >> "$GITHUB_STEP_SUMMARY"
+          }
+          check "Prestige Remodeling homepage" "https://PrestigeRemodelingWI.com/"
+          grep -qi "Send Estimate Request" /tmp/route.out
+          check "Prestige DigiTools storefront" "https://contractor-tested-picks-site.vercel.app/digitools/"
+          grep -qi "Prestige Contractor Lifetime Vault" /tmp/route.out
+          check "Estimate Audit / Plan-Check intake" "https://contractor-tested-picks-site.vercel.app/digitools/audit-intake.html"
+          check "Instant Project Qualifier" "https://contractor-tested-picks-site.vercel.app/instant-estimate.html"
+          check "Affiliate Recommender" "https://contractor-tested-picks-site.vercel.app/affiliate-recommender.html"
+          check "Priority Site Visit" "https://contractor-tested-picks-site.vercel.app/priority-site-visit.html"
+
+      - name: Verify material checklist PDF
+        shell: bash
+        run: |
+          set -euo pipefail
+          headers=$(mktemp)
+          curl --retry 2 --connect-timeout 12 --max-time 30 -fsSL -D "$headers" "https://contractor-tested-picks-site.vercel.app/api/material-checklist" -o /tmp/material-checklist.pdf
+          grep -qi "content-type: application/pdf" "$headers"
+          head -c 5 /tmp/material-checklist.pdf | grep -q "%PDF-"
+          echo "PASS: Homeowner Material Checklist PDF" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Verify live Stripe checkout URLs
+        shell: bash
+        run: |
+          set -euo pipefail
+          links=(
+            "https://buy.stripe.com/5kQ28r9pS4HW1w5blD7ss00"
+            "https://buy.stripe.com/eVq4gzcC44HW0s1exP7ss09"
+            "https://buy.stripe.com/5kQeVd0Tm6Q4gqZcpH7ss0a"
+            "https://buy.stripe.com/7sYbJ19pS1vKgqZ9dv7ss0b"
+            "https://buy.stripe.com/8x27sL31u1vKdeN61j7ss0c"
+            "https://buy.stripe.com/28E4gz59C5M03Ed89r7ss0d"
+            "https://buy.stripe.com/28EdR90TmcaodeN2P77ss0g"
+            "https://buy.stripe.com/fZuaEX6dG3DS1w575n7ss0e"
+          )
+          for url in "${links[@]}"; do
+            curl --retry 2 --connect-timeout 12 --max-time 30 -fsSL "$url" -o /dev/null
+          done
+          echo "PASS: 8 live Stripe checkout routes responded" >> "$GITHUB_STEP_SUMMARY"
