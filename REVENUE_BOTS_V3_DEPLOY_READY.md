@@ -14,4 +14,4 @@ Live Stripe offers created:
 - Emergency Change Order $9: https://buy.stripe.com/28E4gz59C5M03Ed89r7ss0d
 - Full Change Order upgrade $27: https://buy.stripe.com/28EdR90TmcaodeN2P77ss0g
 
-Do not claim any route is live until its Vercel deployment is verified.
+Fallback execution target: GitHub/Vercel repo jrepp82/contractor-tested-picks-site. Do not claim a route is live until Vercel deployment is verified.
