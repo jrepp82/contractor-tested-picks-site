@@ -1,3 +1,1 @@
-# Prestige Revenue Bots V3 — fallback execution
-
-AppDeploy rejected the site patch because the account reached its 125/125 lifetime deployment limit. Live Stripe products were created successfully. Remaining automation is being routed through the existing GitHub/Vercel production system. See commit history for the created offer URLs and deployment work. Do not claim a fallback route live until its Vercel deployment is verified.
+Prestige Revenue Bots V3 fallback marker: AppDeploy is at its 125/125 lifetime deployment limit. Live Stripe offers are created; remaining route deployment is moving through the existing GitHub/Vercel production backend. Do not claim unverified routes live.
