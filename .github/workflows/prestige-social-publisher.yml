@@ -38,7 +38,7 @@ jobs:
           echo "Prestige dry run: ${DRY_RUN}"
 
       - name: Preflight live channel authorization
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         env:
           META_PAGE_ID: ${{ secrets.PRESTIGE_FACEBOOK_PAGE_ID || secrets.META_PAGE_ID }}
@@ -60,25 +60,31 @@ jobs:
           [[ -n "${GOOGLE_CLIENT_ID:-}" && -n "${GOOGLE_CLIENT_SECRET:-}" && -n "${YOUTUBE_REFRESH_TOKEN:-}" ]] && echo 'youtube-shorts=authorized' && READY=1 || true
           [[ -n "${NEXTDOOR_ACCESS_TOKEN:-}" && -n "${NEXTDOOR_SECURE_PROFILE_ID:-}" ]] && echo 'nextdoor=authorized' && READY=1 || true
           if [[ "${READY}" != "1" ]]; then
-            echo '::error::No live Prestige social channel is authorized. Stopping before FFmpeg/TTS install and premium media generation so the workflow does not waste compute on content it cannot publish.'
+            echo '::warning::No live Prestige social channel is authorized. Skipping media generation and publishing without marking a platform delivery.'
             echo 'Required authorization groups: Facebook(page id + token), Instagram(account id + token), TikTok(access token), YouTube(client id + client secret + refresh token), or Nextdoor(access token + secure profile id/API approval).'
-            exit 1
+            echo 'PRESTIGE_CHANNEL_READY=false' >> "$GITHUB_ENV"
+            exit 0
           fi
+          echo 'PRESTIGE_CHANNEL_READY=true' >> "$GITHUB_ENV"
 
       - name: Check out repository
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         uses: actions/checkout@v4
 
       - name: Set up Node
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
       - name: Validate publisher code
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         run: |
           python -m py_compile prestige-social/generator.py prestige-social/smart_generator.py prestige-social/deterministic_fallback.py prestige-social/nextdoor_publisher.py prestige-social/publisher.py
           node --check youtube-shorts-publisher.js
 
       - name: Install premium reel tools
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg
@@ -87,6 +93,7 @@ jobs:
           edge-tts --version
 
       - name: Generate premium Prestige reel with bounded recovery
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         run: |
           set +e
@@ -107,6 +114,7 @@ jobs:
           exit 1
 
       - name: Enforce premium media gate
+        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
         run: |
           python - <<'PY'
           import datetime, json, pathlib
@@ -125,7 +133,7 @@ jobs:
           PY
 
       - name: Persist generated media before live publishing
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         run: |
           git config user.name 'Prestige Automation'
           git config user.email 'automation@users.noreply.github.com'
@@ -138,7 +146,7 @@ jobs:
           fi
 
       - name: Publish directly with authorized channel credentials
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         env:
           META_PAGE_ID: ${{ secrets.PRESTIGE_FACEBOOK_PAGE_ID || secrets.META_PAGE_ID }}
@@ -167,7 +175,7 @@ jobs:
           exit 0
 
       - name: Hand off persisted reel to AppDeploy backup publisher
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         run: |
           set +e
@@ -185,7 +193,7 @@ jobs:
           exit 0
 
       - name: Publish approved Nextdoor business profile
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         env:
           NEXTDOOR_ACCESS_TOKEN: ${{ secrets.NEXTDOOR_ACCESS_TOKEN || secrets.PRESTIGE_NEXTDOOR_ACCESS_TOKEN }}
@@ -198,7 +206,7 @@ jobs:
           exit 0
 
       - name: Build truthful multi-platform delivery report
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         shell: bash
         run: |
           python - <<'PY'
@@ -260,7 +268,7 @@ jobs:
           PY
 
       - name: Persist delivery result
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
         run: |
           git config user.name 'Prestige Automation'
           git config user.email 'automation@users.noreply.github.com'
