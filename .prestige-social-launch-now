@@ -1,1 +1,1 @@
-Prestige social publisher validation trigger 2026-09-05T17:18:00Z. Expected behavior with no authorized live channel: warn, skip media generation, record no publication, and finish cleanly.
+Prestige social publisher validation trigger 2026-09-05T17:18:30Z. Confirm authorization preflight warns, prevents media generation, records no publication, and exits cleanly when no live channel is connected.
