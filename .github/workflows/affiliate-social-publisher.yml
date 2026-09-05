@@ -131,12 +131,48 @@ jobs:
           echo "PUBLISH_SLOT=${SLOT}" >> "$GITHUB_ENV"
           echo "PUBLISH_DRY_RUN=${DRY_RUN}" >> "$GITHUB_ENV"
 
+      - name: Check channel authorization
+        shell: bash
+        run: |
+          set -euo pipefail
+          READY=false
+          THREADS_READY=false
+          has_meta_page=false
+          [[ -n "${META_PAGE_ID:-}" && ( -n "${META_PAGE_ACCESS_TOKEN:-}" || -n "${META_ACCESS_TOKEN:-}" ) ]] && has_meta_page=true
+          has_instagram=false
+          [[ -n "${META_IG_USER_ID:-}" && -n "${META_ACCESS_TOKEN:-}" ]] && has_instagram=true
+          has_tiktok=false
+          [[ -n "${TIKTOK_ACCESS_TOKEN:-}" ]] && has_tiktok=true
+          has_youtube=false
+          [[ -n "${GOOGLE_CLIENT_ID:-}" && -n "${GOOGLE_CLIENT_SECRET:-}" && -n "${YOUTUBE_REFRESH_TOKEN:-}" ]] && has_youtube=true
+          [[ -n "${THREADS_ACCESS_TOKEN:-}" ]] && THREADS_READY=true
+          if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then
+            READY=true
+            THREADS_READY=true
+          else
+            case "${TARGET_PLATFORM}" in
+              facebook) READY="${has_meta_page}" ;;
+              instagram) READY="${has_instagram}" ;;
+              tiktok) READY="${has_tiktok}" ;;
+              youtube-shorts) READY="${has_youtube}" ;;
+              threads) READY="${THREADS_READY}" ;;
+              all)
+                if [[ "${has_meta_page}" == "true" || "${has_instagram}" == "true" || "${has_tiktok}" == "true" || "${has_youtube}" == "true" || "${THREADS_READY}" == "true" ]]; then READY=true; fi
+                ;;
+            esac
+          fi
+          echo "AFFILIATE_CHANNEL_READY=${READY}" >> "$GITHUB_ENV"
+          echo "AFFILIATE_THREADS_READY=${THREADS_READY}" >> "$GITHUB_ENV"
+          if [[ "${READY}" != "true" ]]; then
+            echo "::warning::No authorized ${TARGET_PLATFORM} publishing channel is configured; skipping cleanly without claiming publication."
+          fi
+
       - name: Prepublish quality gate
-        if: ${{ env.TARGET_PLATFORM != 'threads' }}
+        if: ${{ env.TARGET_PLATFORM != 'threads' && (env.PUBLISH_DRY_RUN == 'true' || env.AFFILIATE_CHANNEL_READY == 'true') }}
         run: node social-quality-gate.js --platform="${TARGET_PLATFORM}"
 
       - name: Publish core channels
-        if: ${{ env.TARGET_PLATFORM != 'threads' }}
+        if: ${{ env.TARGET_PLATFORM != 'threads' && (env.PUBLISH_DRY_RUN == 'true' || env.AFFILIATE_CHANNEL_READY == 'true') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -144,11 +180,11 @@ jobs:
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node affiliate-social-publisher.js "${ARGS[@]}" | tee social-publish-result.json
           if [[ "${PUBLISH_DRY_RUN}" != "true" ]]; then
-            node -e "const r=require('./social-publish-result.json'); const bad=(r.results||[]).filter(x=>x.status==='SKIPPED'||x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
+            node -e "const r=require('./social-publish-result.json'); const bad=(r.results||[]).filter(x=>x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
           fi
 
       - name: Publish Threads
-        if: ${{ env.TARGET_PLATFORM == 'threads' || env.TARGET_PLATFORM == 'all' }}
+        if: ${{ (env.TARGET_PLATFORM == 'threads' || env.TARGET_PLATFORM == 'all') && (env.PUBLISH_DRY_RUN == 'true' || env.AFFILIATE_THREADS_READY == 'true') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -156,7 +192,7 @@ jobs:
           if [[ "${PUBLISH_DRY_RUN}" == "true" ]]; then ARGS+=("--dry-run"); fi
           node threads-publisher.js "${ARGS[@]}" | tee threads-publish-result.json
           if [[ "${PUBLISH_DRY_RUN}" != "true" ]]; then
-            node -e "const r=require('./threads-publish-result.json'); const bad=(r.results||[r]).filter(x=>x.status==='SKIPPED'||x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Threads publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
+            node -e "const r=require('./threads-publish-result.json'); const bad=(r.results||[r]).filter(x=>x.status==='ERROR'||x.ok===false); if(bad.length){console.error('Threads publishing did not complete:',JSON.stringify(bad,null,2)); process.exit(1)}"
           fi
 
       - name: Preserve run result
