@@ -38,7 +38,7 @@ jobs:
           echo "Prestige dry run: ${DRY_RUN}"
 
       - name: Preflight live channel authorization
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
+        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
         shell: bash
         env:
           META_PAGE_ID: ${{ secrets.PRESTIGE_FACEBOOK_PAGE_ID || secrets.META_PAGE_ID }}
