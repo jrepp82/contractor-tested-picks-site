@@ -1,35 +1,125 @@
-name: Prestige Social Publisher — HALTED FOR QUALITY REBUILD
+name: Prestige Premium Private Candidate Builder — PUBLISH DISABLED
 
 on:
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: Quality-rebuild validation only. Publishing is hard-disabled.
-        required: true
-        type: boolean
-        default: true
+  push:
+    paths:
+      - 'prestige-social/deterministic_fallback.py'
 
 permissions:
   contents: read
 
 concurrency:
-  group: prestige-social-publisher-halted-${{ github.ref }}
+  group: prestige-premium-private-candidate-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  quality-rebuild-hold:
+  build-private-candidate:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
+    env:
+      PRESTIGE_SOCIAL_PUBLISH_DISABLED: 'true'
     steps:
-      - name: Publish kill switch
+      - name: Enforce publish kill switch
         shell: bash
         run: |
-          echo 'PRESTIGE_SOCIAL_PUBLISH_DISABLED=true' >> "$GITHUB_ENV"
-          echo 'Prestige social publishing is HARD-DISABLED pending quality rebuild.'
-          echo 'No Facebook, Instagram, TikTok, YouTube Shorts, Threads, or Nextdoor publish action will run from this workflow.'
+          test "$PRESTIGE_SOCIAL_PUBLISH_DISABLED" = 'true'
+          echo 'PUBLISHING HARD-DISABLED. This workflow creates private QA artifacts only.'
 
-      - name: Confirm safe hold
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install private rendering dependencies
         shell: bash
         run: |
-          test "${PRESTIGE_SOCIAL_PUBLISH_DISABLED}" = "true"
-          echo 'SAFE HOLD VERIFIED: generation/publishing pipeline is disabled. Manual quality review is required before any future re-enable.'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python -m pip install --quiet Pillow
+          ffmpeg -version | head -1
+          python -c 'from PIL import Image; print("Pillow OK")'
+
+      - name: Render premium private candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python prestige-social/deterministic_fallback.py | tee /tmp/prestige-private-render.log
+
+      - name: Enforce objective and policy gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import datetime, json, pathlib
+          root = pathlib.Path('.social-output/premium-private') / datetime.date.today().isoformat()
+          meta = json.loads((root / 'candidate-metadata.json').read_text())
+          assert meta['objective_status'] == 'PASS', meta.get('objective_errors')
+          assert meta['candidate_status'] == 'PRIVATE_AWAITING_PREMIUM_REVIEW'
+          assert meta['publishing'] == 'DISABLED'
+          assert meta['owner_approved'] is False
+          assert meta['personal_job_media'] is False
+          assert meta['stock_footage'] is False
+          assert meta['recycled_third_party_clips'] is False
+          assert meta['narration_mode'] == 'none'
+          assert int(meta['visual_beats']) >= 6
+          review = meta['subjective_review']
+          assert review['status'] == 'REQUIRED_NOT_COMPLETED'
+          assert float(review['minimum_each']) >= 9.0
+          assert float(review['minimum_overall']) >= 9.3
+          assert review['self_generated_auto_approval'] is False
+          av = meta['av']
+          assert av['video_codec'] == 'h264'
+          assert av['resolution'] == '1080x1920'
+          assert av['audio_codec'] == 'aac' and av['audio_channels'] == 2
+          assert -20 <= float(av['integrated_lufs']) <= -16
+          print('PRIVATE PREMIUM OBJECTIVE GATE PASS')
+          PY
+
+      - name: Build QA contact sheet
+        shell: bash
+        run: |
+          python - <<'PY'
+          import datetime, pathlib
+          from PIL import Image, ImageDraw, ImageFont
+          root = pathlib.Path('.social-output/premium-private') / datetime.date.today().isoformat()
+          beats = sorted(root.glob('beat-*.png'))
+          assert len(beats) >= 6
+          thumbs=[]
+          for p in beats:
+              im=Image.open(p).convert('RGB')
+              im.thumbnail((270,480))
+              thumbs.append((p.name,im.copy()))
+          sheet=Image.new('RGB',(1080,1040),(12,20,31))
+          draw=ImageDraw.Draw(sheet)
+          try: f=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',22)
+          except: f=None
+          for i,(name,im) in enumerate(thumbs):
+              col=i%4; row=i//4; x=col*270; y=row*520
+              sheet.paste(im,(x,y))
+              draw.rectangle((x,y+480,x+270,y+520),fill=(8,18,29))
+              draw.text((x+10,y+488),name,fill=(235,242,248),font=f)
+          sheet.save(root/'contact-sheet.jpg',quality=92)
+          print(root/'contact-sheet.jpg')
+          PY
+
+      - name: Upload private review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prestige-premium-private-candidate-${{ github.sha }}
+          path: |
+            .social-output/premium-private/*/Prestige_*_PREMIUM_PRIVATE_CANDIDATE.mp4
+            .social-output/premium-private/*/candidate-metadata.json
+            .social-output/premium-private/*/contact-sheet.jpg
+            .social-output/premium-private/*/beat-*.png
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Reconfirm no publishing path exists
+        shell: bash
+        run: |
+          test "$PRESTIGE_SOCIAL_PUBLISH_DISABLED" = 'true'
+          echo 'PRIVATE BUILD COMPLETE. No Facebook/Instagram/TikTok/YouTube/Threads/Nextdoor delivery action exists in this workflow.'
