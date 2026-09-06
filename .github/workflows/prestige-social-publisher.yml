@@ -1,280 +1,35 @@
-name: Prestige Social Publisher
+name: Prestige Social Publisher — HALTED FOR QUALITY REBUILD
 
 on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: Validate premium generation and quality gates without publishing
+        description: Quality-rebuild validation only. Publishing is hard-disabled.
         required: true
         type: boolean
         default: true
-  schedule:
-    - cron: '0 14 * * *'
-  push:
-    paths:
-      - '.prestige-social-launch-now'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: prestige-social-publisher-v4-${{ github.ref }}
-  cancel-in-progress: false
+  group: prestige-social-publisher-halted-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  publish:
+  quality-rebuild-hold:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
+    timeout-minutes: 5
     steps:
-      - name: Resolve execution mode
+      - name: Publish kill switch
         shell: bash
         run: |
-          DRY_RUN=false
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            DRY_RUN='${{ inputs.dry_run }}'
-          fi
-          echo "PRESTIGE_DRY_RUN=${DRY_RUN}" >> "$GITHUB_ENV"
-          echo "Prestige dry run: ${DRY_RUN}"
+          echo 'PRESTIGE_SOCIAL_PUBLISH_DISABLED=true' >> "$GITHUB_ENV"
+          echo 'Prestige social publishing is HARD-DISABLED pending quality rebuild.'
+          echo 'No Facebook, Instagram, TikTok, YouTube Shorts, Threads, or Nextdoor publish action will run from this workflow.'
 
-      - name: Preflight live channel authorization
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' }}
-        shell: bash
-        env:
-          META_PAGE_ID: ${{ secrets.PRESTIGE_FACEBOOK_PAGE_ID || secrets.META_PAGE_ID }}
-          META_PAGE_ACCESS_TOKEN: ${{ secrets.PRESTIGE_FACEBOOK_ACCESS_TOKEN || secrets.META_PAGE_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
-          META_IG_USER_ID: ${{ secrets.PRESTIGE_INSTAGRAM_ACCOUNT_ID || secrets.META_IG_USER_ID }}
-          META_ACCESS_TOKEN: ${{ secrets.PRESTIGE_INSTAGRAM_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
-          TIKTOK_ACCESS_TOKEN: ${{ secrets.PRESTIGE_TIKTOK_ACCESS_TOKEN || secrets.TIKTOK_ACCESS_TOKEN }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          NEXTDOOR_ACCESS_TOKEN: ${{ secrets.NEXTDOOR_ACCESS_TOKEN || secrets.PRESTIGE_NEXTDOOR_ACCESS_TOKEN }}
-          NEXTDOOR_SECURE_PROFILE_ID: ${{ secrets.NEXTDOOR_SECURE_PROFILE_ID || secrets.PRESTIGE_NEXTDOOR_BUSINESS_ID }}
-        run: |
-          set -euo pipefail
-          READY=0
-          [[ -n "${META_PAGE_ID:-}" && -n "${META_PAGE_ACCESS_TOKEN:-}" ]] && echo 'facebook=authorized' && READY=1 || true
-          [[ -n "${META_IG_USER_ID:-}" && -n "${META_ACCESS_TOKEN:-}" ]] && echo 'instagram=authorized' && READY=1 || true
-          [[ -n "${TIKTOK_ACCESS_TOKEN:-}" ]] && echo 'tiktok=authorized' && READY=1 || true
-          [[ -n "${GOOGLE_CLIENT_ID:-}" && -n "${GOOGLE_CLIENT_SECRET:-}" && -n "${YOUTUBE_REFRESH_TOKEN:-}" ]] && echo 'youtube-shorts=authorized' && READY=1 || true
-          [[ -n "${NEXTDOOR_ACCESS_TOKEN:-}" && -n "${NEXTDOOR_SECURE_PROFILE_ID:-}" ]] && echo 'nextdoor=authorized' && READY=1 || true
-          if [[ "${READY}" != "1" ]]; then
-            echo '::warning::No live Prestige social channel is authorized. Skipping media generation and publishing without marking a platform delivery.'
-            echo 'Required authorization groups: Facebook(page id + token), Instagram(account id + token), TikTok(access token), YouTube(client id + client secret + refresh token), or Nextdoor(access token + secure profile id/API approval).'
-            echo 'PRESTIGE_CHANNEL_READY=false' >> "$GITHUB_ENV"
-            exit 0
-          fi
-          echo 'PRESTIGE_CHANNEL_READY=true' >> "$GITHUB_ENV"
-
-      - name: Check out repository
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Validate publisher code
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
-        run: |
-          python -m py_compile prestige-social/generator.py prestige-social/smart_generator.py prestige-social/deterministic_fallback.py prestige-social/nextdoor_publisher.py prestige-social/publisher.py
-          node --check youtube-shorts-publisher.js
-
-      - name: Install premium reel tools
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
-          python -m pip install --quiet edge-tts
-          ffmpeg -version | head -1
-          edge-tts --version
-
-      - name: Generate premium Prestige reel with bounded recovery
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
+      - name: Confirm safe hold
         shell: bash
         run: |
-          set +e
-          for attempt in 1 2 3; do
-            echo "Premium media preparation attempt ${attempt}/3"
-            python prestige-social/smart_generator.py 2>&1 | tee /tmp/prestige-generator.log
-            RC=${PIPESTATUS[0]}
-            if [[ ${RC} -eq 0 ]]; then exit 0; fi
-            if grep -q 'ai_daily_token_budget_exceeded\|AI_DAILY_BUDGET_EXHAUSTED' /tmp/prestige-generator.log; then
-              echo 'AI budget unavailable. Switching to the zero-token contractor technical reel builder without lowering the quality threshold.'
-              python prestige-social/deterministic_fallback.py && exit 0
-              exit 1
-            fi
-            echo "Generation attempt ${attempt} failed with ${RC}"
-            if [[ ${attempt} -lt 3 ]]; then sleep 65; fi
-          done
-          echo 'Premium Prestige media generation failed after bounded recovery.'
-          exit 1
-
-      - name: Enforce premium media gate
-        if: ${{ env.PRESTIGE_DRY_RUN == 'true' || env.PRESTIGE_CHANNEL_READY == 'true' }}
-        run: |
-          python - <<'PY'
-          import datetime, json, pathlib
-          today = datetime.date.today().isoformat()
-          root = pathlib.Path('.social-output/prestige-local') / today
-          package = json.loads((root / 'package.json').read_text())
-          video = pathlib.Path(package['video_path'])
-          cq = package.get('quality') or {}
-          vq = (package.get('media') or {}).get('quality') or {}
-          allowed_modes = {'premium-ai-visual-motion-reel', 'premium-technical-vector-motion-reel'}
-          assert cq.get('passed') and float(cq.get('score', 0)) >= 90, cq
-          assert vq.get('passed') and float(vq.get('score', 0)) >= 90, vq
-          assert package.get('media_mode') in allowed_modes, package.get('media_mode')
-          assert video.exists() and video.stat().st_size >= 300000, video
-          print('Premium gate PASS:', cq.get('score'), vq.get('score'), package.get('media_mode'), video)
-          PY
-
-      - name: Persist generated media before live publishing
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        run: |
-          git config user.name 'Prestige Automation'
-          git config user.email 'automation@users.noreply.github.com'
-          git add prestige-social/queue .social-output/prestige-local
-          if ! git diff --cached --quiet; then
-            git commit -m "Generate premium daily Prestige social media"
-            git pull --rebase
-            git push
-            sleep 10
-          fi
-
-      - name: Publish directly with authorized channel credentials
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        shell: bash
-        env:
-          META_PAGE_ID: ${{ secrets.PRESTIGE_FACEBOOK_PAGE_ID || secrets.META_PAGE_ID }}
-          META_PAGE_ACCESS_TOKEN: ${{ secrets.PRESTIGE_FACEBOOK_ACCESS_TOKEN || secrets.META_PAGE_ACCESS_TOKEN }}
-          META_IG_USER_ID: ${{ secrets.PRESTIGE_INSTAGRAM_ACCOUNT_ID || secrets.META_IG_USER_ID }}
-          META_ACCESS_TOKEN: ${{ secrets.PRESTIGE_INSTAGRAM_ACCESS_TOKEN || secrets.META_ACCESS_TOKEN }}
-          TIKTOK_ACCESS_TOKEN: ${{ secrets.PRESTIGE_TIKTOK_ACCESS_TOKEN || secrets.TIKTOK_ACCESS_TOKEN }}
-          TIKTOK_PRIVACY_LEVEL: ${{ secrets.PRESTIGE_TIKTOK_PRIVACY_LEVEL || secrets.TIKTOK_PRIVACY_LEVEL }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          YOUTUBE_PRIVACY_STATUS: public
-        run: |
-          set +e
-          python prestige-social/publisher.py
-          DIRECT_RC=$?
-          TODAY="$(date -u +%F)"
-          DIRECT_RESULT=".social-output/prestige-local/${TODAY}/delivery-result.json"
-          if [[ -f "${DIRECT_RESULT}" ]]; then
-            cp "${DIRECT_RESULT}" /tmp/github-direct-delivery.json
-            cat /tmp/github-direct-delivery.json
-          else
-            printf '{"ok":false,"results":[],"error":"direct publisher produced no report"}\n' > /tmp/github-direct-delivery.json
-          fi
-          echo "GitHub direct publisher exit code: ${DIRECT_RC}"
-          exit 0
-
-      - name: Hand off persisted reel to AppDeploy backup publisher
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        shell: bash
-        run: |
-          set +e
-          curl -sS -L --max-time 180 -X POST 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-now' -o /tmp/direct-publish.json
-          PUBLISH_RC=$?
-          curl -sS -L --max-time 60 'https://api-v2.appdeploy.ai/app/money-machine-bot-hub-uvnwsq/api/direct-social-publish-status' -o /tmp/direct-status.json
-          STATUS_RC=$?
-          [[ -s /tmp/direct-publish.json ]] || printf '{"configured":[],"deliveries":[],"error":"AppDeploy publish unavailable"}\n' > /tmp/direct-publish.json
-          [[ -s /tmp/direct-status.json ]] || printf '{"configuredNames":[],"deliveries":[],"error":"AppDeploy status unavailable"}\n' > /tmp/direct-status.json
-          cat /tmp/direct-publish.json
-          echo
-          cat /tmp/direct-status.json
-          echo
-          echo "AppDeploy backup publisher rc=${PUBLISH_RC}; status rc=${STATUS_RC}"
-          exit 0
-
-      - name: Publish approved Nextdoor business profile
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        shell: bash
-        env:
-          NEXTDOOR_ACCESS_TOKEN: ${{ secrets.NEXTDOOR_ACCESS_TOKEN || secrets.PRESTIGE_NEXTDOOR_ACCESS_TOKEN }}
-          NEXTDOOR_SECURE_PROFILE_ID: ${{ secrets.NEXTDOOR_SECURE_PROFILE_ID || secrets.PRESTIGE_NEXTDOOR_BUSINESS_ID }}
-        run: |
-          set +e
-          python prestige-social/nextdoor_publisher.py
-          RC=$?
-          echo "Nextdoor adapter exit code: ${RC}"
-          exit 0
-
-      - name: Build truthful multi-platform delivery report
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        shell: bash
-        run: |
-          python - <<'PY'
-          import datetime, json, pathlib
-          today = datetime.date.today().isoformat()
-          root = pathlib.Path('.social-output/prestige-local') / today
-
-          def load(path, default):
-              p = pathlib.Path(path)
-              if not p.exists():
-                  return default
-              try:
-                  return json.loads(p.read_text())
-              except Exception as exc:
-                  return {**default, 'parse_error': str(exc)}
-
-          direct = load('/tmp/github-direct-delivery.json', {'results': []})
-          response = load('/tmp/direct-publish.json', {'configured': [], 'deliveries': []})
-          status = load('/tmp/direct-status.json', {'configuredNames': [], 'deliveries': []})
-          configured = set(response.get('configured') or status.get('configuredNames') or [])
-          app_actual = {x.get('platform'): x for x in (status.get('deliveries') or [])}
-          direct_actual = {x.get('platform'): x for x in (direct.get('results') or [])}
-          delivered_states = {'PUBLISHED', 'SUBMITTED', 'ALREADY_DELIVERED'}
-          platforms = ['facebook', 'instagram', 'tiktok', 'youtube-shorts']
-          deliveries = []
-
-          for platform in platforms:
-              d = direct_actual.get(platform)
-              if d and d.get('status') in delivered_states:
-                  deliveries.append({**d, 'published': True, 'delivery_source': 'github-actions-direct'})
-                  continue
-              a = app_actual.get(platform)
-              if a and a.get('status') == 'PUBLISHED':
-                  deliveries.append({'platform': platform, 'status': 'PUBLISHED', 'published': True, 'providerId': a.get('providerId'), 'detail': a.get('detail'), 'delivery_source': 'appdeploy-backup'})
-                  continue
-              if d:
-                  deliveries.append({**d, 'published': False, 'delivery_source': 'github-actions-direct'})
-              else:
-                  deliveries.append({'platform': platform, 'status': 'NO_PROVIDER_DELIVERY_RECORDED', 'published': False, 'delivery_source': 'appdeploy-backup'})
-
-          nextdoor_path = root / 'nextdoor-delivery.json'
-          if nextdoor_path.exists():
-              nd = json.loads(nextdoor_path.read_text())
-              nd['published'] = nd.get('published') is True or nd.get('status') in delivered_states
-              nd['delivery_source'] = 'github-actions-nextdoor'
-              deliveries.append(nd)
-
-          report = {
-              'date': today,
-              'source': 'github-actions-direct-first-appdeploy-backup-plus-nextdoor',
-              'configured_appdeploy_secret_names': sorted(configured),
-              'deliveries': deliveries,
-              'published_platforms': [x.get('platform') for x in deliveries if x.get('published')],
-              'all_recorded_deliveries_published': bool(deliveries) and all(x.get('published') for x in deliveries),
-          }
-          path = root / 'delivery-result.json'
-          path.write_text(json.dumps(report, indent=2))
-          print('Truthful delivery report:', json.dumps(report, indent=2))
-          PY
-
-      - name: Persist delivery result
-        if: ${{ env.PRESTIGE_DRY_RUN != 'true' && env.PRESTIGE_CHANNEL_READY == 'true' }}
-        run: |
-          git config user.name 'Prestige Automation'
-          git config user.email 'automation@users.noreply.github.com'
-          git add .social-output/prestige-local/*/delivery-result.json .social-output/prestige-local/*/nextdoor-delivery.json || true
-          if ! git diff --cached --quiet; then
-            git commit -m "Record Prestige social delivery status"
-            git pull --rebase
-            git push
-          fi
+          test "${PRESTIGE_SOCIAL_PUBLISH_DISABLED}" = "true"
+          echo 'SAFE HOLD VERIFIED: generation/publishing pipeline is disabled. Manual quality review is required before any future re-enable.'
