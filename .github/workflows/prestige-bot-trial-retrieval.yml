@@ -14,12 +14,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
-      - name: Fetch AppDeploy bot trial metadata and MP4
+      - name: Fetch private AppDeploy trial metadata
         shell: bash
         run: |
           set -euo pipefail
-          BASE='https://prestige-remodeling-a3-0s6imc.v2.appdeploy.ai'
+          BASE='https://api-v2.appdeploy.ai/app/prestige-remodeling-a3-0s6imc'
           curl -fLsS --retry 3 --retry-delay 2 --max-time 180 "$BASE/api/social/trial/status" -o bot-trial-status.json
+          python - <<'PY'
+          import json
+          with open('bot-trial-status.json', encoding='utf-8') as handle:
+              payload = json.load(handle)
+          assert payload.get('ok') is True, 'trial status is not healthy'
+          assert payload.get('publishing') == 'disabled', 'publishing safety lock is missing'
+          trial = payload.get('trial')
+          assert isinstance(trial, dict), 'no private trial is ready'
+          assert trial.get('ownerApproved') is False, 'retrieval expects an unapproved private trial'
+          assert trial.get('status') == 'private-video-awaiting-owner-review', 'trial is not awaiting private owner review'
+          assert trial.get('videoUrl'), 'private trial has no signed video URL'
+          PY
+
+      - name: Fetch and validate unmodified private MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://api-v2.appdeploy.ai/app/prestige-remodeling-a3-0s6imc'
           curl -fLsS --retry 3 --retry-delay 2 --max-time 240 "$BASE/api/social/trial/video" -o prestige-social-bot-trial.mp4
           BYTES="$(stat -c%s prestige-social-bot-trial.mp4)"
           echo "bot_trial_bytes=$BYTES"
@@ -27,7 +45,7 @@ jobs:
           file prestige-social-bot-trial.mp4 | tee bot-trial-file.txt
           grep -qi 'mp4\|iso media' bot-trial-file.txt
 
-      - name: Upload unmodified bot trial
+      - name: Upload private review artifact
         uses: actions/upload-artifact@v4
         with:
           name: prestige-social-bot-trial
