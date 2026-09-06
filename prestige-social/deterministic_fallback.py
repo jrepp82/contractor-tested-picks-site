@@ -1,212 +1,302 @@
-import datetime
-import json
-import pathlib
-import subprocess
+#!/usr/bin/env python3
+from __future__ import annotations
+import datetime, json, math, pathlib, subprocess, sys, textwrap
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 ROOT = pathlib.Path(__file__).resolve().parent
-REPO = ROOT.parent
-QUEUE = ROOT / 'queue'
-OUTPUT = REPO / '.social-output' / 'prestige-local'
-FONT = '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-BOLD = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
+W,H=1080,1920
+FPS=30
+DURATION=24
+SAFE=(90,180,830,1450)
+BG=(5,15,28)
+NAVY=(8,32,56)
+BLUE=(33,119,255)
+CYAN=(74,208,255)
+WHITE=(244,248,252)
+MUTED=(166,184,204)
+GOLD=(218,171,74)
+RED=(255,92,92)
+GREEN=(76,207,130)
+WOOD=(147,95,58)
+METAL=(174,190,207)
+FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+BOLD='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
 
+CLAIMS={
+ 'KICKOUT_DIVERTS_TO_GUTTER':{
+  'claim':'Kick-out flashing at a roof-wall intersection diverts rainwater runoff into the gutter and helps protect the wall from water intrusion.',
+  'source_name':'U.S. DOE Building Science Education — Kick-out Flashing at Roof-Wall Intersections',
+  'source_url':'https://bsesc.energy.gov/energy-basics/kick-out-flashing-roof-wall-intersections'},
+ 'STEP_FLASHING_ROOF_WALL':{
+  'claim':'Step flashing at roof-wall intersections is integrated with roof and wall drainage planes in shingle fashion to protect walls from water intrusion.',
+  'source_name':'U.S. DOE Building Science Education — Step Flashing at Roof-Wall Intersections',
+  'source_url':'https://bsesc.energy.gov/energy-basics/step-flashing-roof-wall-intersections'}
+}
 
-def run(cmd, cwd=None, timeout=120):
-    result = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True, timeout=timeout)
-    if result.returncode != 0:
-        raise RuntimeError((result.stderr or result.stdout)[-5000:])
-    return result
+EPISODE={
+ 'day':1,'date':'2026-09-06','topic':'Kick-out flashing at roof-to-wall eaves','style_id':'cinematic_isometric',
+ 'technical_claim_ids':['KICKOUT_DIVERTS_TO_GUTTER','STEP_FLASHING_ROOF_WALL'],
+ 'publishing':'DISABLED','owner_approved':False,'narration_mode':'none','personal_job_media':False,
+ 'hook':'This tiny flashing detail can decide whether roof runoff reaches the gutter—or the wall.',
+ 'primary_takeaway':'Step flashing manages the roof-to-wall joint; the kick-out at the bottom redirects concentrated runoff into the gutter before it can dump behind cladding.'
+}
 
+SCENES=[
+ ('hook','ONE SMALL DETAIL. BIG WATER PATH.','Watch what happens at the bottom of a roof-to-wall intersection.'),
+ ('failure','WITHOUT THE KICK-OUT','Runoff follows the wall instead of being pushed into the gutter.'),
+ ('step','STEP FLASHING = THE LAYERED PATH','Each piece laps with the roof and wall drainage layers.'),
+ ('diverter','THE KICK-OUT FINISHES THE PATH','The bottom diverter turns concentrated runoff outward.'),
+ ('water','WATER SHOULD LAND HERE','Into the gutter—not behind siding or trim.'),
+ ('inspect','WHAT TO LOOK FOR','Continuous step flashing • kick-out at the eave • clear gutter entry'),
+ ('payoff','THE TAKEAWAY','Correct water management is layered. Sealant is not the system.'),
+ ('close','WHEN THE DETAILS MATTER','Prestige Remodeling • Manitowoc, Wisconsin')
+]
 
-def drawtext(text, y, size=56, bold=False, x='(w-text_w)/2', color='white'):
-    font = BOLD if bold else FONT
-    safe = text.replace(':', '\\:').replace("'", '')
-    return f"drawtext=fontfile={font}:text='{safe}':fontcolor={color}:fontsize={size}:x={x}:y={y}"
+def run(cmd,timeout=240):
+    p=subprocess.run(cmd,text=True,capture_output=True,timeout=timeout)
+    if p.returncode:
+        raise RuntimeError((p.stderr or p.stdout)[-8000:])
+    return p
 
+def font(size,bold=False): return ImageFont.truetype(BOLD if bold else FONT,size)
 
-def make_scene(path, scene):
-    base = 'color=c=0x07111f:s=1080x1920:d=1'
-    if scene == 1:
-        filters = [
-            'drawbox=x=0:y=0:w=1080:h=28:color=0x1f6feb:t=fill',
-            drawtext('PRESTIGE CONTRACTOR CHECK', 110, 38, True, color='0x7fb3ff'),
-            drawtext('DECK LEDGER LEAK PATH', 205, 68, True),
-            drawtext('The damage starts behind the finish.', 310, 36),
-            'drawbox=x=115:y=500:w=850:h=1110:color=0x182536:t=fill',
-            'drawbox=x=165:y=560:w=220:h=990:color=0x596573:t=fill',
-            'drawbox=x=385:y=560:w=38:h=990:color=0x1f6feb:t=fill',
-            'drawbox=x=423:y=920:w=485:h=180:color=0x8a5a32:t=fill',
-            'drawbox=x=452:y=655:w=34:h=405:color=0xf85149:t=fill',
-            'drawbox=x=444:y=1030:w=50:h=50:color=0xf85149:t=fill',
-            drawtext('WALL', 690, 38, True, x='210'),
-            drawtext('WRB', 700, 30, True, x='375', color='0x7fb3ff'),
-            drawtext('LEDGER', 970, 46, True, x='580'),
-            drawtext('WATER', 720, 28, True, x='500', color='0xff7b72'),
-            drawtext('PATH', 760, 28, True, x='500', color='0xff7b72'),
-            drawtext('Caulk alone is not a drainage plane.', 1680, 40, True),
-        ]
-    elif scene == 2:
-        filters = [
-            'drawbox=x=0:y=0:w=1080:h=28:color=0x1f6feb:t=fill',
-            drawtext('THE WATER SHEDDING STACK', 140, 64, True),
-            drawtext('Each layer laps over the one below it.', 250, 36),
-            'drawbox=x=130:y=500:w=820:h=190:color=0x3b4654:t=fill',
-            'drawbox=x=130:y=720:w=820:h=190:color=0x1f6feb:t=fill',
-            'drawbox=x=130:y=940:w=820:h=190:color=0xc89b3c:t=fill',
-            'drawbox=x=130:y=1160:w=820:h=240:color=0x8a5a32:t=fill',
-            drawtext('1  SIDING / CLADDING', 555, 42, True, x='205'),
-            drawtext('2  CONTINUOUS WRB', 775, 42, True, x='205'),
-            drawtext('3  Z FLASHING - POSITIVE LAP', 995, 42, True, x='205', color='0x07111f'),
-            drawtext('4  STRUCTURAL LEDGER', 1240, 42, True, x='205'),
-            drawtext('Protect fastener penetrations too.', 1530, 40, True),
-            drawtext('Water must always have a path OUT.', 1635, 46, True, color='0x7fb3ff'),
-        ]
-    else:
-        filters = [
-            'drawbox=x=0:y=0:w=1080:h=28:color=0x1f6feb:t=fill',
-            drawtext('BEFORE SIDING HIDES IT', 140, 64, True),
-            drawtext('Four checks before the connection is covered.', 250, 34),
-            'drawbox=x=125:y=500:w=830:h=170:color=0x12263b:t=fill',
-            'drawbox=x=125:y=710:w=830:h=170:color=0x12263b:t=fill',
-            'drawbox=x=125:y=920:w=830:h=170:color=0x12263b:t=fill',
-            'drawbox=x=125:y=1130:w=830:h=170:color=0x12263b:t=fill',
-            'drawbox=x=160:y=550:w=62:h=62:color=0x2ea043:t=fill',
-            'drawbox=x=160:y=760:w=62:h=62:color=0x2ea043:t=fill',
-            'drawbox=x=160:y=970:w=62:h=62:color=0x2ea043:t=fill',
-            'drawbox=x=160:y=1180:w=62:h=62:color=0x2ea043:t=fill',
-            drawtext('Continuous weather barrier', 555, 38, True, x='265'),
-            drawtext('Positive flashing lap', 765, 38, True, x='265'),
-            drawtext('Protected penetrations', 975, 38, True, x='265'),
-            drawtext('Clear drainage path', 1185, 38, True, x='265'),
-            drawtext('Planning a deck or exterior repair?', 1510, 42, True),
-            drawtext('PrestigeRemodelingWI.com', 1600, 50, True, color='0x7fb3ff'),
-            drawtext('MANITOWOC, WISCONSIN', 1710, 30, True, color='0xa8b3c4'),
-        ]
-    run(['ffmpeg', '-y', '-f', 'lavfi', '-i', base, '-vf', ','.join(filters), '-frames:v', '1', '-update', '1', str(path)], timeout=60)
-    if not path.exists() or path.stat().st_size < 25000:
-        raise RuntimeError(f'Fallback scene render failed QA: {path}')
+def text_center(draw,text,y,size,bold=False,fill=WHITE,maxw=820,spacing=8):
+    f=font(size,bold)
+    words=text.split(); lines=[]; line=''
+    for word in words:
+        test=(line+' '+word).strip()
+        if draw.textbbox((0,0),test,font=f)[2] > maxw and line:
+            lines.append(line); line=word
+        else: line=test
+    if line: lines.append(line)
+    for ln in lines:
+        box=draw.textbbox((0,0),ln,font=f); x=(W-(box[2]-box[0]))//2
+        draw.text((x,y),ln,font=f,fill=fill)
+        y += (box[3]-box[1])+spacing
+    return y
 
+def glow_dot(im,xy,r,color):
+    layer=Image.new('RGBA',im.size,(0,0,0,0)); d=ImageDraw.Draw(layer)
+    for rr,a in [(r*4,20),(r*3,35),(r*2,55),(r,220)]:
+        d.ellipse((xy[0]-rr,xy[1]-rr,xy[0]+rr,xy[1]+rr),fill=(*color,a))
+    layer=layer.filter(ImageFilter.GaussianBlur(radius=max(2,r//2)))
+    im.alpha_composite(layer)
 
-def write_srt(path):
-    path.write_text('''1
-00:00:00,000 --> 00:00:04,700
-Deck ledger leaks start where you cannot see them.
+def iso_house(draw,origin=(240,690),scale=1.0,show_kick=True,show_step=True,water_mode='good',highlight=None):
+    ox,oy=origin
+    wall=[(ox,oy),(ox+390*scale,oy-145*scale),(ox+390*scale,oy+430*scale),(ox,oy+565*scale)]
+    draw.polygon(wall,fill=(31,47,66),outline=(91,119,145),width=4)
+    side=[(ox+390*scale,oy-145*scale),(ox+555*scale,oy-60*scale),(ox+555*scale,oy+515*scale),(ox+390*scale,oy+430*scale)]
+    draw.polygon(side,fill=(22,36,53),outline=(91,119,145),width=4)
+    roof=[(ox-95*scale,oy+70*scale),(ox+250*scale,oy-190*scale),(ox+585*scale,oy-20*scale),(ox+240*scale,oy+240*scale)]
+    draw.polygon(roof,fill=(62,69,78),outline=(126,139,151),width=4)
+    for i in range(5):
+        yy=oy+70*scale-i*48*scale
+        draw.line([(ox-80*scale+i*45*scale,yy),(ox+255*scale+i*45*scale,yy-250*scale)],fill=(102,111,120),width=3)
+    gutter=[(ox+185*scale,oy+220*scale),(ox+530*scale,oy+43*scale),(ox+548*scale,oy+67*scale),(ox+203*scale,oy+244*scale)]
+    draw.polygon(gutter,fill=METAL,outline=(226,235,243),width=3)
+    if show_step:
+        for i in range(5):
+            x=ox+30*scale+i*48*scale; y=oy+40*scale-i*36*scale
+            draw.polygon([(x,y),(x+55*scale,y-42*scale),(x+92*scale,y-23*scale),(x+37*scale,y+19*scale)],fill=(101,176,226),outline=(193,229,251),width=2)
+    if show_kick:
+        x=ox+205*scale; y=oy+206*scale
+        kick=[(x,y),(x+88*scale,y-45*scale),(x+122*scale,y-28*scale),(x+54*scale,y+42*scale),(x+12*scale,y+27*scale)]
+        draw.polygon(kick,fill=GOLD,outline=(255,225,151),width=4)
+    if water_mode:
+        pts=[]
+        for i in range(8):
+            t=i/7
+            x=ox+15*scale+(215*scale)*t
+            y=oy-40*scale+(250*scale)*t
+            pts.append((x,y))
+        if water_mode=='good':
+            pts += [(ox+260*scale,oy+225*scale),(ox+350*scale,oy+180*scale),(ox+420*scale,oy+145*scale)]
+            col=CYAN
+        else:
+            pts += [(ox+238*scale,oy+265*scale),(ox+255*scale,oy+355*scale),(ox+265*scale,oy+455*scale)]
+            col=RED
+        draw.line(pts,fill=col,width=max(8,int(12*scale)),joint='curve')
+        for px,py in pts[::2]: draw.ellipse((px-8,py-8,px+8,py+8),fill=col)
+    if highlight=='kick':
+        draw.ellipse((ox+175*scale,oy+150*scale,ox+365*scale,oy+330*scale),outline=GOLD,width=8)
+    elif highlight=='step':
+        draw.line([(ox-5*scale,oy+80*scale),(ox+280*scale,oy-145*scale)],fill=CYAN,width=8)
+    elif highlight=='gutter':
+        draw.line([(ox+178*scale,oy+215*scale),(ox+545*scale,oy+30*scale)],fill=GREEN,width=10)
 
-2
-00:00:04,700 --> 00:00:09,500
-Caulk is not a drainage plane.
+def top_brand(draw):
+    draw.rounded_rectangle((90,76,990,146),radius=28,fill=(8,32,56),outline=(37,107,168),width=2)
+    draw.text((126,94),'PRESTIGE  •  CONTRACTOR EXPLAINS',font=font(26,True),fill=(185,221,255))
 
-3
-00:00:09,500 --> 00:00:14,200
-Lap flashing correctly and protect every penetration.
+def footer(draw,scene_idx):
+    draw.text((92,1760),f'{scene_idx+1:02d} / {len(SCENES):02d}',font=font(22,True),fill=(107,132,157))
+    draw.text((650,1760),'PrestigeRemodelingWI.com',font=font(22,True),fill=(107,132,157))
 
-4
-00:00:14,200 --> 00:00:18,000
-Give water a clear path out - not into the wall.
-''')
+def base_scene(idx):
+    im=Image.new('RGBA',(W,H),BG+(255,)); d=ImageDraw.Draw(im)
+    for r in range(900,120,-70):
+        a=max(8,int(28*(1-r/900)))
+        layer=Image.new('RGBA',(W,H),(0,0,0,0)); ld=ImageDraw.Draw(layer)
+        ld.ellipse((540-r,780-r,540+r,780+r),fill=(18,74,117,a))
+        im.alpha_composite(layer)
+    top_brand(d); footer(d,idx)
+    return im,d
 
+def scene(idx,key,title,sub):
+    im,d=base_scene(idx)
+    y=205
+    title_size=44 if len(title)>32 else (50 if len(title)>24 else 58)
+    y=text_center(d,title,y,title_size,True,WHITE,maxw=700,spacing=8)
+    text_center(d,sub,y+26,29,False,MUTED,maxw=700,spacing=6)
+    if key=='hook':
+        iso_house(d,(245,770),1.05,True,True,'good','kick')
+        glow_dot(im,(510,1060),18,GOLD)
+        d.text((165,1430),'KICK-OUT',font=font(29,True),fill=GOLD)
+        d.line((310,1450,510,1100),fill=GOLD,width=4)
+    elif key=='failure':
+        iso_house(d,(250,765),1.02,False,True,'bad',None)
+        d.rounded_rectangle((130,1375,950,1510),radius=28,fill=(74,19,27),outline=(152,44,58),width=3)
+        d.text((175,1414),'RUNOFF TRACKS DOWN THE WALL',font=font(34,True),fill=(255,164,169))
+        d.text((175,1462),'This is the failure path.',font=font(27),fill=(255,210,212))
+    elif key=='step':
+        iso_house(d,(245,760),1.04,False,True,None,'step')
+        for n,(x,y2) in enumerate([(300,1150),(365,1098),(430,1044),(495,990)],1):
+            d.rounded_rectangle((x-28,y2-28,x+28,y2+28),radius=14,fill=BLUE)
+            d.text((x-9,y2-17),str(n),font=font(24,True),fill=WHITE)
+        d.text((155,1450),'SHINGLE-FASHION LAPS',font=font(34,True),fill=CYAN)
+    elif key=='diverter':
+        iso_house(d,(235,760),1.06,True,True,None,'kick')
+        d.polygon([(595,1120),(780,1020),(820,1040),(675,1190)],fill=GOLD,outline=(255,230,166),width=5)
+        d.text((565,1240),'OUTWARD',font=font(36,True),fill=GOLD)
+        d.line((645,1285,740,1165),fill=GOLD,width=5)
+    elif key=='water':
+        iso_house(d,(235,760),1.06,True,True,'good','gutter')
+        d.rounded_rectangle((155,1385,925,1515),radius=30,fill=(14,67,53),outline=(54,157,110),width=3)
+        d.text((260,1425),'ROOF  →  KICK-OUT  →  GUTTER',font=font(32,True),fill=(158,246,202))
+    elif key=='inspect':
+        items=[('1','STEP FLASHING','layered with roof + wall drainage'),('2','KICK-OUT','present at the bottom of the sidewall'),('3','GUTTER ENTRY','runoff has an unobstructed path')]
+        yy=660
+        for n,h,desc in items:
+            d.rounded_rectangle((130,yy,950,yy+225),radius=34,fill=(12,38,63),outline=(44,103,153),width=3)
+            d.rounded_rectangle((170,yy+52,260,yy+142),radius=25,fill=BLUE)
+            d.text((199,yy+67),n,font=font(42,True),fill=WHITE)
+            d.text((300,yy+42),h,font=font(38,True),fill=WHITE)
+            text_center(d,desc,yy+108,25,False,MUTED,maxw=560)
+            yy+=255
+    elif key=='payoff':
+        d.rounded_rectangle((130,610,950,1330),radius=42,fill=(9,29,50),outline=(42,100,150),width=4)
+        d.text((195,695),'THE SYSTEM',font=font(31,True),fill=CYAN)
+        steps=['Step flashing handles the joint.','Kick-out redirects concentrated runoff.','The gutter receives the water.','Sealant is maintenance—not the drainage strategy.']
+        yy=785
+        for i,s in enumerate(steps):
+            col=GOLD if i==3 else WHITE
+            d.ellipse((190,yy+8,214,yy+32),fill=col)
+            f=font(29,i==3); words=s.split(); line=''; lines=[]
+            for word in words:
+                test=(line+' '+word).strip()
+                if d.textbbox((0,0),test,font=f)[2]>555 and line: lines.append(line); line=word
+                else: line=test
+            if line: lines.append(line)
+            for j,ln in enumerate(lines[:2]): d.text((245,yy+j*38),ln,font=f,fill=col)
+            yy+=135
+    elif key=='close':
+        d.rounded_rectangle((150,570,930,1320),radius=60,fill=(7,31,55),outline=(39,111,172),width=4)
+        d.text((265,690),'PRESTIGE',font=font(92,True),fill=WHITE)
+        d.text((287,800),'REMODELING',font=font(52,True),fill=CYAN)
+        d.line((260,900,820,900),fill=GOLD,width=5)
+        d.text((244,980),'Built Right.',font=font(40,True),fill=WHITE)
+        d.text((244,1040),'Built Strong.',font=font(40,True),fill=WHITE)
+        d.text((244,1100),'Built to Last.',font=font(40,True),fill=WHITE)
+        d.rounded_rectangle((250,1200,830,1300),radius=30,fill=BLUE)
+        d.text((320,1225),'Request an Estimate',font=font(34,True),fill=WHITE)
+    return im.convert('RGB')
 
-def create_voiceover(path):
-    voice = ('Deck ledger leaks start where you cannot see them. Caulk is not a drainage plane. '
-             'Keep the weather barrier continuous, lap flashing over the ledger, and protect every fastener penetration. '
-             'Before siding covers the connection, verify water has a clear path out, not a path into the wall.')
-    run(['edge-tts', '--voice', 'en-US-GuyNeural', '--rate', '+6%', '--text', voice, '--write-media', str(path)], timeout=60)
-    if not path.exists() or path.stat().st_size < 10000:
-        raise RuntimeError('Fallback voiceover failed QA')
+def create_scenes(outdir):
+    paths=[]
+    for i,(key,title,sub) in enumerate(SCENES):
+        p=outdir/f'beat-{i+1:02d}.png'
+        scene(i,key,title,sub).save(p,quality=96)
+        paths.append(p)
+    return paths
 
+def create_audio(out):
+    cmd=['ffmpeg','-y','-f','lavfi','-i',f'anoisesrc=color=pink:amplitude=0.035:duration={DURATION}:sample_rate=48000',
+         '-f','lavfi','-i',f'sine=frequency=86:sample_rate=48000:duration={DURATION}',
+         '-filter_complex',"[0:a]highpass=f=900,lowpass=f=6500,volume=0.35[n];[1:a]volume=0.025,lowpass=f=250[s];[n][s]amix=inputs=2:normalize=0,loudnorm=I=-18:TP=-1.5:LRA=5,volume=-3dB,pan=stereo|c0=c0|c1=c0[a]",
+         '-map','[a]','-c:a','aac','-b:a','192k',str(out)]
+    run(cmd)
 
-def render_video(outdir, shots, voice, captions):
-    video = outdir / 'prestige-short.mp4'
-    filters = (
-        "[0:v]scale=1080:1920,zoompan=z='min(zoom+0.00035,1.035)':d=192:s=1080x1920:fps=30,setsar=1[v0];"
-        "[1:v]scale=1080:1920,zoompan=z='if(lte(zoom,1.0),1.035,max(1.0,zoom-0.00035))':d=192:s=1080x1920:fps=30,setsar=1[v1];"
-        "[2:v]scale=1080:1920,zoompan=z='min(zoom+0.0003,1.03)':d=192:s=1080x1920:fps=30,setsar=1[v2];"
-        "[v0][v1]xfade=transition=fade:duration=0.6:offset=5.8[x1];"
-        "[x1][v2]xfade=transition=fade:duration=0.6:offset=11.6,"
-        "subtitles=captions.srt:force_style='FontName=DejaVu Sans,FontSize=17,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BackColour=&H64000000,BorderStyle=3,Outline=2,Shadow=0,Alignment=2,MarginV=105'[v];"
-        "[3:a]apad=pad_dur=18[a]"
-    )
-    run(['ffmpeg','-y','-loop','1','-t','6.4','-i',shots[0].name,'-loop','1','-t','6.4','-i',shots[1].name,'-loop','1','-t','6.4','-i',shots[2].name,'-i',voice.name,'-filter_complex',filters,'-map','[v]','-map','[a]','-t','18','-r','30','-c:v','libx264','-preset','veryfast','-crf','18','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-movflags','+faststart',video.name],cwd=outdir,timeout=150)
-    if not video.exists() or video.stat().st_size < 300000:
-        raise RuntimeError('Fallback premium video is missing or below 300 KB')
-    probe = run(['ffprobe','-v','error','-select_streams','v:0','-show_entries','stream=width,height','-of','json',str(video)],timeout=20)
-    stream = (json.loads(probe.stdout).get('streams') or [{}])[0]
-    if stream.get('width') != 1080 or stream.get('height') != 1920:
-        raise RuntimeError(f'Fallback resolution QA failed: {stream}')
+def render_video(outdir,scenes,audio):
+    beat=3.25; fade=0.35
+    cmd=['ffmpeg','-y']
+    for p in scenes: cmd += ['-loop','1','-t',str(beat),'-i',str(p)]
+    cmd += ['-i',str(audio)]
+    chains=[]
+    for i in range(len(scenes)):
+        z="min(zoom+0.00045,1.045)" if i%2==0 else "if(lte(zoom,1.0),1.045,max(1.0,zoom-0.00045))"
+        chains.append(f'[{i}:v]scale=1080:1920,zoompan=z=\'{z}\':d={int(beat*FPS)}:s=1080x1920:fps={FPS},setsar=1[v{i}]')
+    prev='v0'; offset=beat-fade
+    for i in range(1,len(scenes)):
+        out=f'x{i}'
+        trans=['fade','smoothleft','fadeblack','smoothup','fade','circleopen','fade'][i-1]
+        chains.append(f'[{prev}][v{i}]xfade=transition={trans}:duration={fade}:offset={offset:.2f}[{out}]')
+        prev=out; offset += beat-fade
+    filt=';'.join(chains)
+    video=outdir/'Prestige_Kickout_Flashing_PREMIUM_PRIVATE_CANDIDATE.mp4'
+    cmd += ['-filter_complex',filt,'-map',f'[{prev}]','-map',f'{len(scenes)}:a','-t',f'{offset+fade:.2f}','-r',str(FPS),'-c:v','libx264','-preset','medium','-crf','17','-pix_fmt','yuv420p','-c:a','aac','-b:a','192k','-movflags','+faststart',str(video)]
+    run(cmd,timeout=420)
     return video
 
-
-def build_package(today, video):
-    content_quality = {
-        'score': 96,
-        'passed': True,
-        'review': 'Deterministic rubric v1: contractor-specific technical lesson; no fabricated customer, job, review, price, or urgency; complete four-channel captions; clear local estimate CTA; three-scene teaching sequence.',
-        'review_source': 'deterministic-rubric-v1'
-    }
-    visual_quality = {
-        'score': 94,
-        'passed': True,
-        'review': 'Deterministic visual rubric v1: three custom 1080x1920 construction diagrams; high-contrast hierarchy; no stock imagery or fake project photography; each scene directly teaches the ledger-water-management sequence.',
-        'review_source': 'deterministic-rubric-v1'
-    }
+def av_probe(video):
+    p=run(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(video)],timeout=30)
+    data=json.loads(p.stdout); streams=data['streams']; v=next(s for s in streams if s['codec_type']=='video'); a=next(s for s in streams if s['codec_type']=='audio')
+    loud=run(['ffmpeg','-hide_banner','-i',str(video),'-af','loudnorm=I=-18:TP=-1:LRA=7:print_format=json','-f','null','-'],timeout=60).stderr
+    start=loud.rfind('{'); end=loud.rfind('}')+1
+    stats=json.loads(loud[start:end]) if start>=0 and end>start else {}
     return {
-        'generated_for': today.isoformat(),
-        'campaign': 'Deck Ledger Waterproofing: The Failure Starts Behind the Wall',
-        'hook': 'Deck ledger leaks start where you cannot see them.',
-        'body': 'A deck ledger connection has to shed water in layers. Keep the weather-resistive barrier continuous, lap flashing over the ledger, and detail fastener penetrations so water cannot track behind the board. Caulk by itself is not a drainage plane.',
-        'voiceover': 'Deck ledger leaks start where you cannot see them. Caulk is not a drainage plane. Keep the weather barrier continuous, lap flashing over the ledger, and protect every fastener penetration. Before siding covers the connection, verify water has a clear path out, not a path into the wall.',
-        'visual_plan': {
-            'opening': 'Technical cross-section showing a leak path behind an improperly protected deck ledger.',
-            'middle': 'Layered diagram showing cladding, continuous WRB, positive-lap Z flashing and structural ledger.',
-            'close': 'Four-item pre-cover inspection checklist and local estimate CTA.',
-            'on_screen_text': ['Caulk is not a drainage plane', 'WRB + flashing + protected penetrations', 'Give water a clear path OUT']
-        },
-        'captions': {
-            'facebook': 'One of the nastier deck failures can start behind the ledger where nobody sees it. The wall needs a real water-shedding sequence: continuous WRB, properly lapped flashing, protected penetrations, and a drainage path. Caulk alone is not the system. Planning a deck or exterior repair around Manitowoc? Request an estimate at PrestigeRemodelingWI.com.',
-            'instagram': 'Deck ledger waterproofing is a layering problem, not a caulk problem. Continuous WRB. Positive flashing lap. Protected penetrations. Drainage path out. Planning a deck or exterior repair in the Manitowoc area? PrestigeRemodelingWI.com #ManitowocWI #DeckRepair #Remodeling #ExteriorRepair #ContractorTips',
-            'youtube-shorts': 'Deck ledger leaks often begin behind the wall. This 18-second contractor breakdown shows the water-management stack that matters: continuous WRB, positive-lap flashing, protected fastener penetrations, and a clear drainage path. PrestigeRemodelingWI.com #Shorts',
-            'tiktok': 'Caulk is not a drainage plane. A deck ledger needs continuous WRB, a positive flashing lap, protected penetrations, and a path for water to get OUT. Manitowoc-area deck and exterior estimates: PrestigeRemodelingWI.com #ContractorTok #DeckRepair #Remodeling'
-        },
-        'cta': 'Planning a deck or exterior repair in Manitowoc? Request an estimate at PrestigeRemodelingWI.com.',
-        'quality': content_quality,
-        'media': {'kind': 'custom-technical-vector-scenes', 'quality': visual_quality},
-        'source': 'money-machine-social-bot',
-        'generation_mode': 'deterministic-budget-fallback-v1',
-        'video_path': str(video.relative_to(REPO)),
-        'video_specs': {'width':1080,'height':1920,'duration_seconds':18,'fps':30},
-        'media_mode': 'premium-technical-vector-motion-reel',
-        'publishing_status': 'PREMIUM_MEDIA_READY_PENDING_PROVIDER_DELIVERY'
+      'video_codec':v['codec_name'],'resolution':f"{v['width']}x{v['height']}",'fps':v.get('avg_frame_rate'),
+      'audio_codec':a['codec_name'],'audio_channels':a.get('channels'),'duration_seconds':round(float(data['format']['duration']),2),
+      'integrated_lufs':float(stats.get('input_i','nan')),'true_peak_dbfs':float(stats.get('input_tp','nan')),'decode_errors':False
     }
 
+def objective_gate(av,video):
+    errors=[]
+    if av['video_codec']!='h264': errors.append('video codec must be H.264')
+    if av['resolution']!='1080x1920': errors.append('resolution must be 1080x1920')
+    if av['audio_codec']!='aac' or av['audio_channels']!=2: errors.append('audio must be AAC stereo')
+    if not 10 <= av['duration_seconds'] <= 60: errors.append('duration outside 10-60 seconds')
+    if not -20 <= av['integrated_lufs'] <= -16: errors.append(f"integrated loudness {av['integrated_lufs']} outside -20..-16 LUFS")
+    if av['true_peak_dbfs'] > -1.0: errors.append(f"true peak {av['true_peak_dbfs']} exceeds -1 dBFS")
+    if video.stat().st_size < 500000: errors.append('video file unexpectedly small')
+    return errors
+
+def write_metadata(outdir,video,av,errors):
+    meta={
+      'candidate_version':'premium-private-v9','contentDate':datetime.date.today().isoformat(),'episode':EPISODE,
+      'style_id':EPISODE['style_id'],'technical_claim_ids':EPISODE['technical_claim_ids'],
+      'technical_sources':CLAIMS,'video_path':str(video),'publishing':'DISABLED','owner_approved':False,
+      'personal_job_media':False,'stock_footage':False,'recycled_third_party_clips':False,'narration_mode':'none',
+      'audio_mode':'original-sound-design-only','visual_beats':len(SCENES),
+      'layout':{'canvas':{'width':1080,'height':1920},'critical_zone':{'x_min':90,'x_max':830,'y_min':180,'y_max':1450},'platform_preview_required':True},
+      'av':av,'objective_errors':errors,
+      'objective_status':'PASS' if not errors else 'REJECTED',
+      'subjective_review':{'status':'REQUIRED_NOT_COMPLETED','minimum_each':9.0,'minimum_overall':9.3,'self_generated_auto_approval':False},
+      'candidate_status':'PRIVATE_AWAITING_PREMIUM_REVIEW' if not errors else 'REJECTED_OBJECTIVE_QA',
+      'release_rule':'Even an objective PASS is not publish authorization. Independent/owner subjective review must score every category >=9.0 and overall >=9.3, then Jason must explicitly approve this exact finished video.'
+    }
+    (outdir/'candidate-metadata.json').write_text(json.dumps(meta,indent=2))
+    return meta
 
 def main():
-    today = datetime.date.today()
-    outdir = OUTPUT / today.isoformat()
-    outdir.mkdir(parents=True, exist_ok=True)
-    shots = [outdir / f'shot-{i}.png' for i in range(1,4)]
-    for index, shot in enumerate(shots, 1):
-        make_scene(shot, index)
-    captions = outdir / 'captions.srt'
-    voice = outdir / 'voiceover.mp3'
-    write_srt(captions)
-    create_voiceover(voice)
-    video = render_video(outdir, shots, voice, captions)
-    package = build_package(today, video)
-    (outdir / 'package.json').write_text(json.dumps(package, indent=2))
-    QUEUE.mkdir(parents=True, exist_ok=True)
-    queue_item = {
-        'status':'premium_media_ready','campaign':package['campaign'],'targets':['facebook','instagram','tiktok','youtube-shorts'],
-        'media_type':'vertical-video','media_mode':package['media_mode'],'media_path':package['video_path'],'captions':package['captions'],
-        'content_quality':package['quality'],'visual_quality':package['media']['quality'],'source':package['source'],
-        'generated_for':today.isoformat(),'multi_channel_package':str((outdir/'package.json').relative_to(REPO))
-    }
-    (QUEUE / f'daily-{today.isoformat()}-multichannel.json').write_text(json.dumps(queue_item, indent=2))
-    print('DETERMINISTIC_FALLBACK_READY')
-    print('Content quality:', package['quality'])
-    print('Visual quality:', package['media']['quality'])
-    print('Media mode:', package['media_mode'])
-    print('Generated premium vertical video:', video)
+    outdir=pathlib.Path('.social-output')/'premium-private'/datetime.date.today().isoformat()
+    outdir.mkdir(parents=True,exist_ok=True)
+    scenes=create_scenes(outdir)
+    audio=outdir/'sound-design.m4a'; create_audio(audio)
+    video=render_video(outdir,scenes,audio)
+    av=av_probe(video); errors=objective_gate(av,video)
+    meta=write_metadata(outdir,video,av,errors)
+    print(json.dumps({'video':str(video),'metadata':str(outdir/'candidate-metadata.json'),'objective_status':meta['objective_status'],'candidate_status':meta['candidate_status'],'av':av,'errors':errors},indent=2))
+    if errors: sys.exit(2)
 
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__': main()
