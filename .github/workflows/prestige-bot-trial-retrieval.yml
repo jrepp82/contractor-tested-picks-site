@@ -1,0 +1,39 @@
+name: Prestige Bot Trial Retrieval
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.prestige-bot-trial-retrieve'
+
+permissions:
+  contents: read
+
+jobs:
+  retrieve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Fetch AppDeploy bot trial metadata and MP4
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE='https://prestige-remodeling-a3-0s6imc.v2.appdeploy.ai'
+          curl -fLsS --retry 3 --retry-delay 2 --max-time 180 "$BASE/api/social/trial/status" -o bot-trial-status.json
+          curl -fLsS --retry 3 --retry-delay 2 --max-time 240 "$BASE/api/social/trial/video" -o prestige-social-bot-trial.mp4
+          BYTES="$(stat -c%s prestige-social-bot-trial.mp4)"
+          echo "bot_trial_bytes=$BYTES"
+          test "$BYTES" -ge 250000
+          file prestige-social-bot-trial.mp4 | tee bot-trial-file.txt
+          grep -qi 'mp4\|iso media' bot-trial-file.txt
+
+      - name: Upload unmodified bot trial
+        uses: actions/upload-artifact@v4
+        with:
+          name: prestige-social-bot-trial
+          path: |
+            prestige-social-bot-trial.mp4
+            bot-trial-status.json
+            bot-trial-file.txt
+          if-no-files-found: error
+          retention-days: 7
