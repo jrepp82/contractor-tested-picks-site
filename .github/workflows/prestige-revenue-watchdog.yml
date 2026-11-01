@@ -7,6 +7,7 @@ on:
   push:
     paths:
       - '.revenue-watchdog-launch'
+      - '.github/workflows/prestige-revenue-watchdog.yml'
 
 permissions:
   contents: read
@@ -17,69 +18,69 @@ concurrency:
 
 jobs:
   revenue-health:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Check public revenue routes
-        shell: bash
+      - name: Check all revenue routes and report every failure
+        shell: python
         run: |
-          set -euo pipefail
-          check() {
-            local label="$1" url="$2"
-            echo "Checking $label — $url"
-            curl --retry 2 --retry-delay 3 --connect-timeout 12 --max-time 30 -fsSL "$url" -o /tmp/route.out
-            printf 'PASS: %s\n' "$label" >> "$GITHUB_STEP_SUMMARY"
-          }
-          check "Prestige Remodeling homepage" "https://PrestigeRemodelingWI.com/"
-          grep -qi "Send Estimate Request" /tmp/route.out
-          check "Prestige DigiTools storefront" "https://contractor-tested-picks-site.vercel.app/digitools/"
-          grep -qi "Prestige Contractor Lifetime Vault" /tmp/route.out
-          check "Estimate Audit / Plan-Check intake" "https://contractor-tested-picks-site.vercel.app/digitools/audit-intake.html"
-          check "Instant Project Qualifier" "https://contractor-tested-picks-site.vercel.app/instant-estimate.html"
-          check "Affiliate Recommender" "https://contractor-tested-picks-site.vercel.app/affiliate-recommender.html"
-          check "Priority Site Visit" "https://contractor-tested-picks-site.vercel.app/priority-site-visit.html"
-          check "Revenue Expansion hub" "https://contractor-tested-picks-site.vercel.app/revenue-lab/"
-          grep -qi "Five cash engines" /tmp/route.out
-          check "Prestige Revenue Router" "https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/"
-          grep -qi "Prestige Revenue Router" /tmp/route.out
-          check "Lead Exchange bridge" "https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html"
-          grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#lead" /tmp/route.out
-          check "Emergency Dispatch bridge" "https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html"
-          grep -qi "prestige-revenue-router-6ryzai.v2.appdeploy.ai/#dispatch" /tmp/route.out
-          check "Seller Photo Cleanup Utility" "https://contractor-tested-picks-site.vercel.app/revenue-lab/card-photo-cleaner.html"
-          grep -qi "Process Batch" /tmp/route.out
-          check "Collectibles Arbitrage Control" "https://contractor-tested-picks-site.vercel.app/revenue-lab/arbitrage-control.html"
-          grep -qi "Expected graded profit" /tmp/route.out
-          check "Industrial Surplus Spread Analyzer" "https://contractor-tested-picks-site.vercel.app/revenue-lab/surplus-spread-calculator.html"
-          grep -qi "40% of conservative liquidation" /tmp/route.out
-
-      - name: Verify material checklist PDF
-        shell: bash
-        run: |
-          set -euo pipefail
-          headers=$(mktemp)
-          curl --retry 2 --connect-timeout 12 --max-time 30 -fsSL -D "$headers" "https://contractor-tested-picks-site.vercel.app/api/material-checklist" -o /tmp/material-checklist.pdf
-          grep -qi "content-type: application/pdf" "$headers"
-          head -c 5 /tmp/material-checklist.pdf | grep -q "%PDF-"
-          echo "PASS: Homeowner Material Checklist PDF" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Verify live Stripe checkout URLs
-        shell: bash
-        run: |
-          set -euo pipefail
-          links=(
-            "https://buy.stripe.com/5kQ28r9pS4HW1w5blD7ss00"
-            "https://buy.stripe.com/eVq4gzcC44HW0s1exP7ss09"
-            "https://buy.stripe.com/5kQeVd0Tm6Q4gqZcpH7ss0a"
-            "https://buy.stripe.com/7sYbJ19pS1vKgqZ9dv7ss0b"
-            "https://buy.stripe.com/8x27sL31u1vKdeN61j7ss0c"
-            "https://buy.stripe.com/28E4gz59C5M03Ed89r7ss0d"
-            "https://buy.stripe.com/28EdR90TmcaodeN2P77ss0g"
-            "https://buy.stripe.com/fZuaEX6dG3DS1w575n7ss0e"
-            "https://buy.stripe.com/28EeVdgSkdes8YxgFX7ss0l"
-            "https://buy.stripe.com/eVq3cv6dG5M0caJ2P77ss0m"
-          )
-          for url in "${links[@]}"; do
-            curl --retry 2 --connect-timeout 12 --max-time 30 -fsSL "$url" -o /dev/null
-          done
-          echo "PASS: 10 live Stripe checkout routes responded" >> "$GITHUB_STEP_SUMMARY"
+          import concurrent.futures
+          import os
+          import time
+          import urllib.error
+          import urllib.request
+          
+          # Reachability/content checks do not prove payment, delivery, or lead submission.
+          CHECKS = [['Prestige Remodeling homepage', 'https://PrestigeRemodelingWI.com/', 'Send Estimate Request', 'html'], ['Prestige Remodeling www', 'https://www.prestigeremodelingwi.com/', 'Send Estimate Request', 'html'], ['Prestige DigiTools storefront', 'https://contractor-tested-picks-site.vercel.app/digitools/', 'Prestige Contractor Lifetime Vault', 'html'], ['Estimate Audit / Plan-Check intake', 'https://contractor-tested-picks-site.vercel.app/digitools/audit-intake.html', '', 'html'], ['Instant Project Qualifier', 'https://contractor-tested-picks-site.vercel.app/instant-estimate.html', '', 'html'], ['Affiliate Recommender', 'https://contractor-tested-picks-site.vercel.app/affiliate-recommender.html', '', 'html'], ['Priority Site Visit', 'https://contractor-tested-picks-site.vercel.app/priority-site-visit.html', '', 'html'], ['Revenue Expansion hub', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/', 'Five cash engines', 'html'], ['Prestige Revenue Router', 'https://prestige-revenue-router-6ryzai.v2.appdeploy.ai/', 'Prestige Revenue Router', 'html'], ['Lead Exchange bridge', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/lead-broker.html', 'prestige-revenue-router-6ryzai.v2.appdeploy.ai/#lead', 'html'], ['Emergency Dispatch bridge', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/emergency-dispatch.html', 'prestige-revenue-router-6ryzai.v2.appdeploy.ai/#dispatch', 'html'], ['Seller Photo Cleanup Utility', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/card-photo-cleaner.html', 'Process Batch', 'html'], ['Collectibles Arbitrage Control', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/arbitrage-control.html', 'Expected graded profit', 'html'], ['Industrial Surplus Spread Analyzer', 'https://contractor-tested-picks-site.vercel.app/revenue-lab/surplus-spread-calculator.html', '40% of conservative liquidation', 'html'], ['Homeowner Material Checklist PDF', 'https://contractor-tested-picks-site.vercel.app/api/material-checklist', '', 'pdf'], ['Stripe route 1 (reachability only)', 'https://buy.stripe.com/5kQ28r9pS4HW1w5blD7ss00', '', 'checkout'], ['Stripe route 2 (reachability only)', 'https://buy.stripe.com/eVq4gzcC44HW0s1exP7ss09', '', 'checkout'], ['Stripe route 3 (reachability only)', 'https://buy.stripe.com/5kQeVd0Tm6Q4gqZcpH7ss0a', '', 'checkout'], ['Stripe route 4 (reachability only)', 'https://buy.stripe.com/7sYbJ19pS1vKgqZ9dv7ss0b', '', 'checkout'], ['Stripe route 5 (reachability only)', 'https://buy.stripe.com/8x27sL31u1vKdeN61j7ss0c', '', 'checkout'], ['Stripe route 6 (reachability only)', 'https://buy.stripe.com/28E4gz59C5M03Ed89r7ss0d', '', 'checkout'], ['Stripe route 7 (reachability only)', 'https://buy.stripe.com/28EdR90TmcaodeN2P77ss0g', '', 'checkout'], ['Stripe route 8 (reachability only)', 'https://buy.stripe.com/fZuaEX6dG3DS1w575n7ss0e', '', 'checkout'], ['Stripe route 9 (reachability only)', 'https://buy.stripe.com/28EeVdgSkdes8YxgFX7ss0l', '', 'checkout'], ['Stripe route 10 (reachability only)', 'https://buy.stripe.com/eVq3cv6dG5M0caJ2P77ss0m', '', 'checkout']]
+          
+          def check(item):
+              label, url, marker, kind = item
+              for attempt in range(3):
+                  try:
+                      request = urllib.request.Request(url, headers={"User-Agent": "Prestige-Revenue-Watchdog/2.0"})
+                      with urllib.request.urlopen(request, timeout=20) as response:
+                          status = response.status
+                          body = response.read(8 * 1024 * 1024)
+                          content_type = response.headers.get("Content-Type", "").lower()
+                      if status != 200:
+                          return label, url, False, f"HTTP {status}"
+                      if kind == "pdf" and ("application/pdf" not in content_type or not body.startswith(b"%PDF-")):
+                          return label, url, False, "HTTP 200 but invalid PDF body/content type"
+                      if marker and marker.lower() not in body.decode("utf-8", errors="replace").lower():
+                          return label, url, False, f"HTTP 200 but expected content missing: {marker}"
+                      return label, url, True, f"HTTP {status}; " + ("PDF validated" if kind == "pdf" else "content matched" if marker else "reachable only")
+                  except urllib.error.HTTPError as error:
+                      detail = f"HTTP {error.code}"
+                      if error.code not in (408, 429, 500, 502, 503, 504):
+                          break
+                  except (urllib.error.URLError, TimeoutError, OSError) as error:
+                      detail = f"Network error: {type(error).__name__}"
+                  if attempt < 2:
+                      time.sleep(3 * (attempt + 1))
+              return label, url, False, detail
+          
+          def main():
+              with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                  results = list(pool.map(check, CHECKS))
+              lines = ["## Prestige revenue route health", "", "These checks do not prove completed payments, fulfillment, or form delivery.", "", "| Route | Result | Detail |", "| --- | --- | --- |"]
+              for label, url, passed, detail in results:
+                  state = "PASS" if passed else "FAIL"
+                  print(f"{state}: {label}: {detail} - {url}")
+                  lines.append(f"| [{label}]({url}) | {state} | {detail} |")
+                  if not passed:
+                      print(f"::error title={label}::{detail} - {url}")
+              # Diagnostic only: a working host URL must never mask a failed customer domain.
+              if any(not r[2] for r in results[:2]):
+                  fallback = check(("Remodeling hosting diagnostic", "https://prestige-remodeling-a3-0s6imc.v2.appdeploy.ai/", "Send Estimate Request", "html"))
+                  lines += ["", "### Remodeling domain diagnostic", f"Direct hosting URL: {fallback[3]}. This does not clear either custom-domain failure.", "If hosting works while custom domains return 404, inspect AppDeploy billing/custom-domain entitlement. AppDeploy reports custom domains require Plus; do not change DNS or replace the site to hide a billing failure."]
+              failures = sum(not r[2] for r in results)
+              lines += ["", f"Result: {len(results)-failures}/{len(results)} passed; {failures} failed."]
+              summary = "\n".join(lines) + "\n"
+              if os.environ.get("GITHUB_STEP_SUMMARY"):
+                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+                      handle.write(summary)
+              print(f"Result: {len(results)-failures}/{len(results)} passed; {failures} failed.")
+              return 1 if failures else 0
+          
+          if __name__ == "__main__":
+              raise SystemExit(main())
